@@ -1,7 +1,7 @@
 #Test for commiting the readme
 
 <h1>Project Structure</h1>
-```moodMix (project directory)
+<code>moodMix (project directory)
 ├── src
 │   └── main
 │       ├── java
@@ -20,4 +20,4 @@
     │   ├── maven-wrapper.jar
     │   └── maven-wrapper.properties
     └── wrapper.properties
-```
+</code>
