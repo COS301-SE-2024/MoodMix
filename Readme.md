@@ -33,7 +33,7 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/WhatsApp%20Image%202024-04-17%20at%2008.51.57_4b63415c.jpg" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/WhatsApp%20Image%202024-04-17%20at%2008.51.57_4b63415c.jpg" width="800" height="800" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
@@ -55,27 +55,9 @@ everywhere. MoodMix allows us to do just that.
       <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/a6403a3b-62e7-4298-becd-c48ae4dad664" width="800" height="auto" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
-      <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
+      <h2><b style="font-size: 18px;">Rhevan Kruger</b></h2>
       <b style="font-size: 16px;"> Frontend </b><br>
-     I am a passionate student with a 
-keen eye for detail and a great deal 
-of interest in the world of Computer 
-Science and Software Engineering. I 
-take a great amount of satisfaction in 
-the efficiency of a well-oiled 
-development process and 
-environment. I pride myself on being 
-highly motivated and delivering 
-quality work.
-I have prior experience in web 
-development, volunteering at 
-RURESA (Rural Rehab SA). Through 
-this process I learned a lot about 
-web-development and found myself 
-thoroughly enjoying the work. I am 
-also well versed in other languages 
-and frameworks some of which will 
-be listed below.
+     I am a passionate student with a keen eye for detail and a great deal of interest in the world of Computer Science and Software Engineering. I take a great amount of satisfaction in the efficiency of a well-oiled development process and environment. I pride myself on being highly motivated and delivering quality work.I have prior experience in web development, volunteering at RURESA (Rural Rehab SA). Through this process I learned a lot about web-development and found myself thoroughly enjoying the work. I am also well versed in other languages and frameworks some of which will be listed below.
       <br><br>
     </td>
   </tr>
