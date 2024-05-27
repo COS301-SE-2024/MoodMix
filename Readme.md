@@ -29,7 +29,7 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/WhatsApp%20Image%202024-04-17%20at%2008.51.57_4b63415c.jpg" width="800" height="885" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/WhatsApp%20Image%202024-04-17%20at%2008.51.57_4b63415c.jpg" width="800" height="auto" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
