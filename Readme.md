@@ -1,6 +1,5 @@
-#Test for commiting the readme
 
-# MoodMix
+![MoodMix logo](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/07dddda5-142d-4f7f-a771-df114bf9fe36)
 
 ![Static Badge](https://img.shields.io/badge/code_coverage-90%25-green)
 
