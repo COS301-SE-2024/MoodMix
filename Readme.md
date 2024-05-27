@@ -45,29 +45,19 @@ everywhere. MoodMix allows us to do just that.
 </table>
 
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2)
-
-
-  
-  
- 
- 
-  
-  
-
-
-
-
-
-
 </details>
 
 <details>
 <summary>Rhevan Kruger</summary>
-
-| ![Rhevan](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/a6403a3b-62e7-4298-becd-c48ae4dad664) | **rhevan**  
-|:--|:--  
-| **Role:** | Frontend 
-| **Bio:** |  I am a passionate student with a 
+<table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
+  <tr>
+    <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
+      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/a6403a3b-62e7-4298-becd-c48ae4dad664" width="800" height="auto" style="display: block; margin: 0 auto;">
+    </td>
+    <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
+      <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
+      <b style="font-size: 16px;"> Frontend </b><br>
+     I am a passionate student with a 
 keen eye for detail and a great deal 
 of interest in the world of Computer 
 Science and Software Engineering. I 
@@ -86,9 +76,13 @@ thoroughly enjoying the work. I am
 also well versed in other languages 
 and frameworks some of which will 
 be listed below.
- 
+      <br><br>
+    </td>
+  </tr>
+</table>
 
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2)
+
 
 </details>
 
