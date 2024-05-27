@@ -1,8 +1,4 @@
-![ian foto](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/2fb70463-2bd3-4b23-97a0-cab39484ec01)![final one hopefully](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e810b0fb-41bd-4215-8b06-a34dccc21b25)
-
-
-
-
+![final one hopefully](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e810b0fb-41bd-4215-8b06-a34dccc21b25)
 ![Static Badge](https://img.shields.io/badge/code_coverage-90%25-green)
 
 ## General Overview
@@ -33,7 +29,7 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/WhatsApp%20Image%202024-04-17%20at%2008.51.57_4b63415c.jpg" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/WhatsApp%20Image%202024-04-17%20at%2008.51.57_4b63415c.jpg" width="800" height="885" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
@@ -52,7 +48,7 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/a6403a3b-62e7-4298-becd-c48ae4dad664" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/a6403a3b-62e7-4298-becd-c48ae4dad664" width="800" height="885" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Rhevan Kruger</b></h2>
@@ -73,7 +69,7 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/6572f5ab-f453-496b-98bf-21a93516044e" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/6572f5ab-f453-496b-98bf-21a93516044e" width="800" height="885" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Alex Pretorius</b></h2>
@@ -92,7 +88,7 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e4bb4677-d594-4158-ac0a-0ec5e8cea3c3" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e4bb4677-d594-4158-ac0a-0ec5e8cea3c3" width="800" height="885" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">James Hardy</b></h2>
@@ -110,7 +106,7 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/ian%20foto.jpg" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/ian%20foto.jpg" width="800" height="885" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Ian van Wyk</b></h2>
