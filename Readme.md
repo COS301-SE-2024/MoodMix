@@ -31,11 +31,13 @@ everywhere. MoodMix allows us to do just that.
 <details>
 <summary>Gerrit Potgieter</summary>
 
-| Member | Links                                                                                  | Profile Picture |
+| Member | Links | Bio
 |---|---|---|
-| Gerrit Potgieter |  * [GITHUB](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/c4200030-4360-4ebd-ad59-e1dc452df1c8)  | <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/c4200030-4360-4ebd-ad59-e1dc452df1c8" alt="Gerrit Potgieter" width="200" height="200"> |
-| **Role:** | Middleware and Business Analyst  |  |
-| **Bio:** | Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them.   |  |
+| Gerrit Potgieter <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/c4200030-4360-4ebd-ad59-e1dc452df1c8" alt="Gerrit Potgieter" width="200" height="200"> u22508041 | 
+* [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2) |
+*  | Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them.
+
+
 
 
 
