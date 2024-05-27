@@ -44,15 +44,16 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/COS301-SE-2023/Domain-Pulse-A-Sentiment-Analysis-Platform/assets/105363824/b0c39f63-7c73-43e5-b173-180d20053b7a" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="[https://github.com/COS301-SE-2023/Domain-Pulse-A-Sentiment-Analysis-Platform/assets/105363824/b0c39f63-7c73-43e5-b173-180d20053b7a](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/c4200030-4360-4ebd-ad59-e1dc452df1c8)" width="800" height="auto" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
       <b style="font-size: 16px;"> Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them.
       <br><br>
-      [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2)
+     
     </td>
   </tr>
+   [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2)
   
  
  
