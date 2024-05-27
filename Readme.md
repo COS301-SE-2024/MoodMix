@@ -123,7 +123,7 @@ everywhere. MoodMix allows us to do just that.
 
 ## Documentation
 
-### [Requirement Specification](https://docs.google.com/document/d/1mMMg0Cxd9gTZ3OEz50kFmBzsM3dADk8l50SzYYrSedE/edit)
+### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
 ### [Architecure Specification](https://github.com/COS301-SE-2024/MiniProject8/blob/documentation/ArchitectureQADoc.pdf)
 
