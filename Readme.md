@@ -48,21 +48,22 @@ everywhere. MoodMix allows us to do just that.
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
-      <b style="font-size: 16px;"> Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them.
+      <b style="font-size: 16px;"> Porject Manager, Business Analyst  </b><br>
+      Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them.
       <br><br>
      
     </td>
   </tr>
+  </table>
    [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2)
   
  
  
   
   
-</table>
 
-<br>
-<br>
+
+
 
 
 
