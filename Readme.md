@@ -1,4 +1,4 @@
-![final one hopefully](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e810b0fb-41bd-4215-8b06-a34dccc21b25)
+![ian foto](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/2fb70463-2bd3-4b23-97a0-cab39484ec01)![final one hopefully](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e810b0fb-41bd-4215-8b06-a34dccc21b25)
 
 
 
@@ -78,7 +78,7 @@ everywhere. MoodMix allows us to do just that.
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Alex Pretorius</b></h2>
       <b style="font-size: 16px;"> Backend , Middleware </b><br>
-     As a final year Computer Science student who has had experience working in different industry environments. I have a keen interest in Cyber Security, Cloud Security and AI and a good background in different languages like Python, C++ and Java. Along with practical skills I pride myself in delivering a strong work ethic and quality work.
+  As a final year Computer Science student who has had experience working in different industry environments. I have a keen interest in Cyber Security, Cloud Security and AI and a good background in different languages like Python, C++ and Java. Along with practical skills I pride myself in delivering a strong work ethic and quality work.
     </td>
   </tr>
 </table>
@@ -95,7 +95,7 @@ everywhere. MoodMix allows us to do just that.
       <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e4bb4677-d594-4158-ac0a-0ec5e8cea3c3" width="800" height="auto" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
-      <h2><b style="font-size: 18px;">Alex Pretorius</b></h2>
+      <h2><b style="font-size: 18px;">James Hardy</b></h2>
       <b style="font-size: 16px;"> Backend , Middleware </b><br>
     I possess a solid foundation in various programming languages and web technologies, allowing me to create efficient and innovative solutions. My analytical mindset and keen eye for detail enable me to tackle complex challenges with precision and creativity.Additionally, I am a collaborative team player who values open communication and is committed to delivering high-quality results. My dedication to excellence and passion for technology make me an ideal fit for your project.
     </td>
@@ -110,15 +110,16 @@ everywhere. MoodMix allows us to do just that.
 <table style="border-width: 1px; width: 100%; font-family: Arial, sans-serif; border-collapse: collapse;">
   <tr>
     <td style="vertical-align: top; width:auto; border: 0; padding: 10px;">
-      <img src="https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e4bb4677-d594-4158-ac0a-0ec5e8cea3c3" width="800" height="auto" style="display: block; margin: 0 auto;">
+      <img src="https://github.com/GerritPotgieter/MoodMixTemp/blob/main/ian%20foto.jpg" width="800" height="auto" style="display: block; margin: 0 auto;">
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
-      <h2><b style="font-size: 18px;">Alex Pretorius</b></h2>
+      <h2><b style="font-size: 18px;">Ian van Wyk</b></h2>
       <b style="font-size: 16px;"> Backend , Middleware </b><br>
-   I am a final year Computer Science student with a deep interest in all things data science and AI. After watching Garry Kasparov vs Deep Blue for the first time, my fascination for computers and AI models started. I was determined to one day be able to implement my own AI models. This is ultimately what led to me studying Computer Science.I am goal-oriented and determined to finish what I start. I try to ensure that the things I do I do to the best of my capabilities and to the highest of quality. My strong work ethic is complemented by robust problemsolving skills that I try to apply to all aspects of my life. I am comfortable using the technologies listed below, but I am always eager to expand my repertoire.
+   I am a final year Computer Science student with a deep interest in all things data science and AI. After watching Garry Kasparov vs Deep Blue for the first time, my fascination for computers and AI models started. I was determined to one day be able to implement my own AI models. This is ultimately what led to me studying Computer Science.I am goal-oriented and determined to finish what I start. I try to ensure that the things I do I do to the best of my capabilities and to the highest of quality. My strong work ethic is complemented by robust problem solving skills that I try to apply to all aspects of my life. I am comfortable using the technologies listed below, but I am always eager to expand my repertoire.
     </td>
   </tr>
 </table>
+  
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member3) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member3)
 
 </details>
