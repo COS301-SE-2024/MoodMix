@@ -37,6 +37,9 @@ everywhere. MoodMix allows us to do just that.
 * [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2) |
 *  | Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them.
 
+| Member | Links | Profile |
+|:-:|-|-|
+| Gerrit Potgieter <br> ![Profile](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/c4200030-4360-4ebd-ad59-e1dc452df1c8)<br> u22508041| [![image](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white "LinkedIn Profile")](https://www.linkedin.com/in/isakvdw/) <br> [![image](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white "Github Profile")](https://github.com/Isakvdw) | Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them. |
 
 
 
