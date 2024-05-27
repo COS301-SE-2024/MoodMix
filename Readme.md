@@ -43,7 +43,7 @@ everywhere. MoodMix allows us to do just that.
     <h3>James Hardy - 22587901</h3>
     </summary>
 
-I prefer Backend over Frontend - not much of a Designer/Artist and I enjoy watching Rugby
+I am a Third Year Computer Science Student at the University of Pretoria as of 2024, My main focuses are Integration and Databases.
 <a href="https://www.linkedin.com/in/james-hardy-4b3088219/">LinkedIn Profile </a>
 
 </details>
