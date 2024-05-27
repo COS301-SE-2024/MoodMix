@@ -1,7 +1,10 @@
-![final one hopefully](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e810b0fb-41bd-4215-8b06-a34dccc21b25)
 ![Static Badge](https://img.shields.io/badge/code_coverage-90%25-green)
 
+![final one hopefully](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e810b0fb-41bd-4215-8b06-a34dccc21b25)
+
+
 ## General Overview
+
 
 Five Dudes Capstone Project.
 
