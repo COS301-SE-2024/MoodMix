@@ -5,7 +5,7 @@ import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/welcome',
+  initialRoute: '/login',
   routes: {
     '/': (context) => const Loading(),
     '/welcome': (context) => const Welcome(),
