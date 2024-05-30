@@ -26,6 +26,8 @@ class _SignUpState extends State<SignUp> {
                 "Create Your\nAccount",
                 style: TextStyle(
                   fontSize: 40,
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w200,
                   color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
@@ -43,6 +45,8 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'Username',
                           hintStyle: TextStyle(
                             color: const Color.fromARGB(171, 255, 255, 255),
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
                         ),
@@ -56,6 +60,8 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'Email',
                           hintStyle: TextStyle(
                             color: const Color.fromARGB(171, 255, 255, 255),
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
                         ),
@@ -69,6 +75,8 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'Password',
                           hintStyle: TextStyle(
                             color: const Color.fromARGB(171, 255, 255, 255),
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
                         ),
@@ -82,6 +90,8 @@ class _SignUpState extends State<SignUp> {
                           hintText: 'Confirm Password',
                           hintStyle: TextStyle(
                             color: const Color.fromARGB(171, 255, 255, 255),
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
                         ),
@@ -107,8 +117,8 @@ class _SignUpState extends State<SignUp> {
                             'Create',
                             style: TextStyle(
                               fontSize: 30,
-                              fontFamily: 'test',
-                              fontStyle: FontStyle.normal,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w200,
                             ),
                           ),
                         ),
@@ -125,6 +135,8 @@ class _SignUpState extends State<SignUp> {
                             text: "Already have an account?\n",
                             style: TextStyle(
                               fontSize: 15,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
                               color: Colors.white,
                             ),
                             children: [
@@ -132,7 +144,8 @@ class _SignUpState extends State<SignUp> {
                                 text: "Log In",
                                 style: TextStyle(
                                   fontSize: 15,
-                                  fontStyle: FontStyle.italic,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w700,
                                   color: Color.fromARGB(255, 255, 255, 255),
                                   decoration: TextDecoration.underline,
                                 ),
@@ -143,6 +156,10 @@ class _SignUpState extends State<SignUp> {
                               ),
                               TextSpan(
                                 text: "\n\nTerms and Conditions",
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w700,
+                                )
                               ),
                             ],
                           ),

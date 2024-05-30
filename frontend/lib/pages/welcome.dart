@@ -46,8 +46,8 @@ class _WelcomeState extends State<Welcome> {
                     'Sign Up',
                     style: TextStyle(
                       fontSize: 30,
-                      fontFamily: 'test',
-                      fontStyle: FontStyle.normal,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w200,
                     ),
                   ),
                 ),
@@ -68,7 +68,11 @@ class _WelcomeState extends State<Welcome> {
                   ),
                   child: Text(
                     'Log In',
-                    style: TextStyle(fontSize: 30),
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w200,
+                    ),
                   ),
                 ),
               ),
@@ -82,6 +86,8 @@ class _WelcomeState extends State<Welcome> {
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.white,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w300,
                     ),
                     textAlign: TextAlign.center,
                   ),

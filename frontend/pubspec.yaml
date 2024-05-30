@@ -92,6 +92,15 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
   fonts:
-    - family: test
+    - family: Roboto
       fonts:
-        - asset: assets/fonts/temp.ttf
+        - asset: assets/fonts/Roboto/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto/Roboto-Thin.ttf
+        - asset: assets/fonts/Roboto/Roboto-ThinItalic.ttf
+        - asset: assets/fonts/Roboto/Roboto-Black.ttf
+        - asset: assets/fonts/Roboto/Roboto-BlackItalic.ttf
+        - asset: assets/fonts/Roboto/Roboto-Italic.ttf
+        - asset: assets/fonts/Roboto/Roboto-Light.ttf
+        - asset: assets/fonts/Roboto/Roboto-LightItalic.ttf
+        - asset: assets/fonts/Roboto/Roboto-Medium.ttf
+        - asset: assets/fonts/Roboto/Roboto-MediumItalic.ttf

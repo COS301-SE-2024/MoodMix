@@ -26,6 +26,8 @@ class _LogInState extends State<LogIn> {
                 "Log In",
                 style: TextStyle(
                   fontSize: 40,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w200,
                   color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
@@ -42,6 +44,8 @@ class _LogInState extends State<LogIn> {
                         decoration: InputDecoration(
                           hintText: 'Username or Email',
                           hintStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
                             color: const Color.fromARGB(171, 255, 255, 255),
                           ),
                           fillColor: Colors.white,
@@ -55,6 +59,8 @@ class _LogInState extends State<LogIn> {
                         decoration: InputDecoration(
                           hintText: 'Password',
                           hintStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
                             color: const Color.fromARGB(171, 255, 255, 255),
                           ),
                           fillColor: Colors.white,
@@ -79,8 +85,8 @@ class _LogInState extends State<LogIn> {
                           'Log In',
                           style: TextStyle(
                             fontSize: 30,
-                            fontFamily: 'test',
-                            fontStyle: FontStyle.normal,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w200,
                           ),
                         ),
                       ),
@@ -95,6 +101,8 @@ class _LogInState extends State<LogIn> {
                             text: "Don't have an account?\n",
                             style: TextStyle(
                               fontSize: 15,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
                               color: Colors.white,
                             ),
                             children: [
@@ -102,7 +110,8 @@ class _LogInState extends State<LogIn> {
                                 text: "Create Account",
                                 style: TextStyle(
                                   fontSize: 15,
-                                  fontStyle: FontStyle.italic,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w700,
                                   color: const Color.fromARGB(255, 255, 255, 255), // Change the color of the clickable text
                                   decoration: TextDecoration.underline, // Add underline to indicate it's clickable
                                 ),
@@ -114,6 +123,10 @@ class _LogInState extends State<LogIn> {
                               ),
                               TextSpan(
                                 text: "\n\nTerms and Conditions",
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w700,
+                                )
                               ),
                             ],
                           ),
