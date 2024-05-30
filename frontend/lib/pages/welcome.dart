@@ -24,7 +24,7 @@ class _WelcomeState extends State<Welcome> {
               Container(
                 padding: EdgeInsets.all(20),
                 child: Image(
-                  image: AssetImage('assets/images/MM-On Dark.jpeg'),
+                  image: AssetImage('assets/images/MM-On Dark.png'),
                   width: screenWidth / 1.1,
                 ),
               ),
@@ -69,6 +69,21 @@ class _WelcomeState extends State<Welcome> {
                   child: Text(
                     'Log In',
                     style: TextStyle(fontSize: 30),
+                  ),
+                ),
+              ),
+              Spacer(),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
+                  child:Text(
+                    "Terms and Conditions",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

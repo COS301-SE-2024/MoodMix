@@ -5,11 +5,11 @@ import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/login',
+  initialRoute: '/welcome',
   routes: {
     '/': (context) => const Loading(),
     '/welcome': (context) => const Welcome(),
-    '/signup': (context) => const SingUp(),
+    '/signup': (context) => const SignUp(),
     '/login': (context) => const LogIn(),
   }
 ));
