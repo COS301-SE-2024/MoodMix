@@ -7,6 +7,12 @@
 [![Lint](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml)
 
 
+![Static Badge](https://img.shields.io/badge/Flutter-%20?style=for-the-badge&logo=Flutter&logoColor=black&labelColor=%2302569B&color=black)
+![Static Badge](https://img.shields.io/badge/Dart-%20?style=for-the-badge&logo=dart&logoColor=black&logoSize=auto&labelColor=%230175C2&color=black)
+![Static Badge](https://img.shields.io/badge/Firebase-%20?style=for-the-badge&logo=firebase&logoColor=black&logoSize=auto&labelColor=%23FFCA28&color=black)
+
+
+
 ## General Overview
 
 
@@ -132,15 +138,15 @@ everywhere. MoodMix allows us to do just that.
 
 ### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
-### [Architecure Specification](https://github.com/COS301-SE-2024/MiniProject8/blob/documentation/ArchitectureQADoc.pdf)
+### [Architecure Specification]()
 
-### [Design Specification](https://github.com/COS301-SE-2024/MiniProject8/blob/documentation/Design%20Specification.pdf)
+### [Design Specification]()
 
-### [User Manual](https://github.com/COS301-SE-2024/MiniProject8/blob/documentation/User_Manual.pdf)
+### [User Manual]()
 
-### [Implementation Specification](https://github.com/COS301-SE-2024/MiniProject8/blob/documentation/ImplementationSpec.pdf)
+### [Implementation Specification]()
 
-### [Testing Specification](https://github.com/COS301-SE-2024/MiniProject8/blob/documentation/Testing_Specification.pdf)
+### [Testing Specification]()
 
 ### [Delivery Specification]()
 
@@ -164,27 +170,6 @@ everywhere. MoodMix allows us to do just that.
 
 
 
-### Code Coverage
 
 
 
-
-
-
-
-#### Frontend
-
-![Static Badge](https://img.shields.io/badge/React-black?logo=React&logoColor=%2361DAFB)
-![Static Badge](https://img.shields.io/badge/Tailwind-black?logo=Tailwind%20CSS&logoColor=%2306B6D4)
-![Static Badge](https://img.shields.io/badge/CSS-black?logo=CSS3&logoColor=%231572B6)
-![Static Badge](https://img.shields.io/badge/Javascript%20JSX-black?logo=Javascript&logoColor=%23F7DF1E)
-![Static Badge](https://img.shields.io/badge/Next%20JS-white?logo=Next.js&logoColor=%23000000)
-![Static Badge](https://img.shields.io/badge/Typescript-black?logo=TypeScript&logoColor=%233178C6)
-
-#### Backend
-
-![Static Badge](https://img.shields.io/badge/Supabase-black?logo=supabase)
-![Static Badge](https://img.shields.io/badge/Docker-black?logo=docker&logoColor=%232496ED)
-![Static Badge](https://img.shields.io/badge/Typescript-black?logo=TypeScript&logoColor=%233178C6)
-![Static Badge](https://img.shields.io/badge/npm-black?logo=npm&logoColor=%23CB3837)
-![Static Badge](https://img.shields.io/badge/Deno-white?logo=Deno&logoColor=%23000000)
