@@ -35,6 +35,10 @@ jobs:
         lcov --directory . --capture --output-file coverage/lcov.info
       working-directory: frontend
 
+    - name: Codecov
+      uses: codecov/codecov-action@v4.4.1
+            
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
