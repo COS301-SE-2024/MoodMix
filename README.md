@@ -7,9 +7,10 @@
 [![Lint](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml)
 
 
-![Static Badge](https://img.shields.io/badge/Flutter-%20?style=for-the-badge&logo=Flutter&logoColor=black&labelColor=%2302569B&color=black)
-![Static Badge](https://img.shields.io/badge/Dart-%20?style=for-the-badge&logo=dart&logoColor=black&logoSize=auto&labelColor=%230175C2&color=black)
-![Static Badge](https://img.shields.io/badge/Firebase-%20?style=for-the-badge&logo=firebase&logoColor=black&logoSize=auto&labelColor=%23FFCA28&color=black)
+![Static Badge](https://img.shields.io/badge/Flutter-%20?style=for-the-badge&logo=flutter&logoColor=black&logoSize=auto&color=%230175C2)
+![Static Badge](https://img.shields.io/badge/Dart-%20?style=for-the-badge&logo=dart&logoColor=black&logoSize=auto&color=%230175C2)
+![Static Badge](https://img.shields.io/badge/Firebase-%20?style=for-the-badge&logo=firebase&logoColor=black&logoSize=auto&color=%23FFCA28)
+
 
 
 
