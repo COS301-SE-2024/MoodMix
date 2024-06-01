@@ -48,7 +48,7 @@ class _SignUpState extends State<SignUp> {
 
     if (result == 'Success') {
       // Navigate to the login screen if registration is successful
-      Navigator.pushNamed(context, '/login');
+      Navigator.pushNamed(context, '/linkspotify');
     } else {
       // Show error message if registration fails
       ScaffoldMessenger.of(context).showSnackBar(

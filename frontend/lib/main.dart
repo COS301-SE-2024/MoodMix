@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:frontend/pages/link_spotify.dart';
 import 'firebase_options.dart';
 import 'package:frontend/pages/loading.dart';
 import 'package:frontend/pages/log_in.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => const Welcome(),
         '/signup': (context) => const SignUp(),
         '/login': (context) => const LogIn(),
+        '/linkspotify': (context) => const LinkSpotify(),
       },
     );
   }
