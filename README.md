@@ -4,6 +4,7 @@
 
 ![Static Badge](https://img.shields.io/badge/code_coverage-90%25-green)
 [![codecov](https://codecov.io/gh/GerritPotgieter/MoodMixTemp/graph/badge.svg?token=ZI0XVC3TCH)](https://codecov.io/gh/GerritPotgieter/MoodMixTemp)
+[![Lint](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml)
 
 
 ## General Overview
