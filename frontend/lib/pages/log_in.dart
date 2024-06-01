@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../auth/auth_service.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -9,6 +10,39 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  final AuthService _authService = AuthService();
+  final TextEditingController _usernameOrEmailController =
+      TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameOrEmailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _login() async {
+    final email = _usernameOrEmailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Call the login function in AuthService
+    final result = await _authService.login(
+      email: email,
+      password: password,
+    );
+
+    if (result == 'Success') {
+      // Navigate to the home screen if login is successful
+      Navigator.pushNamed(context, '/home');
+    } else {
+      // Show error message if login fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result ?? 'Login failed')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -41,6 +75,8 @@ class _LogInState extends State<LogIn> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        controller:
+                            _usernameOrEmailController, // Attach the controller
                         decoration: InputDecoration(
                           hintText: 'Username or Email',
                           hintStyle: TextStyle(
@@ -56,6 +92,9 @@ class _LogInState extends State<LogIn> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        controller:
+                            _passwordController, // Attach the controller
+                        obscureText: true, // Obscure password input
                         decoration: InputDecoration(
                           hintText: 'Password',
                           hintStyle: TextStyle(
@@ -72,9 +111,7 @@ class _LogInState extends State<LogIn> {
                       height: 80,
                       width: screenWidth / 1.4,
                       child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/signup');
-                        },
+                        onPressed: _login, // Call the login function
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3),
@@ -112,22 +149,22 @@ class _LogInState extends State<LogIn> {
                                   fontSize: 15,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w700,
-                                  color: const Color.fromARGB(255, 255, 255, 255), // Change the color of the clickable text
-                                  decoration: TextDecoration.underline, // Add underline to indicate it's clickable
+                                  color: const Color.fromARGB(255, 255, 255,
+                                      255), // Change the color of the clickable text
+                                  decoration: TextDecoration
+                                      .underline, // Add underline to indicate it's clickable
                                 ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    // Add your navigation logic here
                                     Navigator.pushNamed(context, '/signup');
                                   },
                               ),
                               TextSpan(
-                                text: "\n\nTerms and Conditions",
-                                style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w700,
-                                )
-                              ),
+                                  text: "\n\nTerms and Conditions",
+                                  style: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w700,
+                                  )),
                             ],
                           ),
                           textAlign: TextAlign.center,

@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../auth/auth_service.dart';
 
-
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
 
@@ -11,7 +10,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-
   final AuthService _authService = AuthService();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -91,6 +89,7 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        controller: _usernameController, // Attach the controller
                         decoration: InputDecoration(
                           hintText: 'Username',
                           hintStyle: TextStyle(
@@ -106,6 +105,7 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        controller: _emailController, // Attach the controller
                         decoration: InputDecoration(
                           hintText: 'Email',
                           hintStyle: TextStyle(
@@ -121,6 +121,8 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        controller: _passwordController, // Attach the controller
+                        obscureText: true, // Obscure password input
                         decoration: InputDecoration(
                           hintText: 'Password',
                           hintStyle: TextStyle(
@@ -136,6 +138,8 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        controller: _confirmPasswordController, // Attach the controller
+                        obscureText: true, // Obscure password input
                         decoration: InputDecoration(
                           hintText: 'Confirm Password',
                           hintStyle: TextStyle(
@@ -154,9 +158,7 @@ class _SignUpState extends State<SignUp> {
                         height: 80,
                         width: screenWidth / 1.4,
                         child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/login');
-                          },
+                          onPressed: _createAccount, // Call the function
                           style: OutlinedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(3),
@@ -174,7 +176,6 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                     ),
-                    
                     Spacer(),
                     Align(
                       alignment: Alignment.bottomCenter,
