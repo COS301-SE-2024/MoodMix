@@ -9,14 +9,16 @@ class AuthService {
     required String username,
   }) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       // Update the user profile to include the display name
-      await userCredential.user?.updateProfile(displayName: username);
-      await userCredential.user?.reload(); // Ensure the changes are reflected immediately
+      await userCredential.user?.updateDisplayName(username);
+      await userCredential.user
+          ?.reload(); // Ensure the changes are reflected immediately
 
       return 'Success';
     } on FirebaseAuthException catch (e) {
@@ -52,6 +54,15 @@ class AuthService {
       }
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  Future<User?> getCurrentUser() async {
+    try {
+      return _auth.currentUser;
+    } catch (e) {
+      print('Error getting current user: $e');
+      return null;
     }
   }
 }

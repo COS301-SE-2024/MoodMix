@@ -1,6 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../auth/auth_service.dart';
 
@@ -12,6 +9,25 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  String? _email = '';
+  String? _displayName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = await AuthService().getCurrentUser();
+    if (user != null) {
+      setState(() {
+        _email = user.email;
+        _displayName = user.displayName;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -31,13 +47,20 @@ class _UserProfileState extends State<UserProfile> {
                   backgroundColor: Colors.transparent,
                   radius: screenHeight / 10,
                 ),
-              )
-              
+              ),
+              Text(
+                'Email: $_email',
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                'Display Name: $_displayName',
+                style: TextStyle(color: Colors.white),
+              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar (
+      bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.green,
         showSelectedLabels: false,
         showUnselectedLabels: false,
