@@ -16,8 +16,6 @@ class AuthService {
         email: email,
         password: password,
       );
-
-
       await userCredential.user?.updateProfile(displayName: username);
       await userCredential.user
           ?.reload(); 
@@ -87,7 +85,6 @@ class AuthService {
     final OAuthCredential credential = OAuthProvider('spotify.com').credential(
       accessToken: code,
     );
-
     await user?.linkWithCredential(credential);
   }
 }
