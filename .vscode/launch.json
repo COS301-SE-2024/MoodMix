@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "frontend",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "args": ["--web-port=5001"]
+        },
+        {
+            "name": "frontend (profile mode)",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": ["--web-port=5001"]
+        },
+        {
+            "name": "frontend (release mode)",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": ["--web-port=5001"]
+        }
+    ]
+}
