@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import '../auth/auth_service.dart';
+import 'package:frontend/components/navbar.dart'; // Import your new bottom navbar component
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -13,7 +12,6 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   String? _email = '';
   String? _displayName = '';
-  TextEditingController _displayNameController = TextEditingController();
 
   @override
   void initState() {
@@ -27,7 +25,6 @@ class _UserProfileState extends State<UserProfile> {
       setState(() {
         _email = user.email;
         _displayName = user.displayName;
-        _displayNameController.text = _displayName ?? '';
       });
     }
   }
@@ -64,14 +61,14 @@ class _UserProfileState extends State<UserProfile> {
               Container(
                 padding: EdgeInsets.all(20),
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/MM-On Dark.png'),
+                  backgroundImage: AssetImage('assets/images/images.jpeg'),
                   backgroundColor: Colors.transparent,
                   radius: screenHeight / 10,
                 ),
               ),
               IntrinsicWidth(
                 child: TextField(
-                  controller: _displayNameController,
+                  onEditingComplete: () {},
                   decoration: InputDecoration(
                     hintText: '$_displayName',
                     border: InputBorder.none,
@@ -81,15 +78,10 @@ class _UserProfileState extends State<UserProfile> {
                       fontWeight: FontWeight.w400,
                       color: Colors.white,
                     ),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        _changeUsername(_displayNameController.text);
-                      },
-                      icon: Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                        size: 15,
-                      ),
+                    suffixIcon: Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                      size: 15,
                     ),
                   ),
                   style: TextStyle(
@@ -116,26 +108,18 @@ class _UserProfileState extends State<UserProfile> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.green,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.house,
-              color: Colors.white,
-            ),
-            label: "HOME",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            label: "PROFILE",
-          ),
-        ],
+      bottomNavigationBar: NavBar( // Replace bottomNavigationBar with your BottomNavbar component
+        currentIndex: 1, // Set current index accordingly
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/home');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+          }
+        },
       ),
     );
   }

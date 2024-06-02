@@ -7,7 +7,6 @@ import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
 
