@@ -83,5 +83,4 @@ class DefaultFirebaseOptions {
     authDomain: 'moodmix-fiveguys.firebaseapp.com',
     storageBucket: 'moodmix-fiveguys.appspot.com',
   );
-
 }
