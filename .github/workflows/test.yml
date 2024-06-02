@@ -30,7 +30,7 @@ jobs:
       working-directory: ./frontend
 
     - name: Run tests
-      run: flutter test --coverage
+      run: flutter test 
       working-directory: ./frontend
 
 
@@ -44,22 +44,4 @@ jobs:
 
 
 
-    - name: Convert coverage to lcov
-      run: |
-        apt-get update && apt-get install lcov -y
-        lcov --directory . --capture --output-file coverage/lcov.info
-      working-directory: frontend
-
-    - name: Codecov
-      uses: codecov/codecov-action@v4.4.1
-            
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        files: frontend/coverage/lcov.info
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: true
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    
