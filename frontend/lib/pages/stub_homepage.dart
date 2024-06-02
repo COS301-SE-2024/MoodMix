@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:frontend/components/navbar.dart';
 
 class StubHomePage extends StatefulWidget {
   const StubHomePage({Key? key}) : super(key: key);
@@ -32,6 +33,19 @@ class _StubHomePageState extends State<StubHomePage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: NavBar( // Replace bottomNavigationBar with your BottomNavbar component
+        currentIndex: 1, // Set current index accordingly
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/homepage');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+          }
+        },
       ),
     );
   }

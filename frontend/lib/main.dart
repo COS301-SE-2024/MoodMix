@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:frontend/pages/stub_homepage.dart';
 import 'package:frontend/pages/user_profile.dart';
 import 'package:frontend/pages/link_spotify.dart';
 import 'firebase_options.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LogIn(),
         '/userprofile': (context) => const UserProfile(),
         '/linkspotify': (context) => const LinkSpotify(),
+        '/homepage': (context) => const StubHomePage(),
       },
     );
   }

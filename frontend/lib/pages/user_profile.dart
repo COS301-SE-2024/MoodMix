@@ -113,7 +113,7 @@ class _UserProfileState extends State<UserProfile> {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushReplacementNamed(context, '/home');
+              Navigator.pushReplacementNamed(context, '/homepage');
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/userprofile');
