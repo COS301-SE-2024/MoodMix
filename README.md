@@ -55,13 +55,13 @@ everywhere. MoodMix allows us to do just that.
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
       <b style="font-size: 16px;"> Project Manager, Business Analyst</b><br>
-     Hi! I’m a final year computer science student looking to further my studies in the field of cyber security, specifically in the field of Cloud Security. I have experience in Data science where I am able to group lots of data together and neatly givereports on it. I also have a vast experience with Web-technologies and the backend for it, making me Adept at Using API’s and even creating them.
+     Hi! I’m a final year computer science student looking to further my studies in the field of cyber security. I love exploring the vast spaces in the world of IT and I like to tinker with API's to see what I can achieve with it. I'm most comfortable working middleware and communications within a system.
       <br><br>
     </td>
   </tr>
 </table>
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/GerritPotgieter) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gerrit-jacobus-potgieter-a6a195281/))
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/GerritPotgieter) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gerrit-jacobus-potgieter-a6a195281/)
 </details>
 
 <details>
@@ -146,7 +146,7 @@ everywhere. MoodMix allows us to do just that.
 
 ### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
-### [Architecure Specification]()
+### [Architecure Specification](https://docs.google.com/document/d/1Hi7V8hVkYe0L3wJGn5eS4Etq8IF3EUGZHm_d-UjCNpI/edit#heading=h.128bbm5i2zl8)
 
 ### [Design Specification]()
 
