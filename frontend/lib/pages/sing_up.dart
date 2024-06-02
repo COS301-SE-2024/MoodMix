@@ -89,6 +89,12 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller: _usernameController, // Attach the controller
                         decoration: InputDecoration(
                           hintText: 'Username',
@@ -98,6 +104,13 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -105,6 +118,12 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller: _emailController, // Attach the controller
                         decoration: InputDecoration(
                           hintText: 'Email',
@@ -114,6 +133,13 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -121,6 +147,12 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller: _passwordController, // Attach the controller
                         obscureText: true, // Obscure password input
                         decoration: InputDecoration(
@@ -131,6 +163,13 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -138,6 +177,12 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller: _confirmPasswordController, // Attach the controller
                         obscureText: true, // Obscure password input
                         decoration: InputDecoration(
@@ -148,6 +193,13 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ), 
                         ),
                       ),
                     ),

@@ -75,6 +75,12 @@ class _LogInState extends State<LogIn> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller:
                             _usernameOrEmailController, // Attach the controller
                         decoration: InputDecoration(
@@ -85,6 +91,13 @@ class _LogInState extends State<LogIn> {
                             color: const Color.fromARGB(171, 255, 255, 255),
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -92,6 +105,12 @@ class _LogInState extends State<LogIn> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller:
                             _passwordController, // Attach the controller
                         obscureText: true, // Obscure password input
@@ -103,6 +122,13 @@ class _LogInState extends State<LogIn> {
                             color: const Color.fromARGB(171, 255, 255, 255),
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
