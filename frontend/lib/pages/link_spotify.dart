@@ -1,6 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 import '../auth/auth_service.dart';
+import 'dart:js' as js;
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
@@ -10,38 +11,33 @@ class LinkSpotify extends StatefulWidget {
 }
 
 class _LinkSpotifyState extends State<LinkSpotify> {
-  // final AuthService _authService = AuthService();
-  // final TextEditingController _usernameOrEmailController =
-  //     TextEditingController();
-  // final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
 
-  // @override
-  // void dispose() {
-  //   _usernameOrEmailController.dispose();
-  //   _passwordController.dispose();
-  //   super.dispose();
-  // }
+  void _linkSpotify() async {
 
-  // void _LinkSpotify() async {
-  //   final email = _usernameOrEmailController.text.trim();
-  //   final password = _passwordController.text.trim();
+    await _authService.authenticateWithSpotify(context);
+  }
 
-  //   final result = await _authService.LinkSpotify(
-  //     email: email,
-  //     password: password,
-  //   );
+  @override
+  void initState() {
+    super.initState();
+    handleCallback();
+  }
 
-  //   if (result == 'Success') {
-  //     Navigator.pushNamed(context, '/home');
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('LinkSpotify successful')),
-  //     );
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text(result ?? 'LinkSpotify failed')),
-  //     );
-  //   }
-  // }
+  void handleCallback() {
+    final Uri uri = Uri.parse(js.context['window'].location.href);
+    final String? code = uri.queryParameters['code'];
+    final String? error = uri.queryParameters['error'];
+
+
+    if (code != null) {
+      print('Authorization code: $code');
+    } else if (error != null) {
+      print('Authentication error: $error');
+    } else {
+      print('Unexpected callback');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +83,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                   SizedBox(
                     width: screenWidth / 1.4,
                     child: Text(
-                      "This aplication offers meany features that are reliant on the link between this application and your Spotify account.",
+                      "This application offers many features that are reliant on the link between this application and your Spotify account.",
                       style: TextStyle(
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w500,
@@ -96,12 +92,12 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Spacer(), // Add Spacer to push button to bottom
+                  Spacer(), 
                   SizedBox(
                     height: 80,
                     width: screenWidth / 1.4,
                     child: OutlinedButton(
-                      onPressed: () {}, // Call the LinkSpotify function
+                      onPressed: _linkSpotify, 
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(3),
@@ -111,7 +107,8 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                       child: Padding(
                         padding: EdgeInsets.all(10),
                         child: Image(
-                          image: AssetImage("assets/images/Spotify_Full_Logo_RGB_White.png"),
+                          image: AssetImage(
+                              "assets/images/Spotify_Full_Logo_RGB_White.png"),
                         ),
                       ),
                     ),
@@ -121,7 +118,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: EdgeInsets.all(20.0),
-                      child:Text(
+                      child: Text(
                         "\n\nTerms and Conditions",
                         style: TextStyle(
                           fontFamily: 'Roboto',
@@ -140,3 +137,4 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     );
   }
 }
+

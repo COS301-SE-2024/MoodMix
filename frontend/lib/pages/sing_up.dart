@@ -47,7 +47,7 @@ class _SignUpState extends State<SignUp> {
     );
 
     if (result == 'Success') {
-      // Navigate to the login screen if registration is successful
+      // Link spotify navigation
       Navigator.pushNamed(context, '/linkspotify');
     } else {
       // Show error message if registration fails
