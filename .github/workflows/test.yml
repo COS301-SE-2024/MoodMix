@@ -25,6 +25,7 @@ jobs:
 
     - name: Install dependencies
       run: flutter pub get
+      working-directory: frontend
 
     - name: Run tests
       run: flutter test --coverage
