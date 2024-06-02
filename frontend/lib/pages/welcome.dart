@@ -33,7 +33,6 @@ class _WelcomeState extends State<Welcome> {
                 height: 80,
                 width: screenWidth / 1.4,
                 child: OutlinedButton(
-                  key: Key('signupButton'),
                   onPressed: () {
                     Navigator.pushNamed(context, '/signup');
                   },
@@ -58,7 +57,6 @@ class _WelcomeState extends State<Welcome> {
                 height: 80,
                 width: screenWidth / 1.4,
                 child: OutlinedButton(
-                  key: Key('loginButton'),
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');
                   },
