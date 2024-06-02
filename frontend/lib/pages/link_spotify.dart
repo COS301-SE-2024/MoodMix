@@ -28,8 +28,6 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     final Uri uri = Uri.parse(js.context['window'].location.href);
     final String? code = uri.queryParameters['code'];
     final String? error = uri.queryParameters['error'];
-
-
     if (code != null) {
       print('Authorization code: $code');
     } else if (error != null) {
