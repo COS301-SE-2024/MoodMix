@@ -6,6 +6,11 @@
 [![codecov](https://codecov.io/gh/GerritPotgieter/MoodMixTemp/graph/badge.svg?token=ZI0XVC3TCH)](https://codecov.io/gh/GerritPotgieter/MoodMixTemp)
 [![Lint](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml)
 
+[![GitHub last commit](https://img.shields.io/github/last-commit/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/commits)
+
+
+
+
 
 ![Static Badge](https://img.shields.io/badge/Flutter-%20?style=for-the-badge&logo=flutter&logoColor=black&logoSize=auto&color=%230175C2)
 ![Static Badge](https://img.shields.io/badge/Dart-%20?style=for-the-badge&logo=dart&logoColor=black&logoSize=auto&color=%230175C2)
