@@ -26,17 +26,17 @@ class _LogInState extends State<LogIn> {
     final email = _usernameOrEmailController.text.trim();
     final password = _passwordController.text.trim();
 
-    // Call the login function in AuthService
     final result = await _authService.login(
       email: email,
       password: password,
     );
 
     if (result == 'Success') {
-      // Navigate to the home screen if login is successful
       Navigator.pushNamed(context, '/home');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful')),
+      );
     } else {
-      // Show error message if login fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result ?? 'Login failed')),
       );
