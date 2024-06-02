@@ -13,7 +13,7 @@ class NavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: Colors.green,
+      backgroundColor: Theme.of(context).colorScheme.tertiary,
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: currentIndex,
@@ -22,18 +22,27 @@ class NavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(
             Icons.house,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           label: "HOME",
         ),
         BottomNavigationBarItem(
           icon: Icon(
             Icons.person,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           label: "PROFILE",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.tungsten_outlined,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          label: "THEME",
         ),
       ],
     );
   }
 }
+
+// Provider.of<ThemeProvider>(context, listen: false).toggleTheme();

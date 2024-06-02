@@ -64,7 +64,7 @@ class _SignUpState extends State<SignUp> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

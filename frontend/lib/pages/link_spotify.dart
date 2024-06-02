@@ -43,7 +43,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Color.fromARGB(255, 33, 33, 33),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

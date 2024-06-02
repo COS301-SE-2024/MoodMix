@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
+import 'package:frontend/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class StubHomePage extends StatefulWidget {
   const StubHomePage({Key? key}) : super(key: key);
@@ -17,19 +19,15 @@ class _StubHomePageState extends State<StubHomePage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
         child: Center(
           child: Column(
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(20),
-                child: Image(
-                  image: AssetImage('assets/images/MM-On Dark.png'),
-                  width: screenWidth / 1.1,
-                ),
+                child: Text("Temporary Home Page"),
               ),
-              Text("Temporary Home Page"),
             ],
           ),
         ),
@@ -43,6 +41,9 @@ class _StubHomePageState extends State<StubHomePage> {
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 2:
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
               break;
           }
         },
