@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    clientId:
+        '717450671046-s8e21c4eu14ebejnnc3varjpues2g2s2.apps.googleusercontent.com',
+  );
 
   Future<String?> registration({
     required String email,
@@ -17,8 +22,7 @@ class AuthService {
         password: password,
       );
       await userCredential.user?.updateProfile(displayName: username);
-      await userCredential.user
-          ?.reload(); 
+      await userCredential.user?.reload();
 
       return 'Success';
     } on FirebaseAuthException catch (e) {
@@ -31,6 +35,31 @@ class AuthService {
       }
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  Future<String?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        final UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        return 'Success';
+      } else {
+        // User cancelled Google sign-in
+        return 'Google sign-in cancelled.';
+      }
+    } catch (error) {
+      return error.toString();
     }
   }
 
