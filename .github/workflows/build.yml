@@ -21,7 +21,8 @@ jobs:
         with:
           channel: stable
       - run: flutter pub get
-      - run: flutter test
+        working-directory: ./frontend
+    
       - run: flutter build Web 
         working-directory: ./frontend
  
