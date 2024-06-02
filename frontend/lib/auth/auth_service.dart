@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -15,10 +17,9 @@ class AuthService {
         password: password,
       );
 
-      // Update the user profile to include the display name
-      await userCredential.user?.updateDisplayName(username);
+      await userCredential.user?.updateProfile(displayName: username);
       await userCredential.user
-          ?.reload(); // Ensure the changes are reflected immediately
+          ?.reload(); 
 
       return 'Success';
     } on FirebaseAuthException catch (e) {
@@ -64,5 +65,36 @@ class AuthService {
       print('Error getting current user: $e');
       return null;
     }
+  }
+
+  Future<void> authenticateWithSpotify(BuildContext context) async {
+    final url =
+        'https://accounts.spotify.com/authorize?client_id=4a35390dc3c74e85abfd35698529a7f8&response_type=code&redirect_uri=http://localhost:5001/callback&scope=user-read-email';
+
+    final result = await FlutterWebAuth.authenticate(
+      url: url,
+      callbackUrlScheme: 'myapp',
+    );
+
+    final code = Uri.parse(result).queryParameters['code'];
+
+    if (code != null) {
+      await _linkSpotifyAccountToFirebase(code);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Spotify account linked successfully!'),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to link Spotify account.'),
+      ));
+    }
+  }
+
+  Future<void> _linkSpotifyAccountToFirebase(String code) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final OAuthCredential credential = OAuthProvider('spotify.com').credential(
+      accessToken: code,
+    );
+    await user?.linkWithCredential(credential);
   }
 }

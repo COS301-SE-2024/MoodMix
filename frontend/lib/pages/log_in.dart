@@ -26,7 +26,6 @@ class _LogInState extends State<LogIn> {
     final email = _usernameOrEmailController.text.trim();
     final password = _passwordController.text.trim();
 
-    // Call the login function in AuthService
     final result = await _authService.login(
       email: email,
       password: password,
@@ -35,8 +34,10 @@ class _LogInState extends State<LogIn> {
     if (result == 'Success') {
       // Navigate to the home screen if login is successful
       Navigator.pushNamed(context, '/userprofile');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login successful')),
+      );
     } else {
-      // Show error message if login fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result ?? 'Login failed')),
       );
@@ -75,6 +76,12 @@ class _LogInState extends State<LogIn> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller:
                             _usernameOrEmailController, // Attach the controller
                         decoration: InputDecoration(
@@ -85,6 +92,13 @@ class _LogInState extends State<LogIn> {
                             color: const Color.fromARGB(171, 255, 255, 255),
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -92,6 +106,12 @@ class _LogInState extends State<LogIn> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller:
                             _passwordController, // Attach the controller
                         obscureText: true, // Obscure password input
@@ -103,6 +123,13 @@ class _LogInState extends State<LogIn> {
                             color: const Color.fromARGB(171, 255, 255, 255),
                           ),
                           fillColor: Colors.white,
+
+                          enabledBorder: UnderlineInputBorder(      
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),   
+                          ),  
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
