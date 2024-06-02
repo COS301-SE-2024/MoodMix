@@ -11,6 +11,8 @@ on:
       - development
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
@@ -20,5 +22,5 @@ jobs:
           channel: stable
       - run: flutter pub get
       - run: flutter test
-      - run: flutter build ios --release --no-codesign
+      - run: flutter build Web 
  
