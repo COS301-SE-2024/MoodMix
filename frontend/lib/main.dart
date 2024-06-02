@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:frontend/pages/loading.dart';
 import 'package:frontend/pages/log_in.dart';
-import 'package:frontend/pages/sing_up.dart';
+import 'package:frontend/pages/sign_up.dart';
 import 'package:frontend/pages/welcome.dart';
 
 
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/welcome',
+      // initialRoute: '/welcome',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
