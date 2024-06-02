@@ -10,6 +10,13 @@
 ![Static Badge](https://img.shields.io/badge/Flutter-%20?style=for-the-badge&logo=flutter&logoColor=black&logoSize=auto&color=%230175C2)
 ![Static Badge](https://img.shields.io/badge/Dart-%20?style=for-the-badge&logo=dart&logoColor=black&logoSize=auto&color=%230175C2)
 ![Static Badge](https://img.shields.io/badge/Firebase-%20?style=for-the-badge&logo=firebase&logoColor=black&logoSize=auto&color=%23FFCA28)
+![Static Badge](https://img.shields.io/badge/PostgreSQL-%20?style=for-the-badge&logo=postgresql&logoColor=black&labelColor=%234169E1&color=%234169E1)
+![Static Badge](https://img.shields.io/badge/OpenCV-%20?style=for-the-badge&logo=opencv&logoColor=black&labelColor=%235C3EE8&color=%235C3EE8)
+![Static Badge](https://img.shields.io/badge/Springboot-%20?style=for-the-badge&logo=springboot&logoColor=black&labelColor=%236DB33F&color=%236DB33F)
+![Static Badge](https://img.shields.io/badge/Spotify%20API-%20?style=for-the-badge&logo=spotify&logoColor=black&labelColor=%231DB954&color=%231DB954)
+
+
+
 
 
 
@@ -54,7 +61,7 @@ everywhere. MoodMix allows us to do just that.
   </tr>
 </table>
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/GerritPotgieter) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gerrit-jacobus-potgieter-a6a195281/))
 </details>
 
 <details>
@@ -73,7 +80,7 @@ everywhere. MoodMix allows us to do just that.
   </tr>
 </table>
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member2) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member2)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/RhevanKruger) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/rhevan-kruger-27b835289/)
 
 
 </details>
@@ -93,7 +100,7 @@ everywhere. MoodMix allows us to do just that.
   </tr>
 </table>
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member3) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member3)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PineCone85) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ap856/)
 
 </details>
 
@@ -112,7 +119,7 @@ everywhere. MoodMix allows us to do just that.
   </tr>
 </table>
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member3) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member3)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/JamesH443) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/james-hardy-4b3088219/)
 </details>
 
 <details>
@@ -130,7 +137,7 @@ everywhere. MoodMix allows us to do just that.
   </tr>
 </table>
   
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/member3) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/member3)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ian-u22488864) [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/christiaan-van-wyk-41681b301/)
 
 </details>
 
