@@ -32,7 +32,8 @@ class _LogInState extends State<LogIn> {
     );
 
     if (result == 'Success') {
-      Navigator.pushNamed(context, '/home');
+      // Navigate to the home screen if login is successful
+      Navigator.pushNamed(context, '/userprofile');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful')),
       );

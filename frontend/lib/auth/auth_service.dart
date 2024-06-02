@@ -16,6 +16,7 @@ class AuthService {
         email: email,
         password: password,
       );
+
       await userCredential.user?.updateProfile(displayName: username);
       await userCredential.user
           ?.reload(); 
@@ -54,6 +55,15 @@ class AuthService {
       }
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  Future<User?> getCurrentUser() async {
+    try {
+      return _auth.currentUser;
+    } catch (e) {
+      print('Error getting current user: $e');
+      return null;
     }
   }
 
