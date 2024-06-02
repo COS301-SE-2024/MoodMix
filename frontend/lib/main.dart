@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:frontend/pages/stub_homepage.dart';
+import 'package:frontend/pages/user_profile.dart';
+import 'package:frontend/pages/link_spotify.dart';
 import 'firebase_options.dart';
 import 'package:frontend/pages/loading.dart';
 import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sign_up.dart';
 import 'package:frontend/pages/welcome.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
@@ -26,6 +28,9 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => const Welcome(),
         '/signup': (context) => const SignUp(),
         '/login': (context) => const LogIn(),
+        '/userprofile': (context) => const UserProfile(),
+        '/linkspotify': (context) => const LinkSpotify(),
+        '/homepage': (context) => const StubHomePage(),
       },
     );
   }

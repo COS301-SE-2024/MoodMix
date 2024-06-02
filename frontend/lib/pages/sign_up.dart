@@ -14,7 +14,8 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -47,8 +48,8 @@ class _SignUpState extends State<SignUp> {
     );
 
     if (result == 'Success') {
-      // Navigate to the login screen if registration is successful
-      Navigator.pushNamed(context, '/login');
+      // Link spotify navigation
+      Navigator.pushNamed(context, '/linkspotify');
     } else {
       // Show error message if registration fails
       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,7 +91,14 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
-                        controller: _usernameController, // Attach the controller
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                        controller:
+                            _usernameController, // Attach the controller
                         decoration: InputDecoration(
                           hintText: 'Username',
                           hintStyle: TextStyle(
@@ -99,6 +107,14 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -106,6 +122,12 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
                         controller: _emailController, // Attach the controller
                         decoration: InputDecoration(
                           hintText: 'Email',
@@ -115,6 +137,14 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -122,7 +152,14 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
-                        controller: _passwordController, // Attach the controller
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                        controller:
+                            _passwordController, // Attach the controller
                         obscureText: true, // Obscure password input
                         decoration: InputDecoration(
                           hintText: 'Password',
@@ -132,6 +169,14 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -139,7 +184,14 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       width: screenWidth / 1.4,
                       child: TextField(
-                        controller: _confirmPasswordController, // Attach the controller
+                        cursorColor: Colors.white,
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                        controller:
+                            _confirmPasswordController, // Attach the controller
                         obscureText: true, // Obscure password input
                         decoration: InputDecoration(
                           hintText: 'Confirm Password',
@@ -149,6 +201,14 @@ class _SignUpState extends State<SignUp> {
                             fontWeight: FontWeight.w400,
                           ),
                           fillColor: Colors.white,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ),
                     ),
@@ -178,6 +238,30 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     Spacer(),
+                    ElevatedButton(
+                      onPressed: () async {
+                        String? signInResult =
+                            await AuthService().signInWithGoogle();
+                        if (signInResult == 'Success') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Sign-in successful!'),
+                                duration: Duration(seconds: 2), // Optional: Set the duration for the SnackBar
+                              ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Sign-in failed: $signInResult'),
+                              duration: Duration(
+                                  seconds:
+                                      3), // Optional: Set the duration for the SnackBar
+                            ),
+                          );
+                        }
+                      },
+                      child: Text('Sign in with Google'),
+                    ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
@@ -207,12 +291,11 @@ class _SignUpState extends State<SignUp> {
                                   },
                               ),
                               TextSpan(
-                                text: "\n\nTerms and Conditions",
-                                style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w700,
-                                )
-                              ),
+                                  text: "\n\nTerms and Conditions",
+                                  style: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w700,
+                                  )),
                             ],
                           ),
                           textAlign: TextAlign.center,
