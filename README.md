@@ -170,9 +170,7 @@ everywhere. MoodMix allows us to do just that.
 
 ## Demo Videos
 
-### [FiveDudes Demo1 - Presentation](https://github.com/COS301-SE-2024/MiniProject8/blob/documentation/Demo_Presentation1_8-4-2024%20-%20Audio.pptx)
-
-### [FiveDudes Demo1 - Video]()
+### [FiveDudes Demo1 - Video](https://drive.google.com/file/d/1R8_xJtMMwkNQBzKfzGCe3dQ-h7kFv6oP/view?usp=sharing)
 
 
 
