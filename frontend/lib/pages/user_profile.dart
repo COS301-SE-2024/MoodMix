@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/theme/theme_provider.dart';
 import '../auth/auth_service.dart';
 import 'package:frontend/components/navbar.dart'; // Import your new bottom navbar component
+import 'package:provider/provider.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -52,7 +54,7 @@ class _UserProfileState extends State<UserProfile> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -76,11 +78,11 @@ class _UserProfileState extends State<UserProfile> {
                       fontSize: 15,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w400,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     suffixIcon: Icon(
                       Icons.edit,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                       size: 15,
                     ),
                   ),
@@ -88,7 +90,7 @@ class _UserProfileState extends State<UserProfile> {
                     fontSize: 15,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w400,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -100,7 +102,7 @@ class _UserProfileState extends State<UserProfile> {
                     fontSize: 15,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w400,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ),
@@ -108,7 +110,8 @@ class _UserProfileState extends State<UserProfile> {
           ),
         ),
       ),
-      bottomNavigationBar: NavBar( // Replace bottomNavigationBar with your BottomNavbar component
+      bottomNavigationBar: NavBar(
+        // Replace bottomNavigationBar with your BottomNavbar component
         currentIndex: 1, // Set current index accordingly
         onTap: (index) {
           switch (index) {
@@ -117,6 +120,9 @@ class _UserProfileState extends State<UserProfile> {
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 2:
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
               break;
           }
         },
