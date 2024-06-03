@@ -259,6 +259,10 @@ class _SignUpState extends State<SignUp> {
                           );
                         }
                       },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue, // Set the button color (optional)
+                          foregroundColor: Colors.white, // Set the text color to white
+                      ),
                       child: Text('Sign in with Google'),
                     ),
                     Align(

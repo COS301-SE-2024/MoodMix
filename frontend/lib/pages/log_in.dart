@@ -156,6 +156,34 @@ class _LogInState extends State<LogIn> {
                       ),
                     ),
                     SizedBox(height: 50),
+                    ElevatedButton(
+                      onPressed: () async {
+                        String? signInResult =
+                            await AuthService().signInWithGoogle();
+                        if (signInResult == 'Success') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Sign-in successful!'),
+                                duration: Duration(seconds: 2), // Optional: Set the duration for the SnackBar
+                              ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Sign-in failed: $signInResult'),
+                              duration: Duration(
+                                  seconds:
+                                      3), // Optional: Set the duration for the SnackBar
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue, // Set the button color (optional)
+                          foregroundColor: Colors.white, // Set the text color to white
+                      ),
+                      child: Text('Sign in with Google'),
+                    ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
