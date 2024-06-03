@@ -174,9 +174,7 @@ everywhere. MoodMix allows us to do just that.
 
 ### [FiveDudes Demo1 - Video]()
 
-# Git Structure
 
-### Git organization and management
 
 # Git Organization and Management
 
