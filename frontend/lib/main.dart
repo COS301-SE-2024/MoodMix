@@ -10,6 +10,7 @@ import 'package:frontend/pages/loading.dart';
 import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
+import 'package:frontend/pages/user_playlist.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/userprofile': (context) => const UserProfile(),
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
+        '/userplaylist': (context) => const UserPlaylist(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
