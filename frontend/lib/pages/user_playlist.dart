@@ -12,7 +12,7 @@ class UserPlaylist extends StatefulWidget {
 
 
 class _UserPlaylistState extends State<UserPlaylist> {
-   @override
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -22,64 +22,52 @@ class _UserPlaylistState extends State<UserPlaylist> {
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(color: Color(0xFF1D1C1C)),
           child: Stack(
-            children: <Widget>[
+            children: [
               Positioned(
-                left: 20,
+                left: 68,
                 top: 48,
-                child: SizedBox(
-                  width: 320,
-                  height: 75,
-                  child: Text(
-                    'My Playlists',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 36,
-                      fontFamily: 'Noto Sans Bengali UI',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 2.88,
-                    ),
+                child: Text(
+                  'My Playlists',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontFamily: 'Noto Sans Bengali UI',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 2.88,
                   ),
                 ),
               ),
               Positioned(
-                left: 20,
+                left: 75,
                 top: 141,
-                child: SizedBox(
-                  width: 320,
-                  height: 75,
-                  child: Text(
-                    'Recently Generated',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontFamily: 'Noto Sans Bengali UI',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.60,
-                    ),
+                child: Text(
+                  'Recently Generated',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Noto Sans Bengali UI',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.60,
                   ),
                 ),
               ),
               Positioned(
-                left: 20,
+                left: 101,
                 top: 299,
-                child: SizedBox(
-                  width: 320,
-                  height: 75,
-                  child: Text(
-                    'Saved Playlists',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontFamily: 'Noto Sans Bengali UI',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.60,
-                    ),
+                child: Text(
+                  'Saved Playlists',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Noto Sans Bengali UI',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.60,
                   ),
                 ),
               ),
@@ -170,128 +158,53 @@ class _UserPlaylistState extends State<UserPlaylist> {
                 ),
               ),
               Positioned(
-                left: 117,
+                left: 130,
                 top: 357,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Demonstration Title',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Demonstration Title',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 117,
-                top: 357,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Demonstration Title',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 97,
+                left: 130,
                 top: 375,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Mood: <Mood>',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Mood: <Mood>',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 97,
-                top: 375,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Mood: <Mood>',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 75,
+                left: 130,
                 top: 398,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    '120 Songs',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 75,
-                top: 398,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    '120 Songs',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  '120 Songs',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
@@ -344,65 +257,53 @@ class _UserPlaylistState extends State<UserPlaylist> {
                 ),
               ),
               Positioned(
-                left: 117,
+                left: 130,
                 top: 192,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Demonstration Title',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Demonstration Title',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 97,
+                left: 130,
                 top: 210,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Mood: <Mood>',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Mood: <Mood>',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 75,
+                left: 130,
                 top: 233,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    '120 Songs',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  '120 Songs',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
@@ -441,65 +342,53 @@ class _UserPlaylistState extends State<UserPlaylist> {
                 ),
               ),
               Positioned(
-                left: 117,
+                left: 130,
                 top: 456,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Demonstration Title',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Demonstration Title',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 97,
+                left: 130,
                 top: 474,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Mood: <Mood>',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Mood: <Mood>',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 75,
+                left: 130,
                 top: 497,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    '120 Songs',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  '120 Songs',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
@@ -538,65 +427,53 @@ class _UserPlaylistState extends State<UserPlaylist> {
                 ),
               ),
               Positioned(
-                left: 117,
+                left: 130,
                 top: 555,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Demonstration Title',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Demonstration Title',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 97,
+                left: 130,
                 top: 573,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Mood: <Mood>',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Mood: <Mood>',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 75,
+                left: 130,
                 top: 596,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    '120 Songs',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  '120 Songs',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
@@ -635,65 +512,53 @@ class _UserPlaylistState extends State<UserPlaylist> {
                 ),
               ),
               Positioned(
-                left: 117,
+                left: 130,
                 top: 654,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Demonstration Title',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Demonstration Title',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 97,
+                left: 130,
                 top: 672,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    'Mood: <Mood>',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  'Mood: <Mood>',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
               Positioned(
-                left: 75,
+                left: 130,
                 top: 695,
-                child: SizedBox(
-                  width: 192,
-                  height: 10,
-                  child: Text(
-                    '120 Songs',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'ABeeZee',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                      letterSpacing: 1.20,
-                    ),
+                child: Text(
+                  '120 Songs',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'ABeeZee',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                    letterSpacing: 1.20,
                   ),
                 ),
               ),
