@@ -235,6 +235,11 @@ We follow the **Gitflow branching model**, which helps manage the project's deve
 </details>
 
 
+##Stakeholder 
+![image](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/12ac682e-bdfe-4f47-b958-3de6e91bf48f)
+
+
+
 
 
 
