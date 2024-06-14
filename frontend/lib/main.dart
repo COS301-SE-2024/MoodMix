@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/welcome',
+      initialRoute: '/userplaylist',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         '/userprofile': (context) => const UserProfile(),
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
-        '/userplaylist': (context) => const UserPlaylist(),
+        '/userplaylist': (context) => const PlaylistPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
