@@ -121,6 +121,9 @@ class AuthService {
 
   Future<void> _linkSpotifyAccountToFirebase(String code) async {
     final User? user = FirebaseAuth.instance.currentUser;
+
+    
+
     final OAuthCredential credential = OAuthProvider('spotify.com').credential(
       accessToken: code,
     );

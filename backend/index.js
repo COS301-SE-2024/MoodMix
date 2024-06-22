@@ -6,54 +6,94 @@ const SpotifyWebApi = require('spotify-web-api-node');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 42069;
 
 // Spotify credentials from .env file
 const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientId: process.env.SPOTIFY_CLIENT,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-  redirectUri: process.env.REDIRECT_URI,
+  redirectUri: process.env.REDIRECT_URI
+
 });
 
-// Example routes
-app.get('/login', function(req, res) {
+const scopes = [
+  'ugc-image-upload',
+  'user-read-playback-state',
+  'user-modify-playback-state',
+  'user-read-currently-playing',
+  'streaming',
+  'app-remote-control',
+  'user-read-email',
+  'user-read-private',
+  'playlist-read-collaborative',
+  'playlist-modify-public',
+  'playlist-read-private',
+  'playlist-modify-private',
+  'user-library-modify',
+  'user-library-read',
+  'user-top-read',
+  'user-read-playback-position',
+  'user-read-recently-played',
+  'user-follow-read',
+  'user-follow-modify'
+];
 
-  var state = generateRandomString(16);
-  var scope = 'user-read-private user-read-email';
 
-  res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-      response_type: 'code',
-      client_id: '21p9n1j4k3s6l4pkxmqzhlnkv',
-      scope: scope,
-      redirect_uri: redirect_uri,
-      state: state
-    }));
+
+app.get('/login', (req, res) => {
+  res.redirect(spotifyApi.createAuthorizeURL(scopes));
 });
 
-app.get('/callback', async (req, res) => {
-  const code = req.query.code || null;
-  
-  try {
-    // Retrieve access token and refresh token
-    const data = await spotifyApi.authorizationCodeGrant(code);
-    const { access_token, refresh_token } = data.body;
+app.get('/callback', (req, res) => {
+  const error = req.query.error;
+  const code = req.query.code;
+  const state = req.query.state;
 
-    // Set access token for further Spotify API calls
-    spotifyApi.setAccessToken(access_token);
-    spotifyApi.setRefreshToken(refresh_token);
-
-    res.json({ access_token, refresh_token });
-  } catch (error) {
-    res.status(400).json({ error: 'Error retrieving tokens' });
+  if (error) {
+    console.error('Callback Error:', error);
+    res.send(`Callback Error: ${error}`);
+    return;
   }
-});
 
+  spotifyApi
+    .authorizationCodeGrant(code)
+    .then(data => {
+      const access_token = data.body['access_token'];
+      const refresh_token = data.body['refresh_token'];
+      const expires_in = data.body['expires_in'];
+
+      spotifyApi.setAccessToken(access_token);
+      spotifyApi.setRefreshToken(refresh_token);
+
+      console.log('access_token:', access_token);
+      console.log('refresh_token:', refresh_token);
+
+      console.log(
+        `Sucessfully retreived access token. Expires in ${expires_in} s.`
+      );
+      res.send('Success! You can now close the window.');
+
+      setInterval(async () => {
+        const data = await spotifyApi.refreshAccessToken();
+        const access_token = data.body['access_token'];
+
+        console.log('The access token has been refreshed!');
+        console.log('access_token:', access_token);
+        spotifyApi.setAccessToken(access_token);
+      }, expires_in / 2 * 1000);
+    })
+    .catch(error => {
+      console.error('Error getting Tokens:', error);
+      res.send(`Error getting Tokens: ${error}`);
+    });
+});
 // Route for fetching user ID
 app.get('/getUserInfo', async (req, res) => {
   try {
+    console.log('getUserInfo');
     // Retrieve user information (including user ID)
     const data = await spotifyApi.getMe();
+    console.log("Data from the spotify api", data.body);
     const userId = data.body.id;
 
     res.json({ userId });

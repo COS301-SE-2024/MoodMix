@@ -6,7 +6,7 @@
             "cwd": "frontend",
             "request": "launch",
             "type": "dart",
-            "args": ["--web-port=5001"]
+            "args": ["-d", "web-server","--web-port","5001"]
         },
         {
             "name": "frontend (profile mode)",

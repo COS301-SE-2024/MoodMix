@@ -17,12 +17,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
-      child: MyApp(),
-    )
-  );
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeProvider(),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
