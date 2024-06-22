@@ -40,6 +40,13 @@ class NavBar extends StatelessWidget {
           ),
           label: "THEME",
         ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.music_note,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          label: "THEME",
+        ),
       ],
     );
   }

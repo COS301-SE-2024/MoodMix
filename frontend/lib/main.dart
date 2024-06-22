@@ -10,6 +10,7 @@ import 'package:frontend/pages/loading.dart';
 import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
+import 'package:frontend/pages/audio_player_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/welcome',
+      initialRoute: '/homepage',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/userprofile': (context) => const UserProfile(),
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
+        '/audio': (context) => AudioPlayerPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
