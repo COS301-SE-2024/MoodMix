@@ -1,74 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:spotify/spotify.dart' as spotify;
+import 'package:frontend/components/model.dart'; // Import your Dart models
 
-class SongRibon extends StatefulWidget {
-  const SongRibon({
+class SongRibbon extends StatefulWidget {
+  final String playlistLink;
+  final spotify.SpotifyApi api;
+
+  const SongRibbon({
     Key? key,
+    required this.playlistLink,
+    required this.api,
   }) : super(key: key);
 
   @override
-  _SongRibonState createState() => _SongRibonState();
+  _SongRibbonState createState() => _SongRibbonState();
 }
 
-class _SongRibonState extends State<SongRibon> {
+class _SongRibbonState extends State<SongRibbon> {
+  late List<dynamic>? tracks; // Change to List<dynamic>?
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSpotifyData();
+  }
+
+  Future<void> _fetchSpotifyData() async {
+    try {
+      var playlist = await widget.api.playlists.get(widget.playlistLink);
+      setState(() {
+        tracks = playlist.tracks?.itemsNative?.toList(); // Convert itemsNative to a List
+      });
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 140,
-      decoration: BoxDecoration(
-        color: Color.fromARGB(255, 46, 51, 46), // Consistent color scheme
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: Text(
-                    "Song Title",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w200,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
+    return tracks == null
+        ? Center(child: CircularProgressIndicator())
+        : ListView.builder(
+            shrinkWrap: true, // Important for sizing
+            physics: NeverScrollableScrollPhysics(), // Prevents scrolling
+            itemCount: tracks!.length,
+            itemBuilder: (context, index) {
+              var trackData = tracks![index]; // Access track data from List
+              var track = Track.fromJson(trackData['track'] ?? {});
+              return ListTile(
+                // leading: track.album.images.isNotEmpty
+                //     ? Image.network(
+                //         track.album.images.first.url,
+                //         height: 50,
+                //         width: 50,
+                //         fit: BoxFit.cover,
+                //       )
+                //     : Icon(Icons.music_note, size: 50, color: Colors.white),
+                title: Text(
+                  track.name,
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: Text(
-                    "Artist: Artist Name",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w200,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
+                subtitle: Text(
+                  track.artists.map((artist) => artist.name).join(', '),
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: Text(
-                    "Album: Album Name",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w200,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+                onTap: () {
+                  // Implement onTap functionality if needed
+                },
+              );
+            },
+          );
   }
 }

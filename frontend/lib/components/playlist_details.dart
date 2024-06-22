@@ -55,63 +55,66 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
         title: Text('Playlist Details'),
         backgroundColor: Color.fromARGB(255, 16, 17, 16),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(
-                  widget.playlistIcon,
-                  fit: BoxFit.cover,
-                  height: 130,
-                  width: 130,
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        playlistName,
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w200,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Mood: ${widget.mood}",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w200,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Song Count: $songCount",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w200,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    widget.playlistIcon,
+                    fit: BoxFit.cover,
+                    height: 130,
+                    width: 130,
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            // Add SongRibon here
-            SongRibon(),
-          ],
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          playlistName,
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w200,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Mood: ${widget.mood}",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w200,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "Song Count: $songCount",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w200,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              // Add SongRibbon here
+              SongRibbon(playlistLink: widget.playlistLink, api: widget.api),
+              SizedBox(height: 20), // Add some bottom spacing if needed
+            ],
+          ),
         ),
       ),
     );

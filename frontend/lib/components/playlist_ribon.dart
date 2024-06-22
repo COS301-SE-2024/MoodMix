@@ -27,6 +27,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
   String playlistName = "Loading...";
   String mood = "Unknown Mood";
   int songCount = 0;
+  late Iterable<dynamic>? tracks;
 
   @override
   void initState() {
@@ -44,6 +45,10 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
       var playlist = await spotifyApi.playlists.get(widget.playlistLink);
       setState(() {
         playlistName = playlist.name!;
+        tracks = playlist.tracks?.itemsNative;
+        for (var temp in tracks!) {
+          // print(temp);
+        }
         songCount = playlist.tracks!.total;
       });
     } catch (error) {
