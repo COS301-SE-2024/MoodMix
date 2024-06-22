@@ -61,7 +61,7 @@ everywhere. MoodMix allows us to do just that.
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Gerrit Potgieter</b></h2>
       <b style="font-size: 16px;"> Project Manager, Business Analyst</b><br>
-     Hi! I’m a final year computer science student looking to further my studies in the field of cyber security. I love exploring the vast spaces in the world of IT and I like to tinker with API's to see what I can achieve with it. I'm most comfortable working middleware and communications within a system.
+     Hi! I’m a final year computer science student looking to further my studies in the field of cyber security! I love exploring the vast spaces in the world of IT and I like to tinker with API's to see what I can achieve with it. I'm most comfortable working middleware and communications within a system.
       <br><br>
     </td>
   </tr>
