@@ -10,8 +10,7 @@ class AudioPlayerPage extends StatefulWidget {
 class _AudioPlayerPageState extends State<AudioPlayerPage> {
   late AudioPlayer _audioPlayer;
   bool isPlaying = false;
-  String audioUrl =
-      'assets/songs/song.mp3'; // Adjust path as per your project structure
+  String audioUrl = 'assets/songs/song.mp3'; // Adjust path as per your project structure
   late Timer _timer;
   int _currentSeconds = 0;
   Duration _position = Duration.zero; // To store current playback position
@@ -102,61 +101,65 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    String currentTime = _currentSeconds != null
-        ? '${(_currentSeconds ~/ 60).toString().padLeft(2, '0')}:${(_currentSeconds % 60).toString().padLeft(2, '0')}'
-        : '00:00';
+Widget build(BuildContext context) {
+  String currentTime = _currentSeconds != null
+      ? '${(_currentSeconds ~/ 60).toString().padLeft(2, '0')}:${(_currentSeconds % 60).toString().padLeft(2, '0')}'
+      : '00:00';
 
-    double progress = (_currentSeconds / 242);
+  double progress = (_currentSeconds / 242);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Audio Player'),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Audio Player'),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          _audioPlayer.pause(); // Pause audio before navigating back
+          Navigator.pushReplacementNamed(context, '/homepage'); // Navigate back to /homepage
+        },
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(
-              'assets/images/album_cover.jpg',
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 20),
-            Text(
-              currentTime,
-              style: TextStyle(fontSize: 24.0),
-            ),
-            SizedBox(height: 10),
-            Container(
-              width: 250, // Adjust width as per your preference
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: LinearProgressIndicator(
-                  value: progress,
-                  minHeight: 10,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                ),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset(
+            'assets/images/album_cover.jpg', // Replace with your image path
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+          SizedBox(height: 20),
+          Text(
+            currentTime,
+            style: TextStyle(fontSize: 24.0),
+          ),
+          SizedBox(height: 10),
+          Container(
+            width: 250, // Adjust width as per your preference
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 10,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
               ),
             ),
-            SizedBox(height: 20),
-            IconButton(
-              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-              iconSize: 64.0,
-              onPressed: _playPause,
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: 20),
+          IconButton(
+            icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+            iconSize: 64.0,
+            onPressed: _playPause,
+          ),
+        ],
       ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    _timer.cancel(); // Cancel the timer when disposing the widget
-    super.dispose();
-  }
+    ),
+  );
 }
+
+}
+
+
+

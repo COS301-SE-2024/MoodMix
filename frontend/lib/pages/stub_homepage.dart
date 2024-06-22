@@ -45,6 +45,9 @@ class _StubHomePageState extends State<StubHomePage> {
             case 2:
               Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
               break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/audio');
+              break;
           }
         },
       ),

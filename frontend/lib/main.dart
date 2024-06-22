@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/audio',
+      initialRoute: '/homepage',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
