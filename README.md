@@ -164,6 +164,8 @@ everywhere. MoodMix allows us to do just that.
 
 ### [Delivery Specification]()
 
+### [List of Contributions](https://docs.google.com/document/d/1QJBmAijUjG0CW4sEqz5YA2BgVcqFmoG37d2O7HAGUks/edit?usp=sharing)
+
 ## Project Boards
 
 ### [MoodMix Project Board](https://github.com/orgs/COS301-SE-2024/projects/86/views/1)
