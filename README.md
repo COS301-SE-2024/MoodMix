@@ -3,7 +3,7 @@
 ![final one hopefully](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/e810b0fb-41bd-4215-8b06-a34dccc21b25)
 
 ![Static Badge](https://img.shields.io/badge/code_coverage-90%25-green)
-[![codecov](https://codecov.io/gh/GerritPotgieter/MoodMixTemp/graph/badge.svg?token=ZI0XVC3TCH)](https://codecov.io/gh/GerritPotgieter/MoodMixTemp)
+[![codecov](https://codecov.io/gh/COS301-SE-2024/MoodMix/graph/badge.svg?token=nMcAUeDBHu)](https://codecov.io/gh/COS301-SE-2024/MoodMix)
 [![Lint](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml)
 [![GitHub last commit](https://img.shields.io/github/last-commit/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/commits)
 [![GitHub issues](https://img.shields.io/github/issues/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/issues)
