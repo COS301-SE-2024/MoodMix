@@ -1,0 +1,27 @@
+{
+    "name": "@types/spotify-web-api-node",
+    "version": "5.0.11",
+    "description": "TypeScript definitions for spotify-web-api-node",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/spotify-web-api-node",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Magnar Ovedal Myrtveit",
+            "githubUsername": "Stadly",
+            "url": "https://github.com/Stadly"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/spotify-web-api-node"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/spotify-api": "*"
+    },
+    "typesPublisherContentHash": "3788caf8f29317b04f22bdccbd9d567cf1e81c45b7f5206ec75f12e4e2afeffd",
+    "typeScriptVersion": "4.5"
+}

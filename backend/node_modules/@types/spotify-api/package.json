@@ -1,0 +1,35 @@
+{
+    "name": "@types/spotify-api",
+    "version": "0.0.25",
+    "description": "TypeScript definitions for spotify-api",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/spotify-api",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Niels Kristian Hansen Skovmand",
+            "githubUsername": "skovmand",
+            "url": "https://github.com/skovmand"
+        },
+        {
+            "name": "Magnar Ovedal Myrtveit",
+            "githubUsername": "Stadly",
+            "url": "https://github.com/Stadly"
+        },
+        {
+            "name": "Nils Måsén",
+            "githubUsername": "piksel",
+            "url": "https://github.com/piksel"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/spotify-api"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "50d7f8b8a6fddbb3ab1569fdbba64e3441fa119a4d863d6e30015465b0d3ca3b",
+    "typeScriptVersion": "4.5"
+}
