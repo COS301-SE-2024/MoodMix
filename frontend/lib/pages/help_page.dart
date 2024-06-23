@@ -35,19 +35,27 @@ class HelpPage extends StatelessWidget {
                         _buildHelpSection(context, 'Account', [
                           'How to Use Mood Mix',
                           'Account Linking',
-                        ]),
+                        ],
+                          '/accounthelp'
+                        ),
                         _buildHelpSection(context, 'Playlists', [
                           'Playlist Generation',
                           'How to Add Playlists',
-                        ]),
+                        ],
+                          '/playlisthelp'
+                        ),
                         _buildHelpSection(context, 'Camera & Voice', [
                           'Voice Recognition Settings',
                           'Camera Setup & Usage',
-                        ]),
+                        ],
+                          '/camerahelp'
+                        ),
                         _buildHelpSection(context, 'FAQ', [
                           'Does it Save My Face?',
                           'Is my information secure?',
-                        ]),
+                        ],
+                          'none'
+                        ),
                       ],
                     ),
                   ),
@@ -60,12 +68,12 @@ class HelpPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHelpSection(BuildContext context, String title, List<String> items) {
+  Widget _buildHelpSection(BuildContext context, String title, List<String> items, String link) {
     final screenSize = MediaQuery.of(context).size;
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushReplacementNamed(context, '/userprofile');
+        Navigator.pushReplacementNamed(context, link);
         
       },
       child: Padding(

@@ -13,7 +13,7 @@ class CameraVoiceHelpPage extends StatelessWidget {
         leading: IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () {
-          Navigator.pushReplacementNamed(context, '/camera'); // Navigate back to /homepage
+          Navigator.pushReplacementNamed(context, '/help'); // Navigate back to /homepage
         },
       ),
       ),
