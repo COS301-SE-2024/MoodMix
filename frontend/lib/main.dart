@@ -12,6 +12,7 @@ import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 import 'package:frontend/pages/user_playlist.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/pages/audio_player_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/userplaylist',
+      initialRoute: '/homepage',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
         '/userplaylist': (context) => const PlaylistPage(),
+        '/audio': (context) => AudioPlayerPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
