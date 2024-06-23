@@ -54,6 +54,12 @@ class NavBar extends StatelessWidget {
           ),
           label: "HELP",
         ),
+        BottomNavigationBarItem(icon: Icon(
+          Icons.add,
+          color: Theme.of(context).colorScheme.secondary,
+          ),
+          label: "ADD"
+        ),
       ],
     );
   }

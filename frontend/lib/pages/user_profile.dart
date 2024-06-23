@@ -130,6 +130,12 @@ class _UserProfileState extends State<UserProfile> {
             case 4:
               Navigator.pushReplacementNamed(context, '/help');
               break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/camera');
+              break;
           }
         },
       ),

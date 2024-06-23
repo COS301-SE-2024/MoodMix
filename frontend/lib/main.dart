@@ -13,12 +13,16 @@ import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 import 'package:frontend/pages/user_playlist.dart';
+import 'package:frontend/pages/camera.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/audio_player_page.dart';
 
+List<CameraDescription> cameras = <CameraDescription>[];
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await initializeCameras();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -30,6 +34,14 @@ void main() async {
       child: MyApp(),
     )
   );
+}
+
+Future<void> initializeCameras() async {
+  try {
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    print('Error: ${e.code}\nError Message: ${e.description}');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -46,6 +58,7 @@ class MyApp extends StatelessWidget {
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
         '/userplaylist': (context) => const PlaylistPage(),
+        '/camera': (context) => const CameraPage(cameras: [],),
         '/audio': (context) => AudioPlayerPage(),
         '/help': (context) => HelpPage(),
         '/accounthelp': (context) => AccountHelpPage(),
