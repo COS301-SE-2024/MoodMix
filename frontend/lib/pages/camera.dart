@@ -1,7 +1,14 @@
+import 'dart:js_interop_unsafe';
+
 import 'package:flutter/material.dart';
-import 'package:frontend/components/navbar.dart'; 
+import 'package:frontend/components/navbar.dart';
+import 'package:frontend/main.dart'; 
 import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:async';
 
 class CameraPage extends StatefulWidget{
   const CameraPage({Key? key}): super(key:key);
@@ -11,14 +18,34 @@ class CameraPage extends StatefulWidget{
 }
 
 class _CameraPage extends State<CameraPage>{
+  CameraController? controller;
+  XFile? pictureFile;
 
   @override
   void initState(){
     super.initState();
+    controller = CameraController(cameras[0], ResolutionPreset.high);
+    controller?.initialize().then((_){
+      if(!mounted){
+        return;
+      }
+      setState(() {
+      });
+    });
   }
 
   @override
+  void dispose(){
+    controller?.dispose();
+    super.dispose();
+  } 
+
+  @override
   Widget build(BuildContext context){
+    if(!controller!.value.isInitialized){
+      return Container();
+    }
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -45,21 +72,26 @@ class _CameraPage extends State<CameraPage>{
               ),
               child: Stack(
                 children: [
+                  Expanded(child: CameraPreview(controller!)),
+                  if(pictureFile != null)
+                    Image.file(File(pictureFile!.path)),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: () {
-                        print("James Created a Button");
+                      onPressed: () async{
+                        pictureFile = await controller?.takePicture();
+                        setState(() {
+                        });
                       },
-                      child: Icon(
-                        Icons.camera_alt, // Camera icon
-                        color: Colors.white, // Icon color
-                        size: 40.0, // Icon size
-                      ),
                       style: ElevatedButton.styleFrom(
                         shape: CircleBorder(), // Circular shape
                         padding: EdgeInsets.all(15.0), // Padding to make the button smaller
                         iconColor: Colors.blue, // Button color
+                      ),
+                      child: Icon(
+                        Icons.camera_alt, // Camera icon
+                        color: Colors.white, // Icon color
+                        size: 40.0, // Icon size
                       ),
                     ),
                   ),

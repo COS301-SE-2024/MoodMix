@@ -12,10 +12,12 @@ import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 import 'package:frontend/pages/user_playlist.dart';
 import 'package:frontend/pages/camera.dart';
+import 'package:camera/camera.dart';
 
+List<CameraDescription> cameras = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await initializeCameras();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -25,6 +27,15 @@ void main() async {
       child: MyApp(),
     )
   );
+}
+
+Future<void> initializeCameras() async {
+  try {
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    print('Error: ${e.code}\nError Message: ${e.description}');
+    // Handle the error if no cameras are available
+  }
 }
 
 class MyApp extends StatelessWidget {
