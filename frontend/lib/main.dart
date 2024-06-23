@@ -18,10 +18,6 @@ List<CameraDescription> cameras = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeCameras();
-  // if (cameras.isEmpty) {
-  //   print('No cameras available');
-  //   return;
-  // }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -38,7 +34,6 @@ Future<void> initializeCameras() async {
     cameras = await availableCameras();
   } on CameraException catch (e) {
     print('Error: ${e.code}\nError Message: ${e.description}');
-    // Handle the error if no cameras are available
   }
 }
 

@@ -21,19 +21,6 @@ class _CameraPage extends State<CameraPage>{
   CameraController? controller;
   XFile? pictureFile;
 
-  // @override
-  // void initState(){
-  //   super.initState();
-  //   controller = CameraController(cameras[0], ResolutionPreset.high);
-  //   controller?.initialize().then((_){
-  //     if(!mounted){
-  //       return;
-  //     }
-  //     setState(() {
-  //     });
-  //   });
-  // }
-
     @override
   void initState() {
     super.initState();
@@ -46,11 +33,9 @@ class _CameraPage extends State<CameraPage>{
         setState(() {});
       }).catchError((error) {
         print('Camera initialization error: $error');
-        // Handle error
       });
     } else {
       print('No cameras available');
-      // Handle the error
     }
   }
 
@@ -73,40 +58,34 @@ class _CameraPage extends State<CameraPage>{
               height: MediaQuery.of(context).size.height * 0.65,
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white, // Move color here
-                borderRadius: BorderRadius.circular(20.0), // Set rounded edges
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.0), 
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
-                    offset: Offset(0, 3), // Shadow position
+                    offset: Offset(0, 3), 
                   ),
                 ],
               ),
               child: Stack(
                 children: [
-                  // Expanded(child: CameraPreview(controller!)),
-                  // if(pictureFile != null)
-                  //   Image.file(File(pictureFile!.path)),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       onPressed: () async{
-                        // pictureFile = await controller?.takePicture();
-                        // setState(() {
-                        // });
                         print("No Camera Avaliable");
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(), // Circular shape
-                        padding: EdgeInsets.all(15.0), // Padding to make the button smaller
-                        iconColor: Colors.blue, // Button color
+                        shape: CircleBorder(), 
+                        padding: EdgeInsets.all(15.0), 
+                        iconColor: Colors.blue, 
                       ),
                       child: Icon(
-                        Icons.camera_alt, // Camera icon
-                        color: Colors.white, // Icon color
-                        size: 40.0, // Icon size
+                        Icons.camera_alt, 
+                        color: Colors.white, 
+                        size: 40.0, 
                       ),
                     ),
                   ),
@@ -154,14 +133,14 @@ class _CameraPage extends State<CameraPage>{
               height: MediaQuery.of(context).size.height * 0.65,
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white, // Move color here
-                borderRadius: BorderRadius.circular(20.0), // Set rounded edges
+                color: Colors.white, 
+                borderRadius: BorderRadius.circular(20.0), 
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
-                    offset: Offset(0, 3), // Shadow position
+                    offset: Offset(0, 3), 
                   ),
                 ],
               ),
@@ -179,14 +158,14 @@ class _CameraPage extends State<CameraPage>{
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(), // Circular shape
-                        padding: EdgeInsets.all(15.0), // Padding to make the button smaller
-                        iconColor: Colors.blue, // Button color
+                        shape: CircleBorder(), 
+                        padding: EdgeInsets.all(15.0), 
+                        iconColor: Colors.blue, 
                       ),
                       child: Icon(
-                        Icons.camera_alt, // Camera icon
-                        color: Colors.white, // Icon color
-                        size: 40.0, // Icon size
+                        Icons.camera_alt, 
+                        color: Colors.white,
+                        size: 40.0, 
                       ),
                     ),
                   ),
@@ -197,7 +176,7 @@ class _CameraPage extends State<CameraPage>{
       ),
       bottomNavigationBar: NavBar(
         // Replace bottomNavigationBar with your BottomNavbar component
-        currentIndex: 1, // Set current index accordingly
+        currentIndex: 1, 
         onTap: (index) {
           switch (index) {
             case 0:
