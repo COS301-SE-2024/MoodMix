@@ -35,10 +35,24 @@ class NavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.tungsten_outlined,
+            Icons.music_note,
             color: Theme.of(context).colorScheme.secondary,
           ),
-          label: "THEME",
+          label: "MUSICPLAYER",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.library_music,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          label: "PLAYLISTS",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.help,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+          label: "HELP",
         ),
         BottomNavigationBarItem(icon: Icon(
           Icons.add,
