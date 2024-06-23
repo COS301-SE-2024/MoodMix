@@ -5,13 +5,16 @@ import 'package:frontend/components/navbar.dart';
 import 'package:frontend/main.dart'; 
 import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:async';
 
 class CameraPage extends StatefulWidget{
-  const CameraPage({Key? key}): super(key:key);
+  const CameraPage({Key? key, required this.cameras}): super(key:key);
+
+  final List<CameraDescription> cameras;
 
   @override
   State<CameraPage> createState() => _CameraPage();

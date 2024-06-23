@@ -14,7 +14,8 @@ import 'package:frontend/pages/user_playlist.dart';
 import 'package:frontend/pages/camera.dart';
 import 'package:camera/camera.dart';
 
-List<CameraDescription> cameras = [];
+List<CameraDescription> cameras = <CameraDescription>[];
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeCameras();
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
         '/userplaylist': (context) => const PlaylistPage(),
-        '/camera':(context) => const CameraPage(),
+        '/camera': (context) => const CameraPage(cameras: [],),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
