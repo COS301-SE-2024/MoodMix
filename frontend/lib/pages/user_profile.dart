@@ -124,6 +124,12 @@ class _UserProfileState extends State<UserProfile> {
             case 2:
               Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
               break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/camera');
+              break;
           }
         },
       ),

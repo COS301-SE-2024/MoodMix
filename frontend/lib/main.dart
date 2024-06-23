@@ -11,6 +11,7 @@ import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 import 'package:frontend/pages/user_playlist.dart';
+import 'package:frontend/pages/camera.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
         '/userplaylist': (context) => const PlaylistPage(),
+        '/camera':(context) => const CameraPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
