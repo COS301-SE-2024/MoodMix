@@ -32,8 +32,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     style: TextStyle(
                       fontSize: 40,
                       fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w200,
-                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     textAlign: TextAlign.left,
                   ),
@@ -45,8 +45,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w200,
-                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     textAlign: TextAlign.left,
                   ),
@@ -70,8 +70,8 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w200,
-                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     textAlign: TextAlign.left,
                   ),

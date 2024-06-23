@@ -60,12 +60,17 @@ class _UserProfileState extends State<UserProfile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(20),
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/images.jpeg'),
-                  backgroundColor: Colors.transparent,
-                  radius: screenHeight / 10,
+              GestureDetector(
+                onTap: () {
+                  Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+                },
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/images.jpeg'),
+                    backgroundColor: Colors.transparent,
+                    radius: screenHeight / 10,
+                  ),
                 ),
               ),
               IntrinsicWidth(
