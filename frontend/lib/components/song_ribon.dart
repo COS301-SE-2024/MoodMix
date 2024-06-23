@@ -17,7 +17,7 @@ class SongRibbon extends StatefulWidget {
 }
 
 class _SongRibbonState extends State<SongRibbon> {
-  late List<dynamic>? tracks; // Change to List<dynamic>?
+  List<dynamic>? tracks; // Declare tracks as nullable
 
   @override
   void initState() {
@@ -33,6 +33,9 @@ class _SongRibbonState extends State<SongRibbon> {
       });
     } catch (error) {
       print(error);
+      setState(() {
+        tracks = []; // Set tracks to an empty list on error
+      });
     }
   }
 
@@ -40,35 +43,37 @@ class _SongRibbonState extends State<SongRibbon> {
   Widget build(BuildContext context) {
     return tracks == null
         ? Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            shrinkWrap: true, // Important for sizing
-            physics: NeverScrollableScrollPhysics(), // Prevents scrolling
-            itemCount: tracks!.length,
-            itemBuilder: (context, index) {
-              var trackData = tracks![index]; // Access track data from List
-              var track = Track.fromJson(trackData['track'] ?? {});
-              return ListTile(
-                // leading: track.album.images.isNotEmpty
-                //     ? Image.network(
-                //         track.album.images.first.url,
-                //         height: 50,
-                //         width: 50,
-                //         fit: BoxFit.cover,
-                //       )
-                //     : Icon(Icons.music_note, size: 50, color: Colors.white),
-                title: Text(
-                  track.name,
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                subtitle: Text(
-                  track.artists.map((artist) => artist.name).join(', '),
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-                onTap: () {
-                  // Implement onTap functionality if needed
+        : tracks!.isEmpty
+            ? Center(child: Text('No tracks found', style: TextStyle(color: Colors.white)))
+            : ListView.builder(
+                shrinkWrap: true, // Important for sizing
+                physics: NeverScrollableScrollPhysics(), // Prevents scrolling
+                itemCount: tracks!.length,
+                itemBuilder: (context, index) {
+                  var trackData = tracks![index]; // Access track data from List
+                  var track = Track.fromJson(trackData['track'] ?? {});
+                  return ListTile(
+                    // leading: track.album.images.isNotEmpty
+                    //     ? Image.network(
+                    //         track.album.images.first.url,
+                    //         height: 50,
+                    //         width: 50,
+                    //         fit: BoxFit.cover,
+                    //       )
+                    //     : Icon(Icons.music_note, size: 50, color: Colors.white),
+                    title: Text(
+                      track.name,
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      track.artists.map((artist) => artist.name).join(', '),
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                    onTap: () {
+                      // Implement onTap functionality if needed
+                    },
+                  );
                 },
               );
-            },
-          );
   }
 }
