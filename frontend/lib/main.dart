@@ -18,6 +18,10 @@ List<CameraDescription> cameras = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeCameras();
+  // if (cameras.isEmpty) {
+  //   print('No cameras available');
+  //   return;
+  // }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
