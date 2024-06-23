@@ -60,12 +60,17 @@ class _UserProfileState extends State<UserProfile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(20),
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/images.jpeg'),
-                  backgroundColor: Colors.transparent,
-                  radius: screenHeight / 10,
+              GestureDetector(
+                onTap: () {
+                  Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+                },
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/images.jpeg'),
+                    backgroundColor: Colors.transparent,
+                    radius: screenHeight / 10,
+                  ),
                 ),
               ),
               IntrinsicWidth(
@@ -116,13 +121,25 @@ class _UserProfileState extends State<UserProfile> {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushReplacementNamed(context, '/userplaylist');
+              Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/userprofile');
               break;
             case 2:
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+              Navigator.pushReplacementNamed(context, '/audio');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/help');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/camera');
               break;
           }
         },

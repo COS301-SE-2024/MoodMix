@@ -115,7 +115,7 @@ Widget build(BuildContext context) {
         icon: Icon(Icons.arrow_back),
         onPressed: () {
           _audioPlayer.pause(); // Pause audio before navigating back
-          Navigator.pushReplacementNamed(context, '/homepage'); // Navigate back to /homepage
+          Navigator.pushReplacementNamed(context, '/camera'); // Navigate back to /homepage
         },
       ),
     ),

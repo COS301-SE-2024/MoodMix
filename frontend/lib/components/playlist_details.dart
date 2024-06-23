@@ -50,10 +50,14 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 36, 41, 36),
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        title: Text('Playlist Details'),
-        backgroundColor: Color.fromARGB(255, 16, 17, 16),
+        title: Text('Playlist Details',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.secondary,
+          )
+        ),
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -81,7 +85,7 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
                             fontSize: 25,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w200,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
                         SizedBox(height: 10),
@@ -91,7 +95,7 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
                             fontSize: 25,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w200,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
                         SizedBox(height: 10),
@@ -101,7 +105,7 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
                             fontSize: 20,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w200,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
                       ],

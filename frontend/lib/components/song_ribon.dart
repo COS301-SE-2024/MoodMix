@@ -44,7 +44,7 @@ class _SongRibbonState extends State<SongRibbon> {
     return tracks == null
         ? Center(child: CircularProgressIndicator())
         : tracks!.isEmpty
-            ? Center(child: Text('No tracks found', style: TextStyle(color: Colors.white)))
+            ? Center(child: Text('No tracks found', style: TextStyle(color: Theme.of(context).colorScheme.secondary)))
             : ListView.builder(
                 shrinkWrap: true, // Important for sizing
                 physics: NeverScrollableScrollPhysics(), // Prevents scrolling
@@ -63,11 +63,11 @@ class _SongRibbonState extends State<SongRibbon> {
                     //     : Icon(Icons.music_note, size: 50, color: Colors.white),
                     title: Text(
                       track.name,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 18),
                     ),
                     subtitle: Text(
                       track.artists.map((artist) => artist.name).join(', '),
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 14),
                     ),
                     onTap: () {
                       // Implement onTap functionality if needed
