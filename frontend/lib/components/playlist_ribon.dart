@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/playlist_details.dart';
 import 'package:spotify/spotify.dart' as spotify;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PlaylistRibbon extends StatefulWidget {
   final int currentIndex;
@@ -33,8 +34,9 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
   void initState() {
     super.initState();
 
-    final credentials = spotify.SpotifyApiCredentials(
-        '4a35390dc3c74e85abfd35698529a7f8', 'ff12f33aead74180b051bad2ffb40d29');
+    final clientId = dotenv.env['SPOTIFY_CLIENT_ID'];
+    final clientSecret = dotenv.env['SPOTIFY_CLIENT_SECRET'];
+    final credentials = spotify.SpotifyApiCredentials(clientId!, clientSecret!);
     spotifyApi = spotify.SpotifyApi(credentials);
 
     _fetchSpotifyData();

@@ -11,6 +11,7 @@ import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
 import 'package:frontend/pages/user_playlist.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+    await dotenv.load(fileName: "../.env");
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
