@@ -44,6 +44,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   audioplayers: ^0.18.3
   just_audio: ^0.9.8
+  mockito: ^5.0.0 
   provider:
 
 
