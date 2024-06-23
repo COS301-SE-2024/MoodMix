@@ -10,6 +10,8 @@ import 'package:frontend/pages/loading.dart';
 import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
+import 'package:frontend/pages/user_playlist.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/audio_player_page.dart';
 
 void main() async {
@@ -18,6 +20,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+    await dotenv.load(fileName: "../.env");
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
@@ -39,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/userprofile': (context) => const UserProfile(),
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
+        '/userplaylist': (context) => const PlaylistPage(),
         '/audio': (context) => AudioPlayerPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,

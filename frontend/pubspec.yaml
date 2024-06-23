@@ -40,6 +40,8 @@ dependencies:
   flutter_web_auth: ^0.3.0
   oauth2_client: ^3.2.2
   google_sign_in: ^5.2.1
+  spotify: ^0.13.6+1
+  flutter_dotenv: ^5.0.2
   audioplayers: ^0.18.3
   just_audio: ^0.9.8
   provider:
