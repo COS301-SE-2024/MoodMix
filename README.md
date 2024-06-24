@@ -5,6 +5,7 @@
 
 [![codecov](https://codecov.io/gh/COS301-SE-2024/MoodMix/graph/badge.svg?token=nMcAUeDBHu)](https://codecov.io/gh/COS301-SE-2024/MoodMix)
 [![Lint](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml)
+[![Build](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/build.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/build.yml)
 [![GitHub last commit](https://img.shields.io/github/last-commit/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/commits)
 [![GitHub issues](https://img.shields.io/github/issues/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/issues?q=is%3Aissue+is%3Aclosed)
