@@ -153,6 +153,8 @@ everywhere. MoodMix allows us to do just that.
 ### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
 ### [Architecure Specification](https://docs.google.com/document/d/1Hi7V8hVkYe0L3wJGn5eS4Etq8IF3EUGZHm_d-UjCNpI/edit#heading=h.128bbm5i2zl8)
+### [Architecture Diagram](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/b1dce41b-cda3-4951-b4b1-7fda008a619a)
+
 
 ### [Design Specification]()
 
