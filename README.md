@@ -175,7 +175,7 @@ everywhere. MoodMix allows us to do just that.
 ## Demo Videos
 
 ### [FiveDudes Demo1 - Video](https://drive.google.com/file/d/1R8_xJtMMwkNQBzKfzGCe3dQ-h7kFv6oP/view?usp=sharing)
-### [FiveDudes Demo2 - Video(https://drive.google.com/file/d/10mGXSPh1HnOlnOBChIk5n_7b_jYJxM8m/view?usp=sharing)
+### [FiveDudes Demo2 - Video](https://drive.google.com/file/d/10mGXSPh1HnOlnOBChIk5n_7b_jYJxM8m/view?usp=sharing)
 ### [FiveDudes Demo2 - Presentation](https://drive.google.com/file/d/1XD5HbM2SeHzq8POv9kWPFaLgjE00eVKU/view?usp=sharing)
 
 
