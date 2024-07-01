@@ -154,7 +154,8 @@ everywhere. MoodMix allows us to do just that.
 ### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
 ### [Architecure Specification](https://docs.google.com/document/d/1Hi7V8hVkYe0L3wJGn5eS4Etq8IF3EUGZHm_d-UjCNpI/edit#heading=h.128bbm5i2zl8)
-### [Architecture Diagram](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/b1dce41b-cda3-4951-b4b1-7fda008a619a)
+### [Architecture Diagram](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/8ba6b754-d660-4ffe-9366-50bbee23cef9)
+
 ### [User Manual]()
 ### [Coding Standards](https://docs.google.com/document/d/1IbX4rgB84IaW2q_jtdrftmaUzSJtHxRVy9X0AykNLLo/edit?usp=sharing)
 ### [List of Contributions](https://docs.google.com/document/d/1QJBmAijUjG0CW4sEqz5YA2BgVcqFmoG37d2O7HAGUks/edit?usp=sharing)
