@@ -5,6 +5,7 @@
 
 [![codecov](https://codecov.io/gh/COS301-SE-2024/MoodMix/graph/badge.svg?token=nMcAUeDBHu)](https://codecov.io/gh/COS301-SE-2024/MoodMix)
 [![Lint](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/lint.yml)
+[![Build](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/build.yml/badge.svg)](https://github.com/COS301-SE-2024/MoodMix/actions/workflows/build.yml)
 [![GitHub last commit](https://img.shields.io/github/last-commit/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/commits)
 [![GitHub issues](https://img.shields.io/github/issues/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/COS301-SE-2024/MoodMix)](https://github.com/COS301-SE-2024/MoodMix/issues?q=is%3Aissue+is%3Aclosed)
@@ -153,17 +154,10 @@ everywhere. MoodMix allows us to do just that.
 ### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
 ### [Architecure Specification](https://docs.google.com/document/d/1Hi7V8hVkYe0L3wJGn5eS4Etq8IF3EUGZHm_d-UjCNpI/edit#heading=h.128bbm5i2zl8)
-
-### [Design Specification]()
+### [Architecture Diagram](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/8ba6b754-d660-4ffe-9366-50bbee23cef9)
 
 ### [User Manual]()
-
-### [Implementation Specification]()
-
-### [Testing Specification]()
-
-### [Delivery Specification]()
-
+### [Coding Standards](https://docs.google.com/document/d/1IbX4rgB84IaW2q_jtdrftmaUzSJtHxRVy9X0AykNLLo/edit?usp=sharing)
 ### [List of Contributions](https://docs.google.com/document/d/1QJBmAijUjG0CW4sEqz5YA2BgVcqFmoG37d2O7HAGUks/edit?usp=sharing)
 
 ## Project Boards
@@ -173,6 +167,8 @@ everywhere. MoodMix allows us to do just that.
 ## Demo Videos
 
 ### [FiveDudes Demo1 - Video](https://drive.google.com/file/d/1R8_xJtMMwkNQBzKfzGCe3dQ-h7kFv6oP/view?usp=sharing)
+### [FiveDudes Demo2 - Video](https://drive.google.com/file/d/10mGXSPh1HnOlnOBChIk5n_7b_jYJxM8m/view?usp=sharing)
+### [FiveDudes Demo2 - Presentation](https://drive.google.com/file/d/1XD5HbM2SeHzq8POv9kWPFaLgjE00eVKU/view?usp=sharing)
 
 
 
