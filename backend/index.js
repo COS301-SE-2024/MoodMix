@@ -129,8 +129,6 @@ app.get('/callback', function (req, res) {
   }
 });
 
-
-
 // Example route to use the stored access token
 app.get('/spotify-user', function (req, res) {
   if (!userDetails) {
@@ -168,6 +166,10 @@ app.get('/spotify-create-playlist', function (req, res) {
     return res.status(401).send('Access token is not available');
   }
 
+  //fetch variables from the request body such as name , description
+  var name = req.query.name;
+  var description = req.query.description;
+
   var user_id = userDetails.id; // Get user ID from stored details
 
   var playlistOptions = {
@@ -176,17 +178,44 @@ app.get('/spotify-create-playlist', function (req, res) {
       'Authorization': 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      name: 'New Playlist', // Replace with desired playlist name
-      description:'New playlist description', // Replace with desired playlist description
-      public: true // Set to true if you want the playlist to be public
-    }),
+    body: {
+      'name': 'Bananna', // Replace with desired playlist name
+      'description': 'And calculator', // Replace with desired playlist description
+      'public': true // Set to true if you want the playlist to be public
+    },
     json: true
   };
 
   request.post(playlistOptions, function (error, response, body) {
+
+
     if (!error && response.statusCode === 201) {
-      res.json(body);
+      var playlist_id = body.id; // Get the playlist ID
+
+      // Example: Array of Spotify track URIs to add to the playlist
+      var track_uris = ['spotify:track:4iV5W9uYEdYUVa79Axb7Rh', 'spotify:track:1301WleyT98MSxVHPZCA6M'];
+
+      // Add tracks to the playlist
+      var addTracksOptions = {
+        url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
+        headers: {
+          'Authorization': 'Bearer ' + accessToken,
+          'Content-Type': 'application/json'
+        },
+        body: {
+          'uris': track_uris
+        },
+        json: true
+      };
+
+      request.post(addTracksOptions, function (err, resp, bd) {
+        if (!err && resp.statusCode === 201) {
+          res.json(bd);
+        } else {
+          res.status(resp.statusCode).send(bd);
+        }
+      });
+
     } else {
       res.status(response.statusCode).send(body);
     }
@@ -194,15 +223,9 @@ app.get('/spotify-create-playlist', function (req, res) {
 });
 
 
-
-
-
-
-
 app.listen(5002, function () {
   console.log('Listening on 5002');
   console.log('http://localhost:5002/login');
-  console.log('http://localhost:5002/callback');
   console.log('http://localhost:5002/spotify-user');
   console.log('http://localhost:5002/spotify-playlists');
   console.log('http://localhost:5002/spotify-create-playlist');
