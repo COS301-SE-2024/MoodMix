@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:js_interop_unsafe';
 
 import 'package:flutter/material.dart';
@@ -21,8 +22,10 @@ class CameraPage extends StatefulWidget{
 }
 
 class _CameraPage extends State<CameraPage>{
-  CameraController? controller;
-  XFile? pictureFile;
+  //Changed the type to late was CameraController controller?
+  late CameraController controller;
+  late XFile pictureFile;
+  String bs64 = "";
 
     @override
   void initState() {
@@ -48,81 +51,87 @@ class _CameraPage extends State<CameraPage>{
     super.dispose();
   } 
 
+  // Future<String> convertImageToBase64(XFile image) async{
+  //   final bytes = await File(image.path).readAsBytes();
+  //   return base64Encode(bytes);
+  // }
+
   @override
   Widget build(BuildContext context){
-    if (controller == null || !controller!.value.isInitialized) {
-      return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SafeArea(
-        child: Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              height: MediaQuery.of(context).size.height * 0.65,
-              margin: EdgeInsets.only(top: 20),
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(20.0), 
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3), 
-                  ),
-                ],
-              ),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ElevatedButton(
-                      onPressed: () async{
-                        print("No Camera Avaliable");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(), 
-                        padding: EdgeInsets.all(15.0), 
-                        iconColor: Colors.blue, 
-                      ),
-                      child: Icon(
-                        Icons.camera_alt, 
-                        color: Colors.white, 
-                        size: 40.0, 
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ),
-      ),
-      bottomNavigationBar: NavBar(
-        // Replace bottomNavigationBar with your BottomNavbar component
-        currentIndex: 1, // Set current index accordingly
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(context, '/userplaylist');
-              break;
-            case 1:
-              Navigator.pushReplacementNamed(context, '/userprofile');
-              break;
-            case 2:
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-              break;
-            case 3:
-              Navigator.pushReplacementNamed(context, '/userplaylist');
-              break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/camera');
-              break;
-          }
-        },
-      ),
-    );
-    }
+    //Commented the Edge Case for a Null Camera out because Late allows the initialisation of the controller at a later point
+    // if (controller == null || !controller!.value.isInitialized) {
+    //   return Scaffold(
+    //   backgroundColor: Theme.of(context).colorScheme.primary,
+    //   body: SafeArea(
+    //     child: Align(
+    //         alignment: Alignment.topCenter,
+    //         child: Container(
+    //           width: MediaQuery.of(context).size.width * 0.75,
+    //           height: MediaQuery.of(context).size.height * 0.65,
+    //           margin: EdgeInsets.only(top: 20),
+    //           padding: EdgeInsets.all(20),
+    //           decoration: BoxDecoration(
+    //             color: Colors.grey,
+    //             borderRadius: BorderRadius.circular(20.0), 
+    //             boxShadow: [
+    //               BoxShadow(
+    //                 color: Colors.grey.withOpacity(0.5),
+    //                 spreadRadius: 2,
+    //                 blurRadius: 5,
+    //                 offset: Offset(0, 3), 
+    //               ),
+    //             ],
+    //           ),
+    //           child: Stack(
+    //             children: [
+    //               Align(
+    //                 alignment: Alignment.bottomCenter,
+    //                 child: ElevatedButton(
+    //                   onPressed: () async{
+    //                     print("No Camera Avaliable");
+    //                   },
+    //                   style: ElevatedButton.styleFrom(
+    //                     shape: CircleBorder(), 
+    //                     padding: EdgeInsets.all(15.0), 
+    //                     iconColor: Colors.blue, 
+    //                   ),
+    //                   child: Icon(
+    //                     Icons.camera_alt, 
+    //                     color: Colors.white, 
+    //                     size: 40.0, 
+    //                   ),
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //     ),
+    //   ),
+    //   bottomNavigationBar: NavBar(
+    //     // Replace bottomNavigationBar with your BottomNavbar component
+    //     currentIndex: 1, // Set current index accordingly
+    //     onTap: (index) {
+    //       switch (index) {
+    //         case 0:
+    //           Navigator.pushReplacementNamed(context, '/userplaylist');
+    //           break;
+    //         case 1:
+    //           Navigator.pushReplacementNamed(context, '/userprofile');
+    //           break;
+    //         case 2:
+    //           Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+    //           break;
+    //         case 3:
+    //           Navigator.pushReplacementNamed(context, '/userplaylist');
+    //           break;
+    //         case 4:
+    //           Navigator.pushReplacementNamed(context, '/camera');
+    //           break;
+    //       }
+    //     },
+    //   ),
+    // );
+    // }
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -158,7 +167,9 @@ class _CameraPage extends State<CameraPage>{
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       onPressed: () async{
-                        pictureFile = await controller?.takePicture();
+                        pictureFile = await controller.takePicture();
+                        //For Converting the Image to Base64
+                        // bs64 = await convertImageToBase64(pictureFile);
                         setState(() {
                         });
                       },
