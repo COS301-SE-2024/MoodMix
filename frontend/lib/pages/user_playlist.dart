@@ -106,23 +106,24 @@ class _PlaylistPageState extends State<PlaylistPage> {
         ),
       ),
       bottomNavigationBar: NavBar(
-        currentIndex: 1,
+        // Replace bottomNavigationBar with your BottomNavbar component
+        currentIndex: 1, // Set current index accordingly
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushReplacementNamed(context, '/homepage');
+              Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/userprofile');
               break;
             case 2:
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+              Navigator.pushReplacementNamed(context, '/audio');
               break;
             case 3:
               Navigator.pushReplacementNamed(context, '/userplaylist');
               break;
             case 4:
-              Navigator.pushReplacementNamed(context, '/camera');
+              Navigator.pushReplacementNamed(context, '/help');
               break;
           }
         },

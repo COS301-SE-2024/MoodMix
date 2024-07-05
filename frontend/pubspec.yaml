@@ -41,6 +41,9 @@ dependencies:
   oauth2_client: ^3.2.2
   google_sign_in: ^5.2.1
   spotify: ^0.13.6+1
+  flutter_dotenv: ^5.0.2
+  audioplayers: ^0.18.3
+  just_audio: ^0.9.8
   provider:
   camera: ^0.11.0+1
   path_provider: ^2.1.3
@@ -73,6 +76,7 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
+    - assets/songs/song.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
