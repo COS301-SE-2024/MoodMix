@@ -18,6 +18,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/audio_player_page.dart';
 
+import 'package:frontend/pages/ComputerVisionTestPage.dart';
+
+
 List<CameraDescription> cameras = <CameraDescription>[];
 
 void main() async {
@@ -62,6 +65,7 @@ class MyApp extends StatelessWidget {
         '/audio': (context) => AudioPlayerPage(),
         '/help': (context) => HelpPage(),
         '/accounthelp': (context) => AccountHelpPage(),
+        '/CVPage':(context) => CVPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
