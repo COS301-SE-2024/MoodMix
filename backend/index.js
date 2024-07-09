@@ -1,5 +1,5 @@
 var express = require('express');
-var request = require('request');
+var axios = require('axios');
 var crypto = require('crypto');
 var cors = require('cors');
 var querystring = require('querystring');
@@ -14,7 +14,6 @@ var accessToken = null;
 var refreshToken = null;
 var userDetails = {};
 
-
 const generateRandomString = (length) => {
   return crypto
     .randomBytes(60)
@@ -25,23 +24,25 @@ const generateRandomString = (length) => {
 // Function to fetch user details and store them in the userDetails object
 function fetchUserDetails(token, callback) {
   var options = {
+    method: 'get',
     url: 'https://api.spotify.com/v1/me',
     headers: { 'Authorization': 'Bearer ' + token },
-    json: true
   };
 
-  request.get(options, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      userDetails = body;
-      console.log('User details fetched and stored:');
-      if (callback) callback();
-    } else {
-      console.error('Failed to fetch user details:', response.statusCode, body);
-    }
-  });
+  axios(options)
+    .then(response => {
+      if (response.status === 200) {
+        userDetails = response.data;
+        console.log('User details fetched and stored:');
+        if (callback) callback();
+      } else {
+        console.error('Failed to fetch user details:', response.status, response.data);
+      }
+    })
+    .catch(error => {
+      console.error('Failed to fetch user details:', error.response.status, error.response.data);
+    });
 }
-
-
 
 var app = express();
 
@@ -50,12 +51,9 @@ app.use(express.static(__dirname + '/public'))
   .use(cookieParser());
 
 app.get('/login', function (req, res) {
-
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
-
-  // your application requests authorization
   var scope = 'user-read-private user-read-email playlist-read-collaborative playlist-modify-public';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -65,18 +63,9 @@ app.get('/login', function (req, res) {
       redirect_uri: redirect_uri,
       state: state
     }));
-
-
-
-
 });
 
 app.get('/callback', function (req, res) {
-
-  // your application requests refresh and access tokens
-  // after checking the state parameter
-  console.log('callback');
-
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -89,43 +78,48 @@ app.get('/callback', function (req, res) {
   } else {
     res.clearCookie(stateKey);
     var authOptions = {
+      method: 'post',
       url: 'https://accounts.spotify.com/api/token',
-      form: {
+      data: querystring.stringify({
         code: code,
         redirect_uri: redirect_uri,
         grant_type: 'authorization_code'
-      },
+      }),
       headers: {
-        'content-type': 'application/x-www-form-urlencoded',
-        Authorization: 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
-      },
-      json: true
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
+      }
     };
 
-    request.post(authOptions, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
+    axios(authOptions)
+      .then(response => {
+        if (response.status === 200) {
+          var access_token = response.data.access_token;
+          var refresh_token = response.data.refresh_token;
 
-        var access_token = body.access_token,
-          refresh_token = body.refresh_token;
+          accessToken = access_token;
+          refreshToken = refresh_token;
 
-        accessToken = access_token;
-        refreshToken = refresh_token;
-
-        fetchUserDetails(access_token, function () {
-          // Redirect back to Flutter app with the tokens
-          res.redirect('http://localhost:5001/#/welcome' +
+          fetchUserDetails(access_token, function () {
+            res.redirect('http://localhost:5001/#/welcome' +
+              querystring.stringify({
+                access_token: access_token,
+                refresh_token: refresh_token
+              }));
+          });
+        } else {
+          res.redirect('http://127.0.0.1:5001/#/welcome' +
             querystring.stringify({
-              access_token: access_token,
-              refresh_token: refresh_token
+              error: 'invalid_token'
             }));
-        });
-      } else {
+        }
+      })
+      .catch(error => {
         res.redirect('http://127.0.0.1:5001/#/welcome' +
           querystring.stringify({
             error: 'invalid_token'
           }));
-      }
-    });
+      });
   }
 });
 
@@ -145,19 +139,23 @@ app.get('/spotify-playlists', function (req, res) {
   }
 
   var options = {
+    method: 'get',
     url: 'https://api.spotify.com/v1/me/playlists',
     headers: { 'Authorization': 'Bearer ' + accessToken },
-    json: true
   };
 
-  request.get(options, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      console.log('Playlists fetched:', body)
-      res.json(body);
-    } else {
-      res.status(response.statusCode).send(body);
-    }
-  });
+  axios(options)
+    .then(response => {
+      if (response.status === 200) {
+        console.log('Playlists fetched:', response.data);
+        res.json(response.data);
+      } else {
+        res.status(response.status).send(response.data);
+      }
+    })
+    .catch(error => {
+      res.status(error.response.status).send(error.response.data);
+    });
 });
 
 // Create a new playlist
@@ -166,62 +164,63 @@ app.get('/spotify-create-playlist', function (req, res) {
     return res.status(401).send('Access token is not available');
   }
 
-  //fetch variables from the request body such as name , description
-  var name = req.query.name;
-  var description = req.query.description;
+  var name = req.query.name || 'Bananna';
+  var description = req.query.description || 'And calculator';
 
-  var user_id = userDetails.id; // Get user ID from stored details
+  var user_id = userDetails.id;
 
   var playlistOptions = {
+    method: 'post',
     url: `https://api.spotify.com/v1/users/${user_id}/playlists`,
     headers: {
       'Authorization': 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
     },
-    body: {
-      'name': 'Bananna', // Replace with desired playlist name
-      'description': 'And calculator', // Replace with desired playlist description
-      'public': true // Set to true if you want the playlist to be public
-    },
-    json: true
+    data: {
+      'name': name,
+      'description': description,
+      'public': true
+    }
   };
 
-  request.post(playlistOptions, function (error, response, body) {
+  axios(playlistOptions)
+    .then(response => {
+      if (response.status === 201) {
+        var playlist_id = response.data.id;
 
+        var track_uris = ['spotify:track:4iV5W9uYEdYUVa79Axb7Rh', 'spotify:track:1301WleyT98MSxVHPZCA6M'];
 
-    if (!error && response.statusCode === 201) {
-      var playlist_id = body.id; // Get the playlist ID
+        var addTracksOptions = {
+          method: 'post',
+          url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
+          headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+          },
+          data: {
+            'uris': track_uris
+          }
+        };
 
-      // Example: Array of Spotify track URIs to add to the playlist
-      var track_uris = ['spotify:track:4iV5W9uYEdYUVa79Axb7Rh', 'spotify:track:1301WleyT98MSxVHPZCA6M'];
-
-      // Add tracks to the playlist
-      var addTracksOptions = {
-        url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
-        headers: {
-          'Authorization': 'Bearer ' + accessToken,
-          'Content-Type': 'application/json'
-        },
-        body: {
-          'uris': track_uris
-        },
-        json: true
-      };
-
-      request.post(addTracksOptions, function (err, resp, bd) {
-        if (!err && resp.statusCode === 201) {
-          res.json(bd);
-        } else {
-          res.status(resp.statusCode).send(bd);
-        }
-      });
-
-    } else {
-      res.status(response.statusCode).send(body);
-    }
-  });
+        axios(addTracksOptions)
+          .then(resp => {
+            if (resp.status === 201) {
+              res.json(resp.data);
+            } else {
+              res.status(resp.status).send(resp.data);
+            }
+          })
+          .catch(err => {
+            res.status(err.response.status).send(err.response.data);
+          });
+      } else {
+        res.status(response.status).send(response.data);
+      }
+    })
+    .catch(error => {
+      res.status(error.response.status).send(error.response.data);
+    });
 });
-
 
 app.listen(5002, function () {
   console.log('Listening on 5002');
