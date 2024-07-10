@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 //This is a Page to Compare an Image to its GrayScaled Version 
 class CVPage extends StatefulWidget{
-  static const platform = MethodChannel('io.flutter.plugins/boofcv_channel');
+  static const MethodChannel platform = MethodChannel('io.flutter.plugins/boofcv_channel');
   const CVPage({Key? key}): super(key:key);
 
   //io.flutter.plugins/boofcv_channel

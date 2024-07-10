@@ -3,9 +3,11 @@ package io.flutter.plugins;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 import boofcv.abst.fiducial.calib.ConfigSquareGrid;
 import boofcv.factory.fiducial.FactoryFiducial;
