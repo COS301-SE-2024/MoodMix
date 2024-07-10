@@ -1,3 +1,132 @@
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'dart:io';
+
+import 'package:frontend/components/navbar.dart';
+
+class CameraPage extends StatefulWidget {
+  final List<CameraDescription> cameras;
+  const CameraPage({Key? key, required this.cameras}) : super(key: key);
+
+  @override
+  _CameraPageState createState() => _CameraPageState();
+}
+
+class _CameraPageState extends State<CameraPage> {
+  CameraController? controller;
+  XFile? pictureFile;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.cameras.isNotEmpty) {
+      controller = CameraController(widget.cameras[0], ResolutionPreset.high);
+      controller?.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {});
+      }).catchError((error) {
+        print('Camera initialization error: $error');
+      });
+    } else {
+      print('No cameras available');
+    }
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (controller == null || !controller!.value.isInitialized) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.75,
+            height: MediaQuery.of(context).size.height * 0.65,
+            margin: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                CameraPreview(controller!),
+                if (pictureFile != null)
+                  Image.file(File(pictureFile!.path)),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      pictureFile = await controller?.takePicture();
+                      setState(() {});
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(15.0),
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 40.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: NavBar(
+        // Replace bottomNavigationBar with your BottomNavbar component
+        currentIndex: 1, // Set current index accordingly
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/camera');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/audio');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/help');
+              break;
+          }
+        },
+      ),
+    );
+  }
+}
+
+
 // import 'dart:js_interop_unsafe';
 //
 // import 'package:flutter/material.dart';
