@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import '../auth/auth_service.dart';
 import 'dart:js' as js;
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
@@ -14,9 +17,22 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   final AuthService _authService = AuthService();
 
   void _linkSpotify() async {
+    //call backend to get the authorization URL
+    const String backendUrl = 'http://localhost:5002/login'; // Replace with your backend URL
+    final Uri uri = Uri.parse(backendUrl);
 
-    await _authService.authenticateWithSpotify(context);
+       try {
+      // Open the backend /login endpoint in the user's browser
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        print('Could not launch $backendUrl');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
+  
 
   @override
   void initState() {
