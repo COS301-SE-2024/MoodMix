@@ -6,12 +6,7 @@ import 'package:frontend/components/navbar.dart'; // Import your new bottom navb
 import 'package:provider/provider.dart';
 
 class UserProfile extends StatefulWidget {
-  final String spotifyUsername;
-
-  const UserProfile({
-    Key? key,
-    required this.spotifyUsername,
-  }) : super(key: key);
+  const UserProfile({Key? key}) : super(key: key);
 
   @override
   State<UserProfile> createState() => _UserProfileState();
@@ -19,11 +14,13 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   String? _displayName = '';
+  String? _spotifyUsername = '';
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _fetchSpotifyUserDetails();
   }
 
   Future<void> _loadUserData() async {
@@ -31,6 +28,15 @@ class _UserProfileState extends State<UserProfile> {
     if (user != null) {
       setState(() {
         _displayName = user.displayName;
+      });
+    }
+  }
+
+  Future<void> _fetchSpotifyUserDetails() async {
+    final spotifyUserDetails = await AuthService().getCurrentUser();
+    if (spotifyUserDetails != null) {
+      setState(() {
+        _spotifyUsername = spotifyUserDetails.displayName;
       });
     }
   }
@@ -96,7 +102,7 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                     ),
                     Text(
-                      widget.spotifyUsername,
+                      _spotifyUsername ?? 'Loading...',
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: 'Roboto',

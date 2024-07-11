@@ -51,13 +51,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/userprofile',
+      initialRoute: '/linkspotify',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
         '/signup': (context) => const SignUp(),
         '/login': (context) => const LogIn(),
-        '/userprofile': (context) => const UserProfile(spotifyUsername: "temp",),
+        '/userprofile': (context) => const UserProfile(),
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
         '/userplaylist': (context) => const PlaylistPage(),
