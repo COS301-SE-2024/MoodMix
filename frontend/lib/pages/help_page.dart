@@ -6,10 +6,10 @@ class HelpPage extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
         title: Text('Help Page'),
-        backgroundColor: Color.fromARGB(255, 15, 15, 15),
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         leading: IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () {
@@ -24,7 +24,7 @@ class HelpPage extends StatelessWidget {
               width: screenSize.width,
               height: screenSize.height,
               clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(color: Color(0xFF1D1C1C)),
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
               child: Stack(
                 children: [
                   Align(
@@ -86,7 +86,7 @@ class HelpPage extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: screenSize.width * 0.064,
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.w700,
@@ -100,7 +100,7 @@ class HelpPage extends StatelessWidget {
                   child: Text(
                     item,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                       fontSize: screenSize.width * 0.04,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w400,

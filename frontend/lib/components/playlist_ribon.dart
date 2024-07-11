@@ -86,13 +86,13 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
 
     Color containerColor;
     if (widget.mood == 'Happy') {
-      containerColor = const Color.fromARGB(255, 16, 17, 16);
+      containerColor = Theme.of(context).colorScheme.tertiary;
       playlistIcon = 'assets/images/happy_playlist_icon.png';
     } else if (widget.mood == 'Sad') {
-      containerColor = const Color.fromARGB(255, 16, 17, 16);
+      containerColor = Theme.of(context).colorScheme.tertiary;
       playlistIcon = 'assets/images/sad_playlist_icon.png';
     } else if (widget.mood == 'Angry') {
-      containerColor = const Color.fromARGB(255, 16, 17, 16);
+      containerColor = Theme.of(context).colorScheme.tertiary;
       playlistIcon = 'assets/images/angry_playlist_icon.png';
     } else {
       containerColor =
@@ -132,8 +132,8 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w200,
-                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       textAlign: TextAlign.left,
                     ),
@@ -145,8 +145,8 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w200,
-                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       textAlign: TextAlign.left,
                     ),
@@ -158,8 +158,8 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                       style: TextStyle(
                         fontSize: 15,
                         fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w200,
-                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       textAlign: TextAlign.left,
                     ),
