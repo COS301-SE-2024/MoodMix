@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/profile_timeline_node.dart';
 import 'package:frontend/theme/theme_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../auth/auth_service.dart';
 import 'package:frontend/components/navbar.dart'; // Import your new bottom navbar component
 import 'package:provider/provider.dart';
@@ -15,6 +16,8 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> {
   String? _displayName = '';
   String? _spotifyUsername = '';
+  String? _spotifyProfileImage = '';
+  List<String> _playlistNames = [];
 
   @override
   void initState() {
@@ -33,10 +36,17 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _fetchSpotifyUserDetails() async {
-    final spotifyUserDetails = await AuthService().getCurrentUser();
+    final spotifyUserDetails = await AuthService().getSpotifyUserDetails();
     if (spotifyUserDetails != null) {
       setState(() {
-        _spotifyUsername = spotifyUserDetails.displayName;
+        _spotifyUsername = spotifyUserDetails['display_name'];
+        _spotifyProfileImage = spotifyUserDetails['images'] != null && spotifyUserDetails['images'].isNotEmpty
+            ? spotifyUserDetails['images'][0]['url']
+            : '';
+        // Fetch and set playlist names if available
+        _playlistNames = spotifyUserDetails['playlists'] != null 
+            ? List<String>.from(spotifyUserDetails['playlists'].map((playlist) => playlist['name']))
+            : [];
       });
     }
   }
@@ -49,11 +59,8 @@ class _UserProfileState extends State<UserProfile> {
         setState(() {
           _displayName = newDisplayName;
         });
-        // Optionally, you can show a success message to the user here
       } catch (e) {
-        // Handle error
         print("Failed to update username: $e");
-        // Optionally, you can show an error message to the user here
       }
     }
   }
@@ -76,7 +83,9 @@ class _UserProfileState extends State<UserProfile> {
                 Container(
                   padding: EdgeInsets.only(left: 15, right: 15, top: 20),
                   child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/images.jpeg'),
+                    backgroundImage: _spotifyProfileImage != null 
+                        ? NetworkImage(_spotifyProfileImage!) 
+                        : AssetImage('assets/images/images.jpeg') as ImageProvider,
                     backgroundColor: Colors.transparent,
                     radius: screenHeight / 10,
                   ),
@@ -116,34 +125,19 @@ class _UserProfileState extends State<UserProfile> {
             ),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.only(
-                    left: screenHeight / 10 -
-                        15), // Adjust left padding to match the avatar radius
-                children: [
-                  ProfileTimelineNode(
-                    title: "Test Playlist One",
-                    mood: "Happy",
-                    date: "12/02/2024",
-                  ),
-                  ProfileTimelineNode(
-                    title: "Test Playlist Two",
-                    mood: "Sad",
-                    date: "12/02/2024",
-                  ),
-                  ProfileTimelineNode(
-                    title: "Test Playlist Three",
-                    mood: "Angry",
-                    date: "12/02/2024",
-                  ),
-                ],
+                padding: EdgeInsets.only(left: screenHeight / 10 - 15),
+                children: _playlistNames.map((name) => ProfileTimelineNode(
+                  title: name,
+                  mood: "Unknown", // You can replace this with actual data if available
+                  date: "Unknown", // You can replace this with actual data if available
+                )).toList(),
               ),
             ),
           ],
         ),
       ),
       bottomNavigationBar: NavBar(
-        // Replace bottomNavigationBar with your BottomNavbar component
-        currentIndex: 1, // Set current index accordingly
+        currentIndex: 1,
         onTap: (index) {
           switch (index) {
             case 0:
