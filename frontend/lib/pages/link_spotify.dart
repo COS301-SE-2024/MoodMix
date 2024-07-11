@@ -17,6 +17,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   final AuthService _authService = AuthService();
 
   void _linkSpotify() async {
+    //call backend to get the authorization URL
     const String backendUrl = 'http://localhost:5002/login'; // Replace with your backend URL
     final Uri uri = Uri.parse(backendUrl);
 
