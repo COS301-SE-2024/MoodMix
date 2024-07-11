@@ -41,7 +41,7 @@ class _UserProfileState extends State<UserProfile> {
       setState(() {
         _spotifyUsername = spotifyUserDetails['display_name'];
         _spotifyProfileImage = spotifyUserDetails['images'] != null && spotifyUserDetails['images'].isNotEmpty
-            ? spotifyUserDetails['images'][0]['url']
+            ? spotifyUserDetails['images'][1]['url']
             : '';
         // Fetch and set playlist names if available
         _playlistNames = spotifyUserDetails['playlists'] != null 
@@ -125,12 +125,26 @@ class _UserProfileState extends State<UserProfile> {
             ),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.only(left: screenHeight / 10 - 15),
-                children: _playlistNames.map((name) => ProfileTimelineNode(
-                  title: name,
-                  mood: "Unknown", // You can replace this with actual data if available
-                  date: "Unknown", // You can replace this with actual data if available
-                )).toList(),
+                padding: EdgeInsets.only(
+                    left: screenHeight / 10 -
+                        15), // Adjust left padding to match the avatar radius
+                children: [
+                  ProfileTimelineNode(
+                    title: "Test Playlist One",
+                    mood: "Happy",
+                    date: "12/02/2024",
+                  ),
+                  ProfileTimelineNode(
+                    title: "Test Playlist Two",
+                    mood: "Sad",
+                    date: "12/02/2024",
+                  ),
+                  ProfileTimelineNode(
+                    title: "Test Playlist Three",
+                    mood: "Angry",
+                    date: "12/02/2024",
+                  ),
+                ],
               ),
             ),
           ],
