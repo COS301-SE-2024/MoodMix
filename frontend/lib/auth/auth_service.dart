@@ -14,13 +14,48 @@ class AuthService {
   );
 
   Future<Map<String, dynamic>?> getSpotifyUserDetails() async {
-    final String endpoint = 'http://localhost:5002/spotify-user'; // Replace with your backend endpoint
+    final String endpoint =
+        'http://localhost:5002/spotify-user'; // Replace with your backend endpoint
     try {
       final response = await http.get(Uri.parse(endpoint));
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
         print('Failed to load user details');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>?> getSpotifyPlaylists() async {
+    final String endpoint =
+        'http://localhost:5002/spotify-playlists'; // Replace with your backend endpoint
+
+    try {
+      final response = await http.get(Uri.parse(endpoint));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        List<dynamic> playlists = jsonResponse['items'];
+        List<Map<String, dynamic>> formattedPlaylists = playlists
+            .map((playlist) => {
+                  'id': playlist['id'],
+                  'name': playlist['name'],
+                  'description': playlist['description'],
+                  'image': playlist['images'].isNotEmpty
+                      ? playlist['images'][0]['url']
+                      : null,
+                  'owner': playlist['owner']['display_name'],
+                  'tracks': playlist['tracks']['total'],
+                  'public': playlist['public'],
+                  'href': playlist['external_urls']['spotify'],
+                })
+            .toList();
+        return formattedPlaylists;
+      } else {
+        print('Failed to load Spotify playlists: ${response.statusCode}');
         return null;
       }
     } catch (e) {
