@@ -15,7 +15,7 @@ class _WelcomeState extends State<Welcome> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -76,8 +76,8 @@ class _WelcomeState extends State<Welcome> {
                                       SnackBar(
                                         content: Text('Sign-in failed: $signInResult'),
                                         duration: Duration(
-                                            seconds:
-                                                3), // Optional: Set the duration for the SnackBar
+                                          seconds: 3,
+                                        ), // Optional: Set the duration for the SnackBar
                                       ),
                                     );
                                   }
@@ -150,7 +150,7 @@ class _WelcomeState extends State<Welcome> {
                               "Terms and Conditions",
                               style: TextStyle(
                                 fontSize: 15,
-                                color: Colors.white,
+                                color: Theme.of(context).colorScheme.secondary,
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w300,
                               ),
