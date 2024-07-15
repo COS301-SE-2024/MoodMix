@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
-import 'package:frontend/components/playlist_ribon.dart';
-import 'package:frontend/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:frontend/components/playlist_ribon.dart'; // Corrected import
+
+import '../auth/auth_service.dart'; // Import the AuthService for user details
 
 class PlaylistPage extends StatefulWidget {
   const PlaylistPage({Key? key}) : super(key: key);
@@ -12,6 +12,27 @@ class PlaylistPage extends StatefulWidget {
 }
 
 class _PlaylistPageState extends State<PlaylistPage> {
+  List<dynamic> playlists = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSpotifyUserDetails();
+  }
+
+  Future<void> _fetchSpotifyUserDetails() async {
+    final spotifyUserDetails = await AuthService().getSpotifyPlaylists();
+    if (spotifyUserDetails != null) {
+      setState(() {
+        playlists = spotifyUserDetails;
+      });
+    } else {
+      setState(() {
+        playlists = []; // Handle null case or error fetching playlists
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -51,63 +72,29 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     textAlign: TextAlign.left,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: PlaylistRibbon(
-                    currentIndex: 0,
-                    onTap: (index) {
-                      print('Tapped on index: $index');
-                    },
-                    mood: 'Happy',
-                    songCount: 10,
-                    playlistLink: '37i9dQZF1EIgG2NEOhqsD7?si=0bd9af73b1294d0e',
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                  child: Text(
-                    "Saved Playlists",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.secondary,
+                // Display playlists dynamically
+                ...playlists.map((playlist) {
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: PlaylistRibbon(
+                      onTap: (playlistIcon) {
+                        // Handle onTap action if needed
+                        print('Tapped on playlist: ${playlist['name']}');
+                      },
+                      mood: 'Happy', // Replace with actual mood if applicable
+                      songCount: 12,
+                      playlistLink: playlist['id'],
+                      playlistName: playlist['name'],
                     ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: PlaylistRibbon(
-                    currentIndex: 0,
-                    onTap: (index) {
-                      print('Tapped on index: $index');
-                    },
-                    mood: 'Sad',
-                    songCount: 10,
-                    playlistLink: '37i9dQZF1EIdChYeHNDfK5?si=24280582960a4173',
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: PlaylistRibbon(
-                    currentIndex: 0,
-                    onTap: (index) {
-                      print('Tapped on index: $index');
-                    },
-                    mood: 'Angry',
-                    songCount: 10,
-                    playlistLink: '37i9dQZF1EIgNZCaOGb0Mi?si=f0985e4d1cf14fa4',
-                  ),
-                ),
+                  );
+                }).toList(),
               ],
             ),
           ),
         ),
       ),
       bottomNavigationBar: NavBar(
-        // Replace bottomNavigationBar with your BottomNavbar component
-        currentIndex: 1, // Set current index accordingly
+        currentIndex: 1,
         onTap: (index) {
           switch (index) {
             case 0:
