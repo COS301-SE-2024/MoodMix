@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/linkspotify',
+      initialRoute: '/welcome',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
