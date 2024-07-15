@@ -14,8 +14,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -84,8 +83,7 @@ class _SignUpState extends State<SignUp> {
                                 },
                                 icon: Icon(
                                   Icons.arrow_back,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
                               ),
                             ),
@@ -120,39 +118,32 @@ class _SignUpState extends State<SignUp> {
                             Container(
                               width: screenWidth * 0.75,
                               child: TextField(
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
+                                cursorColor: Theme.of(context).colorScheme.secondary,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
                                 controller: _usernameController,
                                 decoration: InputDecoration(
                                   hintText: 'Username',
                                   hintStyle: TextStyle(
                                     fontSize: 20,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: Theme.of(context).colorScheme.secondary,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
                                   ),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                 ),
@@ -162,39 +153,32 @@ class _SignUpState extends State<SignUp> {
                             Container(
                               width: screenWidth * 0.75,
                               child: TextField(
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
+                                cursorColor: Theme.of(context).colorScheme.secondary,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
                                 controller: _emailController,
                                 decoration: InputDecoration(
                                   hintText: 'Email',
                                   hintStyle: TextStyle(
                                     fontSize: 20,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: Theme.of(context).colorScheme.secondary,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
                                   ),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                 ),
@@ -204,14 +188,12 @@ class _SignUpState extends State<SignUp> {
                             Container(
                               width: screenWidth * 0.75,
                               child: TextField(
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
+                                cursorColor: Theme.of(context).colorScheme.secondary,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
                                 controller: _passwordController,
                                 obscureText: true,
@@ -219,25 +201,20 @@ class _SignUpState extends State<SignUp> {
                                   hintText: 'Password',
                                   hintStyle: TextStyle(
                                     fontSize: 20,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: Theme.of(context).colorScheme.secondary,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
                                   ),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                 ),
@@ -247,14 +224,12 @@ class _SignUpState extends State<SignUp> {
                             Container(
                               width: screenWidth * 0.75,
                               child: TextField(
-                                cursorColor:
-                                    Theme.of(context).colorScheme.secondary,
+                                cursorColor: Theme.of(context).colorScheme.secondary,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w500,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
                                 controller: _confirmPasswordController,
                                 obscureText: true,
@@ -262,25 +237,20 @@ class _SignUpState extends State<SignUp> {
                                   hintText: 'Confirm Password',
                                   hintStyle: TextStyle(
                                     fontSize: 20,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: Theme.of(context).colorScheme.secondary,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
                                   ),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
                                       width: 2,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                     ),
                                   ),
                                 ),
@@ -308,21 +278,16 @@ class _SignUpState extends State<SignUp> {
                                   Expanded(
                                     flex: 6,
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: screenWidth * 0.1),
+                                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                                       child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Already have an account? Log In",
                                             style: TextStyle(
                                               fontSize: 15,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
+                                              color: Theme.of(context).colorScheme.secondary,
                                               fontFamily: 'Roboto',
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -333,9 +298,7 @@ class _SignUpState extends State<SignUp> {
                                             "Terms and Conditions",
                                             style: TextStyle(
                                               fontSize: 15,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
+                                              color: Theme.of(context).colorScheme.secondary,
                                               fontFamily: 'Roboto',
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -349,23 +312,16 @@ class _SignUpState extends State<SignUp> {
                                     flex: 5,
                                     child: Container(
                                       height: 70,
-                                      padding: EdgeInsets.fromLTRB(
-                                          0, 0, screenWidth * 0.1, 0),
+                                      padding: EdgeInsets.fromLTRB(0, 0, screenWidth * 0.1, 0),
                                       child: FloatingActionButton.extended(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
+                                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                                         onPressed: _createAccount,
                                         label: Text(
                                           'Create',
                                           style: TextStyle(
                                             fontSize: 20,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .tertiary,
+                                            color: Theme.of(context).colorScheme.tertiary,
                                             fontFamily: 'Roboto',
                                             fontWeight: FontWeight.w500,
                                           ),
