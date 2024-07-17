@@ -151,4 +151,3 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     );
   }
 }
-
