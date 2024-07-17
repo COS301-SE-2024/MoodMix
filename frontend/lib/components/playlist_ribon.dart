@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/playlist_details.dart';
-import 'package:spotify/spotify.dart' as spotify;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PlaylistRibbon extends StatefulWidget {
-  final int currentIndex;
   final Function(int) onTap;
   final String mood;
   final int songCount;
   final String playlistLink;
+  final String playlistName;
 
   const PlaylistRibbon({
     Key? key,
-    required this.currentIndex,
     required this.onTap,
     required this.mood,
     required this.songCount,
     required this.playlistLink,
+    required this.playlistName,
   }) : super(key: key);
 
   @override
@@ -24,59 +23,26 @@ class PlaylistRibbon extends StatefulWidget {
 }
 
 class _PlaylistRibbonState extends State<PlaylistRibbon> {
-  late spotify.SpotifyApi spotifyApi;
-  String playlistName = "Loading...";
-  String mood = "Unknown Mood";
-  int songCount = 0;
-  late Iterable<dynamic>? tracks;
 
   @override
   void initState() {
     super.initState();
-
-    final clientId = dotenv.env['SPOTIFY_CLIENT_ID'];
-    final clientSecret = dotenv.env['SPOTIFY_CLIENT_SECRET'];
-    final credentials = spotify.SpotifyApiCredentials(clientId!, clientSecret!);
-    spotifyApi = spotify.SpotifyApi(credentials);
-
-    _fetchSpotifyData();
-  }
-
-  Future<void> _fetchSpotifyData() async {
-    try {
-      var playlist = await spotifyApi.playlists.get(widget.playlistLink);
-      setState(() {
-        playlistName = playlist.name!;
-        tracks = playlist.tracks?.itemsNative;
-        for (var temp in tracks!) {
-          // print(temp);
-        }
-        songCount = playlist.tracks!.total;
-      });
-    } catch (error) {
-      setState(() {
-        playlistName = "Error loading playlist";
-      });
-      print(error);
-    }
   }
 
   // Function to handle tap event
   void _handleTap(String pIcon) {
-    // You can navigate to another screen or perform an action here
-    // For example, navigate to a new route passing some data
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PlaylistDetails(
-          playlistIcon: pIcon,
-          api: spotifyApi,
-          playlistLink: widget.playlistLink,
-          mood: widget.mood,
-          songCount: widget.songCount,
-        ),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => PlaylistDetails(
+    //       playlistIcon: pIcon,
+    //       api: spotifyApi,
+    //       playlistLink: widget.playlistLink,
+    //       mood: widget.mood,
+    //       songCount: widget.songCount,
+    //     ),
+    //   ),
+    // );
   }
 
   @override
@@ -95,8 +61,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
       containerColor = Theme.of(context).colorScheme.tertiary;
       playlistIcon = 'assets/images/angry_playlist_icon.png';
     } else {
-      containerColor =
-          Colors.grey; // Default color if mood doesn't match any case
+      containerColor = Colors.grey;
       playlistIcon = 'assets/images/sad_playlist_icon.png';
     }
 
@@ -128,7 +93,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Text(
-                      playlistName,
+                      widget.playlistName,
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Roboto',
@@ -154,7 +119,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Text(
-                      "Song Count: $songCount",
+                      "Song Count: ${widget.songCount}",
                       style: TextStyle(
                         fontSize: 15,
                         fontFamily: 'Roboto',

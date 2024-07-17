@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/profile_timeline_node.dart';
 import 'package:frontend/theme/theme_provider.dart';
-import '../auth/auth_service.dart';
-import 'package:frontend/components/navbar.dart'; // Import your new bottom navbar component
 import 'package:provider/provider.dart';
+import 'package:frontend/components/navbar.dart';
+import '../auth/auth_service.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -12,21 +13,38 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  String? _email = '';
   String? _displayName = '';
+  String? _spotifyUsername = '';
+  String? _spotifyProfileImage = '';
+  List<String> _playlistNames = [];
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _fetchSpotifyUserDetails();
   }
 
   Future<void> _loadUserData() async {
     final user = await AuthService().getCurrentUser();
     if (user != null) {
       setState(() {
-        _email = user.email;
         _displayName = user.displayName;
+      });
+    }
+  }
+
+  Future<void> _fetchSpotifyUserDetails() async {
+    final spotifyUserDetails = await AuthService().getSpotifyUserDetails();
+    if (spotifyUserDetails != null) {
+      setState(() {
+        _spotifyUsername = spotifyUserDetails['display_name'];
+        _spotifyProfileImage = spotifyUserDetails['images'] != null && spotifyUserDetails['images'].isNotEmpty
+            ? spotifyUserDetails['images'][1]['url']
+            : '';
+        _playlistNames = spotifyUserDetails['playlists'] != null 
+            ? List<String>.from(spotifyUserDetails['playlists'].map((playlist) => playlist['name']))
+            : [];
       });
     }
   }
@@ -39,85 +57,109 @@ class _UserProfileState extends State<UserProfile> {
         setState(() {
           _displayName = newDisplayName;
         });
-        // Optionally, you can show a success message to the user here
       } catch (e) {
-        // Handle error
         print("Failed to update username: $e");
-        // Optionally, you can show an error message to the user here
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-                },
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/images.jpeg'),
-                    backgroundColor: Colors.transparent,
-                    radius: screenHeight / 10,
-                  ),
-                ),
-              ),
-              IntrinsicWidth(
-                child: TextField(
-                  onEditingComplete: () {},
-                  decoration: InputDecoration(
-                    hintText: '$_displayName',
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.secondary,
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            final parentWidth = constraints.maxWidth;
+            final avatarRadius = parentWidth / 5; // Adjust radius as needed
+            final avatarCenterX = avatarRadius * 0.25; // radius
+
+            return Container(
+              padding: EdgeInsets.only(left: 15, right: 15, top: 20),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: _spotifyProfileImage != null 
+                              ? NetworkImage(_spotifyProfileImage!) 
+                              : AssetImage('assets/images/images.jpeg') as ImageProvider,
+                          backgroundColor: Colors.transparent,
+                          radius: avatarRadius,
+                        ),
+                        SizedBox(width: 30),
+                        Flexible(
+                          child: Opacity(
+                            opacity: 0.8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Profile',
+                                  style: TextStyle(
+                                    fontSize: parentWidth * 0.09,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w700,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                Text(
+                                  'Temporary $_displayName',
+                                  style: TextStyle(
+                                    fontSize: parentWidth * 0.07,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                                Text(
+                                  '$_spotifyUsername',
+                                  style: TextStyle(
+                                    fontSize: parentWidth * 0.07,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ),
+                      ],
                     ),
-                    suffixIcon: Icon(
-                      Icons.edit,
-                      color: Theme.of(context).colorScheme.secondary,
-                      size: 15,
+                    ProfileTimelineNode(
+                      title: "Test Playlist One",
+                      mood: "Happy",
+                      date: "12/02/2024",
+                      alignOffset: avatarCenterX,
+                      scale: parentWidth * 0.004,
                     ),
-                  ),
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w400,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  textAlign: TextAlign.center,
+                    ProfileTimelineNode(
+                      title: "Test Playlist Two",
+                      mood: "Sad",
+                      date: "12/02/2024",
+                      alignOffset: avatarCenterX,
+                      scale: parentWidth * 0.004,
+                    ),
+                    ProfileTimelineNode(
+                      title: "Test Playlist Three",
+                      mood: "Angry",
+                      date: "12/02/2024",
+                      alignOffset: avatarCenterX,
+                      scale: parentWidth * 0.004,
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(
-                child: Text(
-                  '$_email',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w400,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
       bottomNavigationBar: NavBar(
-        // Replace bottomNavigationBar with your BottomNavbar component
-        currentIndex: 1, // Set current index accordingly
+        currentIndex: 1,
         onTap: (index) {
           switch (index) {
             case 0:
@@ -134,12 +176,6 @@ class _UserProfileState extends State<UserProfile> {
               break;
             case 4:
               Navigator.pushReplacementNamed(context, '/help');
-              break;
-            case 3:
-              Navigator.pushReplacementNamed(context, '/userplaylist');
-              break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/camera');
               break;
           }
         },
