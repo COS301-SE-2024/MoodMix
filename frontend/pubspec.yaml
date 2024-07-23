@@ -51,6 +51,7 @@ dependencies:
   http: ^1.2.1
   url_launcher: ^6.3.0
   flutter_svg: ^2.0.10+1
+  network_info_plus: ^3.0.0 # Check for the latest version
 
 
 dev_dependencies:

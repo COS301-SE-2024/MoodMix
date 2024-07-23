@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
@@ -10,10 +11,31 @@ class LinkSpotify extends StatefulWidget {
 }
 
 class _LinkSpotifyState extends State<LinkSpotify> {
+  String backendUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeBackendUrl();
+  }
+
+  Future<void> _initializeBackendUrl() async {
+    final NetworkInfo networkInfo = NetworkInfo();
+    final String? ipAddress = await networkInfo.getWifiIP();
+    if (ipAddress != null) {
+      setState(() {
+        backendUrl = 'http://$ipAddress:5002/login'; // Update with your backend URL
+      });
+    } else {
+      print('Failed to get IP address');
+    }
+  }
 
   void _linkSpotify() async {
-    // Call backend to get the authorization URL
-    const String backendUrl = 'http://localhost:5002/login'; // Replace with your backend URL
+    if (backendUrl.isEmpty) {
+      print('Backend URL is not initialized');
+      return;
+    }
     final Uri uri = Uri.parse(backendUrl);
 
     try {
@@ -26,14 +48,6 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     } catch (e) {
       print('Error: $e');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // For mobile, you might not need to handle a callback here.
-    // If you do need to handle callbacks, you would typically handle them in another way.
-    // For example, by checking URL parameters after redirect.
   }
 
   @override
