@@ -36,12 +36,12 @@ dependencies:
   firebase_auth: ^4.19.6
   firebase_core: ^2.32.0
   firebase_core_platform_interface: ^5.0.0
-  flutter_web_auth: ^0.3.0
+  flutter_web_auth: ^0.5.0
   oauth2_client: ^3.2.2
   google_sign_in: ^5.2.1
   spotify: ^0.13.6+1
   flutter_dotenv: ^5.0.2
-  audioplayers: ^0.18.3
+  audioplayers: ^6.0.0
   just_audio: ^0.9.8
   mockito: ^5.0.0 
   provider:
@@ -51,6 +51,7 @@ dependencies:
   http: ^1.2.1
   url_launcher: ^6.3.0
   flutter_svg: ^2.0.10+1
+  network_info_plus: ^3.0.0 # Check for the latest version
 
 
 dev_dependencies:
@@ -81,6 +82,7 @@ flutter:
     - assets/fonts/
     - assets/icons/
     - assets/songs/song.mp3
+    - assets/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

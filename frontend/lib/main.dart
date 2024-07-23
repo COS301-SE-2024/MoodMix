@@ -29,7 +29,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-    await dotenv.load(fileName: "../.env");
+    await dotenv.load(fileName: "assets/.env");
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/linkspotify',
+      initialRoute: '/userprofile',
       routes: {
         '/': (context) => const Loading(),
         '/welcome': (context) => const Welcome(),
@@ -60,8 +60,7 @@ class MyApp extends StatelessWidget {
         '/linkspotify': (context) => const LinkSpotify(),
         '/homepage': (context) => const StubHomePage(),
         '/userplaylist': (context) => const PlaylistPage(),
-        '/camera': (context) => const CameraPage(cameras: [],),
-        // '/audio': (context) => AudioPlayerPage(),
+        '/camera': (context) => CameraPage(cameras: cameras), // Pass the actual cameras list here
         '/help': (context) => HelpPage(),
         '/accounthelp': (context) => AccountHelpPage(),
         '/playlisthelp': (context) => PlaylistHelpPage(),

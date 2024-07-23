@@ -23,7 +23,6 @@ class PlaylistRibbon extends StatefulWidget {
 }
 
 class _PlaylistRibbonState extends State<PlaylistRibbon> {
-
   @override
   void initState() {
     super.initState();
@@ -53,12 +52,12 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
     Color containerColor;
     if (widget.mood == 'Happy') {
       containerColor = Theme.of(context).colorScheme.tertiary;
-      playlistIcon = 'assets/images/happy_playlist_icon.png';
+      playlistIcon = Icons.mood;
     } else if (widget.mood == 'Sad') {
       containerColor = Theme.of(context).colorScheme.tertiary;
       playlistIcon = 'assets/images/sad_playlist_icon.png';
     } else if (widget.mood == 'Angry') {
-      containerColor = Theme.of(context).colorScheme.tertiary;
+      containerColor = Theme.of(context).colorScheme.secondary;
       playlistIcon = 'assets/images/angry_playlist_icon.png';
     } else {
       containerColor = Colors.grey;
@@ -73,25 +72,27 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
         height: 140,
         decoration: BoxDecoration(
           color: containerColor,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Row(
           children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Image.asset(
-                playlistIcon,
-                fit: BoxFit.cover,
-                height: 130,
-                width: 130,
+            Expanded(
+              flex: 4,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Icon(
+                  playlistIcon,
+                  size: 90,
+                ),
               ),
             ),
             Expanded(
+              flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: Text(
                       widget.playlistName,
                       style: TextStyle(
@@ -104,7 +105,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: Text(
                       "Mood: ${widget.mood}",
                       style: TextStyle(

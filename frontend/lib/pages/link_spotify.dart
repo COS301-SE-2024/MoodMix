@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'dart:js' as js;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
@@ -11,13 +11,34 @@ class LinkSpotify extends StatefulWidget {
 }
 
 class _LinkSpotifyState extends State<LinkSpotify> {
+  String backendUrl = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeBackendUrl();
+  }
+
+  Future<void> _initializeBackendUrl() async {
+    final NetworkInfo networkInfo = NetworkInfo();
+    final String? ipAddress = await networkInfo.getWifiIP();
+    if (ipAddress != null) {
+      setState(() {
+        backendUrl = 'http://$ipAddress:5002/login'; // Update with your backend URL
+      });
+    } else {
+      print('Failed to get IP address');
+    }
+  }
 
   void _linkSpotify() async {
-    //call backend to get the authorization URL
-    const String backendUrl = 'http://localhost:5002/login'; // Replace with your backend URL
+    if (backendUrl.isEmpty) {
+      print('Backend URL is not initialized');
+      return;
+    }
     final Uri uri = Uri.parse(backendUrl);
 
-       try {
+    try {
       // Open the backend /login endpoint in the user's browser
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri);
@@ -26,26 +47,6 @@ class _LinkSpotifyState extends State<LinkSpotify> {
       }
     } catch (e) {
       print('Error: $e');
-    }
-  }
-  
-
-  @override
-  void initState() {
-    super.initState();
-    handleCallback();
-  }
-
-  void handleCallback() {
-    final Uri uri = Uri.parse(js.context['window'].location.href);
-    final String? code = uri.queryParameters['code'];
-    final String? error = uri.queryParameters['error'];
-    if (code != null) {
-      print('Authorization code: $code');
-    } else if (error != null) {
-      print('Authentication error: $error');
-    } else {
-      print('Unexpected callback');
     }
   }
 
@@ -114,7 +115,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                             Container(
                               width: screenWidth * 0.75,
                               child: Text(
-                                "Why do you need to link your Spotify?\n\nLinking your spotify is necicary for the use of the MoodMix aplication. This aplication communicates directly with Spotify to create playlists, save playlists to your personal library and more!",
+                                "Why do you need to link your Spotify?\n\nLinking your Spotify is necessary for the use of the MoodMix application. This application communicates directly with Spotify to create playlists, save playlists to your personal library, and more!",
                                 style: TextStyle(
                                   fontSize: screenWidth * 0.035,
                                   fontFamily: 'Roboto',

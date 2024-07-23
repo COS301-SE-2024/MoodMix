@@ -1,4 +1,5 @@
 allprojects {
+    ext.kotlin_version = '1.5.20'
     repositories {
         google()
         mavenCentral()
@@ -15,4 +16,16 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20'
+        }
+    }
 }
