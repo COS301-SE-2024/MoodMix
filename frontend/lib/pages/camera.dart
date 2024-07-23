@@ -16,13 +16,14 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   XFile? pictureFile;
+  int selectedCameraIndex = 0;
 
   @override
   void initState() {
     super.initState();
     if (widget.cameras.isNotEmpty) {
       print('Cameras available: ${widget.cameras}');
-      controller = CameraController(widget.cameras[0], ResolutionPreset.high);
+      controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
       controller?.initialize().then((_) {
         if (!mounted) {
           return;
@@ -40,6 +41,21 @@ class _CameraPageState extends State<CameraPage> {
   void dispose() {
     controller?.dispose();
     super.dispose();
+  }
+
+  void _switchCamera() {
+    if (widget.cameras.length > 1) {
+      selectedCameraIndex = (selectedCameraIndex + 1) % widget.cameras.length;
+      controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
+      controller?.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {});
+      }).catchError((error) {
+        print('Camera initialization error: $error');
+      });
+    }
   }
 
   @override
@@ -102,24 +118,39 @@ class _CameraPageState extends State<CameraPage> {
                                     ),
                                   ),
                                 Align(
-                                  alignment: Alignment.bottomCenter,
+                                  alignment: Alignment.center,
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 16.0),
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        pictureFile = await controller?.takePicture();
-                                        setState(() {});
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        shape: const CircleBorder(),
-                                        padding: const EdgeInsets.all(15.0),
-                                        backgroundColor: Colors.black12,
-                                      ),
-                                      child: const Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
-                                        size: 40.0,
-                                      ),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Positioned(
+                                          bottom: 0.0,
+                                          child: IconButton(
+                                            onPressed: () async {
+                                              pictureFile = await controller?.takePicture();
+                                              setState(() {});
+                                            },
+                                            icon: const Icon(
+                                              Icons.camera_alt,
+                                              color: Colors.white,
+                                              size: 40.0,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 0.0,
+                                          right: 16.0,
+                                          child: IconButton(
+                                            onPressed: _switchCamera,
+                                            icon: const Icon(
+                                              Icons.swap_horiz,
+                                              color: Colors.white,
+                                              size: 30.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
