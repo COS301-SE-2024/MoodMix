@@ -16,6 +16,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://maven.pkg.github.com/spotify/android-auth' }
         flatDir {
             dirs 'libs'
         }

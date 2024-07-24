@@ -28,8 +28,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <data android:scheme="frontend_temp" android:host="callback"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.spotify.sdk.android.auth.AuthorizationActivity"/>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

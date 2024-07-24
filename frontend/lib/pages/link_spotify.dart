@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:frontend/auth/auth_service.dart';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
@@ -32,6 +33,15 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   }
 
   void _linkSpotify() async {
+    try {
+      await SpotifyAuth.authenticate();
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+  void _linkSpotify2() async { //this is the method for web, which we are not going to currently use
     if (backendUrl.isEmpty) {
       print('Backend URL is not initialized');
       return;

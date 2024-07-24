@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -179,5 +180,18 @@ class AuthService {
       accessToken: code,
     );
     await user?.linkWithCredential(credential);
+  }
+}
+
+
+class SpotifyAuth {
+  static const MethodChannel _channel = MethodChannel('spotify_auth');
+
+  static Future<void> authenticate() async {
+    try {
+      await _channel.invokeMethod('authenticate');
+    } on PlatformException catch (e) {
+      print("Failed to authenticate: ${e.message}");
+    }
   }
 }

@@ -56,6 +56,9 @@ android {
         }
     }
 
+    dependencies {
+        implementation 'com.spotify.android:auth:1.2.3'
+    }
 }
 
 flutter {
