@@ -9,6 +9,10 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.10'
+
+        implementation(name: 'spotify-app-remote-release-0.8.0', ext: 'aar')
+        implementation(name: 'spotify-auth-release-2.1.0', ext: 'aar')
+        implementation(name: 'spotify-auth-store-release-2.1.0', ext: 'aar')
     }
 }
 
@@ -16,6 +20,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
