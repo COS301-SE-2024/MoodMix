@@ -187,11 +187,13 @@ class AuthService {
 class SpotifyAuth {
   static const MethodChannel _channel = MethodChannel('spotify_auth');
 
-  static Future<void> authenticate() async {
+  static Future<String?> authenticate() async {
     try {
-      await _channel.invokeMethod('authenticate');
+      final String? accessToken = await _channel.invokeMethod('authenticate');
+      return accessToken;
     } on PlatformException catch (e) {
       print("Failed to authenticate: ${e.message}");
+      return null;
     }
   }
 }

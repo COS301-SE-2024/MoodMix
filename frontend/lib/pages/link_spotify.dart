@@ -32,9 +32,17 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     }
   }
 
-  void _linkSpotify() async {
+  Future<void> _linkSpotify() async {
     try {
-      await SpotifyAuth.authenticate();
+      final accessToken = await SpotifyAuth.authenticate();
+      if (accessToken != null) {
+        // Navigate to camera page on successful authentication
+          Navigator.pushReplacementNamed(context, '/camera');
+
+      } else {
+        // Handle authentication failure
+        print('Authentication failed');
+      }
     } catch (e) {
       print('Error: $e');
     }

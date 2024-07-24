@@ -28,7 +28,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <data android:scheme="frontend_temp" android:host="callback"/>
+                <data android:scheme="com.moodmix.app.frontend_temp" android:host="callback"/>
             </intent-filter>
         </activity>
         <activity android:name="com.spotify.sdk.android.auth.AuthorizationActivity"/>
