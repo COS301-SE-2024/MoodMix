@@ -14,11 +14,14 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
+
+
 public class MainActivity extends FlutterActivity {
     private static final String CLIENT_ID = "efd7d41773d44358aa960b32815fcc10";
-    private static final String REDIRECT_URI = "com.moodmix.app.frontend_temp://callback";
+    private static final String REDIRECT_URI = "com.moodmix.app.frontend_temp://callback/";
     private static final int REQUEST_CODE = 1337;
     private static final String CHANNEL = "spotify_auth";
+
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -42,6 +45,7 @@ public class MainActivity extends FlutterActivity {
                 new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
         builder.setScopes(new String[]{"user-read-private", "playlist-read", "playlist-read-private"});
         AuthorizationRequest request = builder.build();
+        System.out.println("Login authentication will now happen");
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
     }
 
@@ -55,9 +59,12 @@ public class MainActivity extends FlutterActivity {
                     // Handle successful response
                     String accessToken = response.getAccessToken();
                     sendResultToFlutter(accessToken);
+                    System.out.println("--------------------------------------------------------------------------------\n");
+                    System.out.println("Access Token: " + accessToken);
                     break;
                 case ERROR:
                     // Handle error response
+                    System.out.println("Could not get the token?");
                     sendErrorToFlutter(response.getError());
                     break;
                 default:
