@@ -37,11 +37,12 @@ class _LinkSpotifyState extends State<LinkSpotify> {
       final accessToken = await SpotifyAuth.authenticate();
       if (accessToken != null) {
         // Navigate to camera page on successful authentication
-         // Navigator.pushReplacementNamed(context, '/camera');
+         Navigator.pushReplacementNamed(context, '/camera');
 
       } else {
         // Handle authentication failure
         print('Authentication failed');
+        // Navigator.pushReplacementNamed(context, '/camera');
       }
     } catch (e) {
       print('Error: $e');

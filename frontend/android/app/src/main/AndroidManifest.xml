@@ -28,7 +28,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-                <data  android:scheme="com.moodmix.app.frontend_temp"
+                <data  android:scheme="moodmix"
                     android:host="callback"/>
             </intent-filter>
         </activity>

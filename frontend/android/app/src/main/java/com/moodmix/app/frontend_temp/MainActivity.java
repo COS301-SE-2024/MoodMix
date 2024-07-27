@@ -17,8 +17,8 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 
 public class MainActivity extends FlutterActivity {
-    private static final String CLIENT_ID = "efd7d41773d44358aa960b32815fcc10";
-    private static final String REDIRECT_URI = "com.moodmix.app.frontend_temp://callback/";
+    private static final String CLIENT_ID = "90b2121e252f449581e909b61e3e6ddb";
+    private static final String REDIRECT_URI = "moodmix://callback";
     private static final int REQUEST_CODE = 1337;
     private static final String CHANNEL = "spotify_auth";
 
