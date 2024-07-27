@@ -1,10 +1,20 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:oauth2_client/access_token_response.dart';
+import 'package:oauth2_client/spotify_oauth2_client.dart';
+
+final String CLIENT_ID = dotenv.env['SPOTIFY_CLIENT_ID'] ?? '';
+final String CLIENT_SECRET = dotenv.env['SPOTIFY_CLIENT_SECRET'] ?? '';
+
+
+String? Access_Token;
+String? Refresh_Token;
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,6 +38,31 @@ class AuthService {
       print('Error: $e');
       return null;
     }
+  }
+
+  static Future<void> RemoteService() async {
+    AccessTokenResponse? accessToken;
+    print(accessToken);
+    SpotifyOAuth2Client client = SpotifyOAuth2Client(
+      customUriScheme: 'moodmix',
+      //Must correspond to the AndroidManifest's "android:scheme" attribute
+      redirectUri: 'moodmix://callback', //Can be any URI, but the scheme part must correspond to the customeUriScheme
+    );
+    var authResp = await client.requestAuthorization(
+        clientId: CLIENT_ID,
+        customParams: {'show_dialog': 'true'},
+        scopes: ['user-read-private', 'user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing', 'user-read-email']
+    );
+    var authCode = authResp.code;
+
+    accessToken = await client.requestAccessToken(code: authCode.toString(),
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET);
+
+    // Global variables
+    Access_Token = accessToken.accessToken;
+    Refresh_Token = accessToken.refreshToken;
+
   }
 
   Future<List<Map<String, dynamic>>?> getSpotifyPlaylists() async {
@@ -147,29 +182,6 @@ class AuthService {
     } catch (e) {
       print('Error getting current user: $e');
       return null;
-    }
-  }
-
-  Future<void> authenticateWithSpotify(BuildContext context) async {
-    final url =
-        'https://accounts.spotify.com/authorize?client_id=4a35390dc3c74e85abfd35698529a7f8&response_type=code&redirect_uri=http://localhost:5001/callback&scope=user-read-email';
-
-    final result = await FlutterWebAuth.authenticate(
-      url: url,
-      callbackUrlScheme: 'myapp',
-    );
-
-    final code = Uri.parse(result).queryParameters['code'];
-
-    if (code != null) {
-      await _linkSpotifyAccountToFirebase(code);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Spotify account linked successfully!'),
-      ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to link Spotify account.'),
-      ));
     }
   }
 

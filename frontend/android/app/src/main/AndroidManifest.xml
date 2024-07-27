@@ -8,6 +8,16 @@
         android:label="frontend_temp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <activity android:name="com.linusu.flutter_web_auth.CallbackActivity" android:exported="true">
+            <intent-filter android:label="flutter_web_auth">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="moodmix" android:host="callback"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

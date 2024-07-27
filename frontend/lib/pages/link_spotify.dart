@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:frontend/auth/auth_service.dart';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
@@ -31,21 +32,16 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     }
   }
 
-  void _linkSpotify() async {
-    if (backendUrl.isEmpty) {
-      print('Backend URL is not initialized');
-      return;
-    }
-    final Uri uri = Uri.parse(backendUrl);
-
+  Future<void> _linkSpotifyWithAuthService() async {
     try {
-      // Open the backend /login endpoint in the user's browser
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        print('Could not launch $backendUrl');
-      }
+      await AuthService.RemoteService(); // Call the RemoteService method
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Spotify account linked successfully!'),
+      ));
     } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to link Spotify account.'),
+      ));
       print('Error: $e');
     }
   }
@@ -76,7 +72,6 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                                 iconSize: 35,
                                 onPressed: () {
                                   Navigator.pushNamed(context, '/welcome');
-                                  dispose();
                                 },
                                 icon: Icon(
                                   Icons.arrow_back,
@@ -130,7 +125,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                               child: FloatingActionButton.extended(
                                 backgroundColor: Theme.of(context).colorScheme.secondary,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                onPressed: _linkSpotify,
+                                onPressed: _linkSpotifyWithAuthService,
                                 icon: Image.asset(
                                   "assets/icons/Spotify_Full_Logo_RGB_Black.png",
                                   color: Theme.of(context).colorScheme.primary,
