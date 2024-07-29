@@ -6,6 +6,7 @@ import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:frontend/pages/link_spotify.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -186,6 +187,9 @@ class AuthService {
 
 class SpotifyAuth {
   static const MethodChannel _channel = MethodChannel('spotify_auth');
+  static String? _accessToken; // Static variable to hold the access token
+  static Function(String)? _onSuccessCallback; // Callback function
+
 
   static Future<String?> authenticate() async {
     try {
@@ -201,7 +205,9 @@ class SpotifyAuth {
 
 
   // Initialize the service and set the method call handler
-  static void initialize() {
+  // Initialize the service and set the method call handler
+  static void initialize(Function(String) onSuccessCallback) {
+    _onSuccessCallback = onSuccessCallback;
     _channel.setMethodCallHandler(_handleMethodCall);
   }
 
@@ -226,10 +232,21 @@ class SpotifyAuth {
     print('Login was a success and flutter has the recieved the token:');
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
     print('Access Token: $accessToken');
+    _accessToken = accessToken;
+    if (_onSuccessCallback != null) {
+      _onSuccessCallback!(accessToken); // Call the success callback
+    }
+
   }
 
   static void _handleError(String error) {
     // Handle the error (e.g., show an error message to the user)
     print('Error: $error');
   }
+
+  static String? getAccessToken() {
+    return _accessToken;
+  }
+
+
 }

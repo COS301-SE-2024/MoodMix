@@ -19,7 +19,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   void initState() {
     super.initState();
     _initializeBackendUrl();
-    SpotifyAuth.initialize();
+    SpotifyAuth.initialize(_onLoginSuccess);
 
   }
 
@@ -72,6 +72,15 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     } catch (e) {
       print('Error: $e');
     }
+  }
+
+
+
+  void _onLoginSuccess(String accessToken){ //if the user sccesfully logs in then we can redirect them
+
+    Navigator.pushReplacementNamed(context, '/camera');
+
+
   }
 
   @override
