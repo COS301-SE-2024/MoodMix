@@ -58,13 +58,12 @@ public class MainActivity extends FlutterActivity {
                 case TOKEN:
                     // Handle successful response
                     String accessToken = response.getAccessToken();
-                    sendResultToFlutter(accessToken);
-                    System.out.println("--------------------------------------------------------------------------------\n");
-                    System.out.println("Access Token: " + accessToken);
+                    sendResultToFlutter(accessToken); // Sending access token to Flutter
+                    System.out.println(accessToken);
+                    System.out.println("-----------------------------------------------------------");
                     break;
                 case ERROR:
                     // Handle error response
-                    System.out.println("Could not get the token?");
                     sendErrorToFlutter(response.getError());
                     break;
                 default:
@@ -76,8 +75,9 @@ public class MainActivity extends FlutterActivity {
 
     private void sendResultToFlutter(String accessToken) {
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL)
-                .invokeMethod("onSuccess", accessToken);
+                .invokeMethod("onSuccess", accessToken); // Method to send access token to Flutter
     }
+
 
     private void sendErrorToFlutter(String error) {
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL)

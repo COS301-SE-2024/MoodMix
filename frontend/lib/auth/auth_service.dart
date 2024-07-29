@@ -189,9 +189,7 @@ class SpotifyAuth {
 
   static Future<String?> authenticate() async {
     try {
-      final String? accessToken = await _channel.invokeMethod('authenticate');
-      print("Returning access token from thingy");
-      print(accessToken);
+      final String? accessToken = await _channel.invokeMethod('authenticate'); // Calls native method
       return accessToken;
     } on PlatformException catch (e) {
       print("Failed to authenticate: ${e.message}");

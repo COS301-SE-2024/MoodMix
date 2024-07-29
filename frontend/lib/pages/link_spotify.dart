@@ -34,11 +34,10 @@ class _LinkSpotifyState extends State<LinkSpotify> {
 
   Future<void> _linkSpotify() async {
     try {
-      final accessToken = await SpotifyAuth.authenticate();
+      final accessToken = await SpotifyAuth.authenticate(); // Retrieves access token
       if (accessToken != null) {
         // Navigate to camera page on successful authentication
-         Navigator.pushReplacementNamed(context, '/camera');
-
+        Navigator.pushReplacementNamed(context, '/camera');
       } else {
         // Handle authentication failure
         print('Authentication failed');
@@ -48,6 +47,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
       print('Error: $e');
     }
   }
+
 
 
   void _linkSpotify2() async { //this is the method for web, which we are not going to currently use
