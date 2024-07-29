@@ -189,11 +189,47 @@ class SpotifyAuth {
 
   static Future<String?> authenticate() async {
     try {
+
       final String? accessToken = await _channel.invokeMethod('authenticate'); // Calls native method
       return accessToken;
     } on PlatformException catch (e) {
       print("Failed to authenticate: ${e.message}");
       return null;
     }
+  }
+
+
+
+  // Initialize the service and set the method call handler
+  static void initialize() {
+    _channel.setMethodCallHandler(_handleMethodCall);
+  }
+
+  // Method to handle method calls from native code
+  static Future<void> _handleMethodCall(MethodCall call) async {
+    switch (call.method) {
+      case 'onSuccess':
+        String accessToken = call.arguments;
+        _handleSuccess(accessToken);
+        break;
+      case 'onError':
+        String error = call.arguments;
+        _handleError(error);
+        break;
+      default:
+        throw MissingPluginException('Not implemented: ${call.method}');
+    }
+  }
+
+  static void _handleSuccess(String accessToken) {
+    // Handle the access token (e.g., save it, use it for API calls, etc.)
+    print('Login was a success and flutter has the recieved the token:');
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    print('Access Token: $accessToken');
+  }
+
+  static void _handleError(String error) {
+    // Handle the error (e.g., show an error message to the user)
+    print('Error: $error');
   }
 }

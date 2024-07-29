@@ -7,6 +7,7 @@ import 'package:frontend/auth/auth_service.dart';
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
 
+
   @override
   State<LinkSpotify> createState() => _LinkSpotifyState();
 }
@@ -18,6 +19,8 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   void initState() {
     super.initState();
     _initializeBackendUrl();
+    SpotifyAuth.initialize();
+
   }
 
   Future<void> _initializeBackendUrl() async {
@@ -34,14 +37,16 @@ class _LinkSpotifyState extends State<LinkSpotify> {
 
   Future<void> _linkSpotify() async {
     try {
+
       final accessToken = await SpotifyAuth.authenticate(); // Retrieves access token
       if (accessToken != null) {
         // Navigate to camera page on successful authentication
         Navigator.pushReplacementNamed(context, '/camera');
       } else {
         // Handle authentication failure
+        print(accessToken);
         print('Authentication failed');
-        // Navigator.pushReplacementNamed(context, '/camera');
+        //Navigator.pushReplacementNamed(context, '/camera');
       }
     } catch (e) {
       print('Error: $e');

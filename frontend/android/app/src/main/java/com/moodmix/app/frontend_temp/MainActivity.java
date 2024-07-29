@@ -74,6 +74,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     private void sendResultToFlutter(String accessToken) {
+
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .invokeMethod("onSuccess", accessToken); // Method to send access token to Flutter
     }
