@@ -193,7 +193,8 @@ class SpotifyAuth {
 
   static Future<String?> authenticate() async {
     try {
-      final String? accessToken = await _channel.invokeMethod('authenticate'); // Calls native method
+      final String? accessToken = await _channel.invokeMethod(
+          'authenticate'); // Calls native method
       return accessToken;
     } on PlatformException catch (e) {
       print("Failed to authenticate: ${e.message}");
@@ -232,7 +233,6 @@ class SpotifyAuth {
     if (_onSuccessCallback != null) {
       _onSuccessCallback!(accessToken); // Call the success callback
     }
-
   }
 
   static void _handleError(String error) {
@@ -297,6 +297,171 @@ class SpotifyAuth {
     } catch (e) {
       print('Error: $e');
       return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> fetchPlaylistTracks(
+      String playlistId) async {
+    if (_accessToken == null) {
+      print('Access token is not available');
+      return null;
+    }
+
+    final String endpoint = 'https://api.spotify.com/v1/playlists/$playlistId/tracks';
+    try {
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {'Authorization': 'Bearer $_accessToken'},
+      );
+      if (response.statusCode == 200) {
+        final playlistData = jsonDecode(response.body);
+        print('Playlist tracks fetched:');
+        print(playlistData);
+        return playlistData;
+      } else {
+        print('Failed to fetch playlist tracks: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchTrackAudioFeatures(
+      List<String> trackIds) async {
+    if (_accessToken == null) {
+      print('Access token is not available');
+      return null;
+    }
+
+    final String ids = trackIds.join(',');
+    final String endpoint = 'https://api.spotify.com/v1/audio-features?ids=$ids';
+    try {
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {'Authorization': 'Bearer $_accessToken'},
+      );
+      if (response.statusCode == 200) {
+        final audioFeatures = jsonDecode(response.body);
+        print('Audio features fetched:');
+        print(audioFeatures);
+        return List<Map<String, dynamic>>.from(audioFeatures['audio_features']);
+      } else {
+        print('Failed to fetch audio features: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  static Future<String> calculateAggregateMood(String playlistId) async {
+    final playlistTracks = await fetchPlaylistTracks(playlistId);
+    if (playlistTracks == null || playlistTracks['items'] == null) {
+      return 'Neutral';
+    }
+
+    final trackIds = (playlistTracks['items'] as List).map((
+        item) => item['track']['id'] as String).toList();
+    final audioFeatures = await fetchTrackAudioFeatures(trackIds);
+    if (audioFeatures == null || audioFeatures.isEmpty) {
+      return 'Neutral';
+    }
+
+    double avgValence = audioFeatures.map((
+        feature) => feature['valence'] as double).reduce((a, b) => a + b) /
+        audioFeatures.length;
+    double avgEnergy = audioFeatures.map((
+        feature) => feature['energy'] as double).reduce((a, b) => a + b) /
+        audioFeatures.length;
+    double avgDanceability = audioFeatures.map((
+        feature) => feature['danceability'] as double).reduce((a, b) => a + b) /
+        audioFeatures.length;
+    double avgAcousticness = audioFeatures.map((
+        feature) => feature['acousticness'] as double).reduce((a, b) => a + b) /
+        audioFeatures.length;
+
+    // Define stricter thresholds for moods
+    const double happyValenceThreshold = 0.6;
+    const double angryValenceThreshold = 0.3;
+    const double sadValenceThreshold = 0.2;
+    const double surprisedValenceThreshold = 0.8;
+
+    const double highThreshold = 0.5;
+    const double lowThreshold = 0.5;
+    const double veryLowThreshold = 0.2;
+
+    // Determine mood based on average values
+    if (avgValence > happyValenceThreshold && avgEnergy > highThreshold &&
+        avgDanceability > highThreshold && avgAcousticness < lowThreshold) {
+      return 'Happy';
+    } else
+    if (avgValence < angryValenceThreshold && avgEnergy > highThreshold &&
+        avgDanceability > highThreshold && avgAcousticness < lowThreshold) {
+      return 'Angry';
+    } else if (avgValence < sadValenceThreshold && avgEnergy < lowThreshold &&
+        avgDanceability < lowThreshold && avgAcousticness > highThreshold) {
+      return 'Sad';
+    } else
+    if (avgValence > surprisedValenceThreshold && avgEnergy > highThreshold &&
+        avgDanceability > highThreshold && avgAcousticness < lowThreshold) {
+      return 'Surprised';
+    } else {
+      // Check for neutral only if the playlist is perfectly balanced
+      bool isPerfectlyBalanced =
+          (avgValence > (sadValenceThreshold - 0.00005) &&
+              avgValence < (happyValenceThreshold + 0.00005)) &&
+              (avgEnergy > (lowThreshold - 0.00005) &&
+                  avgEnergy < (highThreshold + 0.00005)) &&
+              (avgDanceability > (lowThreshold - 0.00005) &&
+                  avgDanceability < (highThreshold + 0.00005)) &&
+              (avgAcousticness > (veryLowThreshold - 0.00005) &&
+                  avgAcousticness < (highThreshold + 0.00005));
+
+
+      if (isPerfectlyBalanced) {
+        return 'Neutral';
+      } else {
+        // Classify based on closest matching mood if not perfectly balanced
+        return _classifyMood(
+            avgValence, avgEnergy, avgDanceability, avgAcousticness);
+      }
+    }
+  }
+
+// Helper function to classify based on closest mood
+  static String _classifyMood(double valence, double energy, double danceability,
+      double acousticness) {
+    if (valence > 0.7 && energy > 0.7 && danceability > 0.7 &&
+        acousticness < 0.5) {
+      return 'Happy';
+    } else if (valence < 0.3 && energy > 0.7 && danceability > 0.7 &&
+        acousticness < 0.5) {
+      return 'Angry';
+    } else if (valence < 0.3 && energy < 0.3 && danceability < 0.3 &&
+        acousticness > 0.7) {
+      return 'Sad';
+    } else if (valence > 0.8 && energy > 0.8 && danceability > 0.8 &&
+        acousticness < 0.5) {
+      return 'Surprised';
+    } else if (valence > 0.5 && energy > 0.5 && danceability < 0.5 &&
+        acousticness < 0.5) {
+      return 'Angry'; // Example additional mood
+    } else if (valence < 0.5 && energy > 0.5 && danceability < 0.5 &&
+        acousticness < 0.5) {
+      return 'Angry'; // Example additional mood
+    } else if (valence < 0.5 && energy < 0.5 && danceability > 0.5 &&
+        acousticness < 0.5) {
+      return 'Sad'; // Example additional mood
+    } else if (valence > 0.5 && energy < 0.5 && danceability < 0.5 &&
+        acousticness < 0.5) {
+      return 'Sad'; // Example additional mood
+    } else {
+      return 'Sad'; // For any cases not covered by the above conditions
     }
   }
 }

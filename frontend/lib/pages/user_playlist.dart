@@ -82,7 +82,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
                         // Handle onTap action if needed
                         print('Tapped on playlist: ${playlist['name']}');
                       },
-                      mood: 'Happy', // Replace with actual mood if applicable
                       songCount: playlist['tracks']['total'],
                       playlistLink: playlist['id'],
                       playlistName: playlist['name'],
