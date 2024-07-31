@@ -35,14 +35,14 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _fetchSpotifyUserDetails() async {
-    final spotifyUserDetails = await AuthService().getSpotifyUserDetails();
+    final spotifyUserDetails = await SpotifyAuth.fetchUserDetails();
     if (spotifyUserDetails != null) {
       setState(() {
         _spotifyUsername = spotifyUserDetails['display_name'];
         _spotifyProfileImage = spotifyUserDetails['images'] != null && spotifyUserDetails['images'].isNotEmpty
             ? spotifyUserDetails['images'][1]['url']
             : '';
-        _playlistNames = spotifyUserDetails['playlists'] != null 
+        _playlistNames = spotifyUserDetails['playlists'] != null
             ? List<String>.from(spotifyUserDetails['playlists'].map((playlist) => playlist['name']))
             : [];
       });
@@ -84,49 +84,49 @@ class _UserProfileState extends State<UserProfile> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CircleAvatar(
-                          backgroundImage: _spotifyProfileImage != null 
-                              ? NetworkImage(_spotifyProfileImage!) 
+                          backgroundImage: _spotifyProfileImage != null
+                              ? NetworkImage(_spotifyProfileImage!)
                               : AssetImage('assets/images/images.jpeg') as ImageProvider,
                           backgroundColor: Colors.transparent,
                           radius: avatarRadius,
                         ),
                         SizedBox(width: 30),
                         Flexible(
-                          child: Opacity(
-                            opacity: 0.8,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Profile',
-                                  style: TextStyle(
-                                    fontSize: parentWidth * 0.09,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w700,
-                                    color: Theme.of(context).colorScheme.secondary,
+                            child: Opacity(
+                              opacity: 0.8,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Profile',
+                                    style: TextStyle(
+                                      fontSize: parentWidth * 0.09,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  'Temporary $_displayName',
-                                  style: TextStyle(
-                                    fontSize: parentWidth * 0.07,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(context).colorScheme.secondary,
+                                  Text(
+                                    'Rhevan $_displayName',
+                                    style: TextStyle(
+                                      fontSize: parentWidth * 0.07,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w400,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  '$_spotifyUsername',
-                                  style: TextStyle(
-                                    fontSize: parentWidth * 0.07,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(context).colorScheme.secondary,
+                                  Text(
+                                    '$_spotifyUsername',
+                                    style: TextStyle(
+                                      fontSize: parentWidth * 0.07,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w400,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
+                                ],
+                              ),
+                            )
                         ),
                       ],
                     ),
@@ -140,6 +140,13 @@ class _UserProfileState extends State<UserProfile> {
                     ProfileTimelineNode(
                       title: "Test Playlist Two",
                       mood: "Sad",
+                      date: "12/02/2024",
+                      alignOffset: avatarCenterX,
+                      scale: parentWidth * 0.004,
+                    ),
+                    ProfileTimelineNode(
+                      title: "Test Playlist Three",
+                      mood: "Angry",
                       date: "12/02/2024",
                       alignOffset: avatarCenterX,
                       scale: parentWidth * 0.004,

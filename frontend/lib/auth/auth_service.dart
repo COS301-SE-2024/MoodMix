@@ -17,7 +17,7 @@ class AuthService {
 
   Future<Map<String, dynamic>?> getSpotifyUserDetails() async {
     final String endpoint =
-        'http://localhost:5002/spotify-user'; // Replace with your backend endpoint
+        'https://api.spotify.com/v1/me'; // Replace with your backend endpoint
     try {
       final response = await http.get(Uri.parse(endpoint));
       if (response.statusCode == 200) {
@@ -193,7 +193,6 @@ class SpotifyAuth {
 
   static Future<String?> authenticate() async {
     try {
-
       final String? accessToken = await _channel.invokeMethod('authenticate'); // Calls native method
       return accessToken;
     } on PlatformException catch (e) {
@@ -202,9 +201,6 @@ class SpotifyAuth {
     }
   }
 
-
-
-  // Initialize the service and set the method call handler
   // Initialize the service and set the method call handler
   static void initialize(Function(String) onSuccessCallback) {
     _onSuccessCallback = onSuccessCallback;
@@ -248,5 +244,31 @@ class SpotifyAuth {
     return _accessToken;
   }
 
+  static Future<Map<String, dynamic>?> fetchUserDetails() async {
+    if (_accessToken == null) {
+      print('Access token is not available');
+      return null;
+    }
 
+    final String endpoint = 'https://api.spotify.com/v1/me';
+    try {
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {'Authorization': 'Bearer $_accessToken'},
+      );
+      if (response.statusCode == 200) {
+        final userDetails = jsonDecode(response.body);
+        print('User details fetched and stored:');
+        print(userDetails);
+        return userDetails;
+      } else {
+        print('Failed to fetch user details: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
 }
