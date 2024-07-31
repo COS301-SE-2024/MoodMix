@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart'; // Corrected import
-
 import '../auth/auth_service.dart'; // Import the AuthService for user details
 
 class PlaylistPage extends StatefulWidget {
@@ -17,14 +16,16 @@ class _PlaylistPageState extends State<PlaylistPage> {
   @override
   void initState() {
     super.initState();
-    _fetchSpotifyUserDetails();
+    _fetchSpotifyPlaylists();
   }
 
-  Future<void> _fetchSpotifyUserDetails() async {
-    final spotifyUserDetails = await AuthService().getSpotifyPlaylists();
-    if (spotifyUserDetails != null) {
+  Future<void> _fetchSpotifyPlaylists() async {
+    final playlistData = await SpotifyAuth.fetchUserPlaylists();
+    print('Spotify playlists fetched:');
+    print(playlistData); // Debug print to check the returned data
+    if (playlistData != null) {
       setState(() {
-        playlists = spotifyUserDetails;
+        playlists = playlistData;
       });
     } else {
       setState(() {
@@ -82,7 +83,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                         print('Tapped on playlist: ${playlist['name']}');
                       },
                       mood: 'Happy', // Replace with actual mood if applicable
-                      songCount: 12,
+                      songCount: playlist['tracks']['total'],
                       playlistLink: playlist['id'],
                       playlistName: playlist['name'],
                     ),

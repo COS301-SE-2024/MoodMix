@@ -271,4 +271,32 @@ class SpotifyAuth {
       return null;
     }
   }
+
+  static Future<List<dynamic>?> fetchUserPlaylists() async {
+    if (_accessToken == null) {
+      print('Access token is not available');
+      return null;
+    }
+
+    final String endpoint = 'https://api.spotify.com/v1/me/playlists';
+    try {
+      final response = await http.get(
+        Uri.parse(endpoint),
+        headers: {'Authorization': 'Bearer $_accessToken'},
+      );
+      if (response.statusCode == 200) {
+        final playlistDetails = jsonDecode(response.body);
+        print('User playlists fetched and stored:');
+        print(playlistDetails); // Debug print the entire response
+        return playlistDetails['items'];
+      } else {
+        print('Failed to fetch user playlists: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
 }
