@@ -163,6 +163,7 @@ everywhere. MoodMix allows us to do just that.
 ## Project Boards
 
 ### [MoodMix Project Board](https://github.com/orgs/COS301-SE-2024/projects/86/views/1)
+### [MoodMix Burndown Chart](https://github.com/orgs/COS301-SE-2024/projects/86/insights?period=max)
 
 ## Demo Videos
 
