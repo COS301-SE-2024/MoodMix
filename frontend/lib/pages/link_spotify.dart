@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:frontend/auth/auth_service.dart';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
+
 
   @override
   State<LinkSpotify> createState() => _LinkSpotifyState();
@@ -17,6 +19,8 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   void initState() {
     super.initState();
     _initializeBackendUrl();
+    SpotifyAuth.initialize(_onLoginSuccess);
+
   }
 
   Future<void> _initializeBackendUrl() async {
@@ -31,7 +35,27 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     }
   }
 
-  void _linkSpotify() async {
+  Future<void> _linkSpotify() async {
+    try {
+
+      final accessToken = await SpotifyAuth.authenticate(); // Retrieves access token
+      if (accessToken != null) {
+        // Navigate to camera page on successful authentication
+        Navigator.pushReplacementNamed(context, '/camera');
+      } else {
+        // Handle authentication failure
+        print(accessToken);
+        print('Authentication failed');
+        //Navigator.pushReplacementNamed(context, '/camera');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+
+  void _linkSpotify2() async { //this is the method for web, which we are not going to currently use
     if (backendUrl.isEmpty) {
       print('Backend URL is not initialized');
       return;
@@ -48,6 +72,15 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     } catch (e) {
       print('Error: $e');
     }
+  }
+
+
+
+  void _onLoginSuccess(String accessToken){ //if the user sccesfully logs in then we can redirect them
+
+    Navigator.pushReplacementNamed(context, '/camera');
+
+
   }
 
   @override

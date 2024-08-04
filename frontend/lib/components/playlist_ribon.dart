@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:frontend/components/playlist_details.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../auth/auth_service.dart';
 
 class PlaylistRibbon extends StatefulWidget {
   final Function(int) onTap;
-  final String mood;
   final int songCount;
   final String playlistLink;
   final String playlistName;
@@ -12,7 +12,6 @@ class PlaylistRibbon extends StatefulWidget {
   const PlaylistRibbon({
     Key? key,
     required this.onTap,
-    required this.mood,
     required this.songCount,
     required this.playlistLink,
     required this.playlistName,
@@ -23,25 +22,19 @@ class PlaylistRibbon extends StatefulWidget {
 }
 
 class _PlaylistRibbonState extends State<PlaylistRibbon> {
+  String mood = 'Unknown'; // Class member variable to store mood
+
   @override
   void initState() {
     super.initState();
+    _fetchAndDisplayMood();
   }
 
-  // Function to handle tap event
-  void _handleTap(String pIcon) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => PlaylistDetails(
-    //       playlistIcon: pIcon,
-    //       api: spotifyApi,
-    //       playlistLink: widget.playlistLink,
-    //       mood: widget.mood,
-    //       songCount: widget.songCount,
-    //     ),
-    //   ),
-    // );
+  void _fetchAndDisplayMood() async {
+    String fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
+    setState(() {
+      mood = fetchedMood; // Update the mood state
+    });
   }
 
   @override
@@ -49,19 +42,60 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
     final screenWidth = MediaQuery.of(context).size.width;
     final playlistIcon;
 
-    Color containerColor;
-    if (widget.mood == 'Happy') {
-      containerColor = Theme.of(context).colorScheme.tertiary;
-      playlistIcon = Icons.mood;
-    } else if (widget.mood == 'Sad') {
-      containerColor = Theme.of(context).colorScheme.tertiary;
-      playlistIcon = 'assets/images/sad_playlist_icon.png';
-    } else if (widget.mood == 'Angry') {
-      containerColor = Theme.of(context).colorScheme.secondary;
-      playlistIcon = 'assets/images/angry_playlist_icon.png';
+    List<Color> gradientColors;
+    print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+    print(mood);
+    print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+    if (mood == 'Happy') {
+      gradientColors = [
+        Color.fromARGB(255, 18, 85, 20),
+        Color.fromARGB(221, 62, 239, 76)
+      ];
+      playlistIcon = SvgPicture.asset(
+        'assets/icons/Open_Up.svg',
+        width: 100,
+        color: Color.fromARGB(255, 18, 85, 20),
+      );
+    } else if (mood == 'Sad') {
+      gradientColors = [
+        Color.fromARGB(255, 18, 27, 85),
+        Color.fromARGB(221, 62, 118, 239)
+      ];
+      playlistIcon = SvgPicture.asset(
+        'assets/icons/Sad_Down.svg',
+        width: 100,
+        color: Color.fromARGB(255, 18, 27, 85),
+      );
+    } else if (mood == 'Angry') {
+      gradientColors = [
+        Color.fromARGB(255, 85, 18, 18),
+        Color.fromARGB(221, 239, 62, 62)
+      ];
+      playlistIcon = SvgPicture.asset(
+        'assets/icons/Angry_Down.svg',
+        width: 100,
+        color: Color.fromARGB(255, 85, 18, 18),
+      );
+    } else if (mood == 'Surprised') {
+      gradientColors = [
+        Color.fromARGB(255, 110, 7, 126),
+        Color.fromARGB(221, 215, 62, 239)
+      ];
+      playlistIcon = SvgPicture.asset(
+        'assets/icons/Open_O.svg',
+        width: 100,
+        color: Color.fromARGB(255, 110, 7, 126),
+      );
     } else {
-      containerColor = Colors.grey;
-      playlistIcon = 'assets/images/sad_playlist_icon.png';
+      gradientColors = [
+        Color.fromARGB(255, 5, 1, 1),
+        Color.fromARGB(221, 151, 133, 133)
+      ];
+      playlistIcon = SvgPicture.asset(
+        'assets/icons/Open_Norm.svg',
+        width: 100,
+        color: Color.fromARGB(255, 5, 1, 1),
+      );;
     }
 
     return GestureDetector(
@@ -71,71 +105,73 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
       child: Container(
         height: 140,
         decoration: BoxDecoration(
-          color: containerColor,
+          gradient: LinearGradient(
+            colors: gradientColors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomCenter,
+          ),
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        child: Row(
+        child: Stack(
           children: [
-            Expanded(
-              flex: 4,
+            Positioned(
+              right: 25,
+              top: 10,
+              bottom: 10,
               child: Container(
-                padding: EdgeInsets.all(10),
-                child: Icon(
-                  playlistIcon,
-                  size: 90,
-                ),
+                child: playlistIcon,
               ),
             ),
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: Text(
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(25, 10, 20, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
                       widget.playlistName,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 30,
                         fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
                       textAlign: TextAlign.left,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    child: Text(
-                      "Mood: ${widget.mood}",
+                    SizedBox(height: 5),
+                    Text(
+                      "Mood: $mood",
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 25,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w400,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
                       textAlign: TextAlign.left,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: Text(
+                    SizedBox(height: 5),
+                    Text(
                       "Song Count: ${widget.songCount}",
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 25,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w400,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
                       textAlign: TextAlign.left,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _handleTap(String pIcon) {
+    // Implement your handle tap logic here
   }
 }

@@ -169,7 +169,6 @@ class _CameraPageState extends State<CameraPage> {
                               // Handle onTap action if needed
                               print('Tapped on playlist: ');
                             },
-                            mood: 'Happy', // Replace with actual mood if applicable
                             songCount: 12,
                             playlistLink: '12123231',
                             playlistName: 'dsfsdfsdf',
