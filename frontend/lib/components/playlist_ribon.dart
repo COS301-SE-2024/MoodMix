@@ -8,6 +8,7 @@ class PlaylistRibbon extends StatefulWidget {
   final int songCount;
   final String playlistLink;
   final String playlistName;
+  final bool isFullSize; // New boolean parameter
 
   const PlaylistRibbon({
     Key? key,
@@ -15,6 +16,7 @@ class PlaylistRibbon extends StatefulWidget {
     required this.songCount,
     required this.playlistLink,
     required this.playlistName,
+    this.isFullSize = false, // Default to false if not provided
   }) : super(key: key);
 
   @override
@@ -39,63 +41,40 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final playlistIcon;
-
     List<Color> gradientColors;
-    print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-    print(mood);
-    print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+    Color borderColor;
+
     if (mood == 'Happy') {
-      gradientColors = [
-        Color.fromARGB(255, 18, 85, 20),
-        Color.fromARGB(221, 62, 239, 76)
-      ];
       playlistIcon = SvgPicture.asset(
         'assets/icons/Open_Up.svg',
         width: 100,
-        color: Color.fromARGB(255, 18, 85, 20),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
       );
     } else if (mood == 'Sad') {
-      gradientColors = [
-        Color.fromARGB(255, 18, 27, 85),
-        Color.fromARGB(221, 62, 118, 239)
-      ];
       playlistIcon = SvgPicture.asset(
         'assets/icons/Sad_Down.svg',
         width: 100,
-        color: Color.fromARGB(255, 18, 27, 85),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
       );
     } else if (mood == 'Angry') {
-      gradientColors = [
-        Color.fromARGB(255, 85, 18, 18),
-        Color.fromARGB(221, 239, 62, 62)
-      ];
       playlistIcon = SvgPicture.asset(
         'assets/icons/Angry_Down.svg',
         width: 100,
-        color: Color.fromARGB(255, 85, 18, 18),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
       );
     } else if (mood == 'Surprised') {
-      gradientColors = [
-        Color.fromARGB(255, 110, 7, 126),
-        Color.fromARGB(221, 215, 62, 239)
-      ];
       playlistIcon = SvgPicture.asset(
         'assets/icons/Open_O.svg',
         width: 100,
-        color: Color.fromARGB(255, 110, 7, 126),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
       );
     } else {
-      gradientColors = [
-        Color.fromARGB(255, 5, 1, 1),
-        Color.fromARGB(221, 151, 133, 133)
-      ];
       playlistIcon = SvgPicture.asset(
         'assets/icons/Open_Norm.svg',
         width: 100,
-        color: Color.fromARGB(255, 5, 1, 1),
-      );;
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+      );
     }
 
     return GestureDetector(
@@ -103,31 +82,39 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
         _handleTap(playlistIcon);
       },
       child: Container(
-        height: 140,
+        width: widget.isFullSize ? double.infinity : null,
+        height: widget.isFullSize ? double.infinity : 140,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradientColors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomCenter,
-          ),
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
           borderRadius: BorderRadius.all(Radius.circular(20)),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+            width: 2,
+          ),
         ),
         child: Stack(
           children: [
             Positioned(
               right: 25,
-              top: 10,
-              bottom: 10,
+              top: 20,
               child: Container(
                 child: playlistIcon,
               ),
             ),
-            Positioned.fill(
+            Align(
+              alignment: widget.isFullSize ? Alignment.topLeft : Alignment.centerLeft,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(25, 10, 20, 10),
+                padding: EdgeInsets.fromLTRB(
+                  25,
+                  widget.isFullSize ? 20 : 0,
+                  20,
+                  widget.isFullSize ? 10 : 0,
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
+                  mainAxisAlignment: widget.isFullSize
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center, // Align items to the top or center based on size
                   children: [
                     Text(
                       widget.playlistName,
@@ -137,7 +124,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                         fontWeight: FontWeight.w500,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.left, // Align text to the left
                     ),
                     SizedBox(height: 5),
                     Text(
@@ -146,9 +133,9 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                         fontSize: 25,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                       ),
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.left, // Align text to the left
                     ),
                     SizedBox(height: 5),
                     Text(
@@ -157,9 +144,9 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                         fontSize: 25,
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                       ),
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.left, // Align text to the left
                     ),
                   ],
                 ),

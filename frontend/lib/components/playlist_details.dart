@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/components/song_ribon.dart';
 import 'package:spotify/spotify.dart' as spotify;
 
@@ -25,67 +26,15 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset(
-                    'assets/images/album_cover.jpg',
-                    fit: BoxFit.cover,
-                    height: 130,
-                    width: 130,
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          playlistName,
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w200,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Mood: ",
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w200,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          "Song Count: $songCount",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w200,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              // Add SongRibbon here
-
-              SizedBox(height: 20), // Add some bottom spacing if needed
-            ],
-          ),
-        ),
+      body: PlaylistRibbon(
+        onTap: (playlistIcon) {
+          // Handle onTap action if needed
+          print('Tapped on playlist: ');
+        },
+        songCount: 12,
+        playlistLink: '12123231',
+        playlistName: 'dsfsdfsdf',
+        isFullSize: true,
       ),
     );
   }

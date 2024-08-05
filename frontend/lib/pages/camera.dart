@@ -58,8 +58,8 @@ class _CameraPageState extends State<CameraPage> {
       context: context,
       builder: (BuildContext context) {
         return ConfirmationPopUp(
-          imagePath: pictureFile!.path, // Pass the image path to the pop-up
-          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front, // Check if the front camera was used
+          imagePath: pictureFile!.path,
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front, mood: 'Happy', // Check if the front camera was used
         );
       },
     ).then((_) {
@@ -99,16 +99,8 @@ class _CameraPageState extends State<CameraPage> {
                           margin: const EdgeInsets.only(top: 20),
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.tertiary,
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Theme.of(context).colorScheme.tertiary,
-                                spreadRadius: 2,
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20.0),
@@ -177,6 +169,7 @@ class _CameraPageState extends State<CameraPage> {
                             songCount: 12,
                             playlistLink: '12123231',
                             playlistName: 'dsfsdfsdf',
+                            isFullSize: false,
                           ),
                         ),
                       ),

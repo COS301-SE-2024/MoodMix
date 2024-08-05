@@ -6,10 +6,12 @@ import 'playlist_details.dart'; // Import the playlist_details.dart file
 class ConfirmationPopUp extends StatefulWidget {
   final String imagePath;
   final bool isFrontCamera;
+  final String mood;
 
   const ConfirmationPopUp({
     Key? key,
     required this.imagePath,
+    required this.mood,
     this.isFrontCamera = false,
   }) : super(key: key);
 
@@ -69,15 +71,18 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                         elevation: 0,
                         leading: IconButton(
                           icon: Icon(Icons.arrow_back),
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.tertiary,
                           onPressed: () {
                             Navigator.of(context).pop(); // Closes the pop-up
                           },
                         ),
                         title: Text(
-                          _isImageView ? 'Your Photo' : 'Playlist Details',
+                          _isImageView ? widget.mood : 'Playlist Details',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 30,
+                            color: Theme.of(context).colorScheme.tertiary,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         centerTitle: true,
@@ -170,7 +175,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                   // Playlist details widget
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(0.0),
                       child: PlaylistDetails(), // Display PlaylistDetails widget
                     ),
                   ),
