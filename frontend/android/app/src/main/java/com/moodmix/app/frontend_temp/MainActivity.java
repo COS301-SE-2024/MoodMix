@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import android.net.Uri;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
@@ -43,10 +44,46 @@ public class MainActivity extends FlutterActivity {
     private void authenticate() {
         AuthorizationRequest.Builder builder =
                 new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private", "playlist-read", "playlist-read-private"});
+        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming"});
         AuthorizationRequest request = builder.build();
         System.out.println("Login authentication will now happen");
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
+
+    }
+
+
+    private void authenticateViaBrowser() {
+        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
+        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming"});
+        builder.setShowDialog(true);
+        AuthorizationRequest request = builder.build();
+        AuthorizationClient.openLoginInBrowser(this, request);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Uri uri = intent.getData();
+        if (uri != null) {
+            AuthorizationResponse response = AuthorizationResponse.fromUri(uri);
+
+           switch (response.getType()) {
+                case TOKEN:
+                    // Handle successful response
+                    String accessToken = response.getAccessToken();
+                    sendResultToFlutter(accessToken); // Sending access token to Flutter
+                    System.out.println(accessToken);
+                    System.out.println("-----------------------------------------------------------");
+                    break;
+                case ERROR:
+
+                    break;
+                default:
+                    // Handle other cases
+                    break;
+            }
+        }
     }
 
     @Override
@@ -64,7 +101,8 @@ public class MainActivity extends FlutterActivity {
                     break;
                 case ERROR:
                     // Handle error response
-                    sendErrorToFlutter(response.getError());
+                    System.out.println("This failed and we will try browser login rn");
+                    authenticateViaBrowser();
                     break;
                 default:
                     // Handle other cases
