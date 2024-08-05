@@ -65,6 +65,7 @@ class MyApp extends StatelessWidget {
         '/accounthelp': (context) => AccountHelpPage(),
         '/playlisthelp': (context) => PlaylistHelpPage(),
         '/camerahelp': (context) => CameraVoiceHelpPage(),
+        '/audio': (context) => AudioPlayerPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
