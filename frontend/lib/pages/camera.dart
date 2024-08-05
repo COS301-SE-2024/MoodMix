@@ -3,7 +3,9 @@ import 'package:camera/camera.dart';
 import 'dart:io';
 
 import 'package:frontend/components/navbar.dart';
-import 'package:frontend/components/playlist_ribon.dart';
+import 'package:frontend/components/confirm_pop_up.dart'; // Import ConfirmationPopUp
+
+import '../components/playlist_ribon.dart'; // Import PlaylistRibbon
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -22,18 +24,13 @@ class _CameraPageState extends State<CameraPage> {
   void initState() {
     super.initState();
     if (widget.cameras.isNotEmpty) {
-      print('Cameras available: ${widget.cameras}');
       controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
       controller?.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
+        if (!mounted) return;
         setState(() {});
       }).catchError((error) {
         print('Camera initialization error: $error');
       });
-    } else {
-      print('No cameras available');
     }
   }
 
@@ -48,14 +45,29 @@ class _CameraPageState extends State<CameraPage> {
       selectedCameraIndex = (selectedCameraIndex + 1) % widget.cameras.length;
       controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
       controller?.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
+        if (!mounted) return;
         setState(() {});
       }).catchError((error) {
         print('Camera initialization error: $error');
       });
     }
+  }
+
+  void _showConfirmImage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          imagePath: pictureFile!.path, // Pass the image path to the pop-up
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front, // Check if the front camera was used
+        );
+      },
+    ).then((_) {
+      // Reset pictureFile after dialog is closed
+      setState(() {
+        pictureFile = null;
+      });
+    });
   }
 
   @override
@@ -107,16 +119,6 @@ class _CameraPageState extends State<CameraPage> {
                                   aspectRatio: controller!.value.aspectRatio,
                                   child: CameraPreview(controller!),
                                 ),
-                                if (pictureFile != null)
-                                  Positioned.fill(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      child: Image.file(
-                                        File(pictureFile!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
                                 Align(
                                   alignment: Alignment.center,
                                   child: Padding(
@@ -130,6 +132,9 @@ class _CameraPageState extends State<CameraPage> {
                                             onPressed: () async {
                                               pictureFile = await controller?.takePicture();
                                               setState(() {});
+                                              if (pictureFile != null) {
+                                                _showConfirmImage(); // Show ConfirmImage after taking the picture
+                                              }
                                             },
                                             icon: const Icon(
                                               Icons.camera_alt,
