@@ -4,37 +4,37 @@ import 'package:frontend/components/song_ribon.dart';
 import 'package:spotify/spotify.dart' as spotify;
 
 class PlaylistDetails extends StatefulWidget {
+  final String playlistName;
+  final int songCount;
+  final String playlistLink;
 
   const PlaylistDetails({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+    required this.playlistName,
+    required this.songCount,
+    required this.playlistLink,
+  });
 
   @override
   _PlaylistDetailsState createState() => _PlaylistDetailsState();
 }
 
 class _PlaylistDetailsState extends State<PlaylistDetails> {
-  String playlistName = "Loading...";
-  int songCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: PlaylistRibbon(
-        onTap: (playlistIcon) {
-          // Handle onTap action if needed
-          print('Tapped on playlist: ');
-        },
-        songCount: 12,
-        playlistLink: '12123231',
-        playlistName: 'dsfsdfsdf',
-        isFullSize: true,
+      body: SafeArea(
+        child: PlaylistRibbon(
+          onTap: (playlistIcon) {
+            // Handle onTap action if needed
+            print('Tapped on playlist: ${widget.playlistName}');
+          },
+          songCount: widget.songCount,
+          playlistLink: widget.playlistLink,
+          playlistName: widget.playlistName,
+          isFullSize: true,
+        ),
       ),
     );
   }

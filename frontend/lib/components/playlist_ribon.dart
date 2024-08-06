@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:frontend/components/playlist_details.dart';
+import 'package:frontend/components/song_ribon.dart';
 import '../auth/auth_service.dart';
 
 class PlaylistRibbon extends StatefulWidget {
@@ -8,7 +9,7 @@ class PlaylistRibbon extends StatefulWidget {
   final int songCount;
   final String playlistLink;
   final String playlistName;
-  final bool isFullSize; // New boolean parameter
+  final bool isFullSize;
 
   const PlaylistRibbon({
     Key? key,
@@ -16,7 +17,7 @@ class PlaylistRibbon extends StatefulWidget {
     required this.songCount,
     required this.playlistLink,
     required this.playlistName,
-    this.isFullSize = false, // Default to false if not provided
+    this.isFullSize = false,
   }) : super(key: key);
 
   @override
@@ -24,7 +25,7 @@ class PlaylistRibbon extends StatefulWidget {
 }
 
 class _PlaylistRibbonState extends State<PlaylistRibbon> {
-  String mood = 'Unknown'; // Class member variable to store mood
+  String mood = 'Unknown';
 
   @override
   void initState() {
@@ -35,58 +36,38 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
   void _fetchAndDisplayMood() async {
     String fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
     setState(() {
-      mood = fetchedMood; // Update the mood state
+      mood = fetchedMood;
     });
+  }
+
+  void _handleTap() {
+    if (!widget.isFullSize) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlaylistDetails(
+            playlistName: widget.playlistName,
+            songCount: widget.songCount,
+            playlistLink: widget.playlistLink,
+          ),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final playlistIcon;
-    List<Color> gradientColors;
-    Color borderColor;
-
-    if (mood == 'Happy') {
-      playlistIcon = SvgPicture.asset(
-        'assets/icons/Open_Up.svg',
-        width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-      );
-    } else if (mood == 'Sad') {
-      playlistIcon = SvgPicture.asset(
-        'assets/icons/Sad_Down.svg',
-        width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-      );
-    } else if (mood == 'Angry') {
-      playlistIcon = SvgPicture.asset(
-        'assets/icons/Angry_Down.svg',
-        width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-      );
-    } else if (mood == 'Surprised') {
-      playlistIcon = SvgPicture.asset(
-        'assets/icons/Open_O.svg',
-        width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-      );
-    } else {
-      playlistIcon = SvgPicture.asset(
-        'assets/icons/Open_Norm.svg',
-        width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-      );
-    }
+    final playlistIcon = _getPlaylistIcon();
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
-      onTap: () {
-        _handleTap(playlistIcon);
-      },
+      onTap: _handleTap,
       child: Container(
         width: widget.isFullSize ? double.infinity : null,
         height: widget.isFullSize ? double.infinity : 140,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: widget.isFullSize ? BorderRadius.zero : BorderRadius.all(Radius.circular(20)),
           border: Border.all(
             color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
             width: 2,
@@ -110,11 +91,61 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                   20,
                   widget.isFullSize ? 10 : 0,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
-                  mainAxisAlignment: widget.isFullSize
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.center, // Align items to the top or center based on size
+                child: widget.isFullSize
+                    ? SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.playlistName,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Mood: $mood",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Song Count: ${widget.songCount}",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 20),
+                      SongRibbon(),
+                      SizedBox(height: 20),
+                      Column(
+                        children: [
+                          _buildButton('Discard', screenWidth),
+                          SizedBox(height: 10),
+                          _buildButton('Regenerate', screenWidth),
+                          SizedBox(height: 10),
+                          _buildButton('Save Playlist', screenWidth),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+                    : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       widget.playlistName,
@@ -124,7 +155,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                         fontWeight: FontWeight.w500,
                         color: Theme.of(context).colorScheme.secondary,
                       ),
-                      textAlign: TextAlign.left, // Align text to the left
+                      textAlign: TextAlign.left,
                     ),
                     SizedBox(height: 5),
                     Text(
@@ -135,7 +166,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                         fontWeight: FontWeight.w400,
                         color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                       ),
-                      textAlign: TextAlign.left, // Align text to the left
+                      textAlign: TextAlign.left,
                     ),
                     SizedBox(height: 5),
                     Text(
@@ -146,7 +177,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                         fontWeight: FontWeight.w400,
                         color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                       ),
-                      textAlign: TextAlign.left, // Align text to the left
+                      textAlign: TextAlign.left,
                     ),
                   ],
                 ),
@@ -158,7 +189,70 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
     );
   }
 
-  void _handleTap(String pIcon) {
-    // Implement your handle tap logic here
+  SvgPicture _getPlaylistIcon() {
+    if (mood == 'Happy') {
+      return SvgPicture.asset(
+        'assets/icons/Open_Up.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+      );
+    } else if (mood == 'Sad') {
+      return SvgPicture.asset(
+        'assets/icons/Sad_Down.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+      );
+    } else if (mood == 'Angry') {
+      return SvgPicture.asset(
+        'assets/icons/Angry_Down.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+      );
+    } else if (mood == 'Surprised') {
+      return SvgPicture.asset(
+        'assets/icons/Open_O.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+      );
+    } else {
+      return SvgPicture.asset(
+        'assets/icons/Open_Norm.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+      );
+    }
+  }
+
+  Widget _buildButton(String text, double screenWidth) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: SizedBox(
+        width: screenWidth * 0.9,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+          ),
+          onPressed: () {
+
+          },
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 25,
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w400,
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

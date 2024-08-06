@@ -31,74 +31,34 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
       children: [
         // Background blur effect
         BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
           child: Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withOpacity(0.6),
           ),
         ),
-        Center(
+        // Positioned Container to move it up
+        Positioned(
+          top: screenHeight * 0.035, // Adjust this value to move the container up or down
+          left: screenWidth * 0.1,
+          right: screenWidth * 0.1,
           child: Container(
             width: screenWidth * 0.8,
-            height: screenHeight * 0.85,
+            height: screenHeight * 0.65,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
             ),
             child: Column(
               children: [
-                // Container for rounded AppBar
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      AppBar(
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        leading: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          color: Theme.of(context).colorScheme.tertiary,
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Closes the pop-up
-                          },
-                        ),
-                        title: Text(
-                          _isImageView ? widget.mood : 'Playlist Details',
-                          style: TextStyle(
-                            fontSize: 30,
-                            color: Theme.of(context).colorScheme.tertiary,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        centerTitle: true,
-                      ),
-                    ],
-                  ),
-                ),
                 if (_isImageView) ...[
                   // Image container with padding
                   Padding(
-                    padding: const EdgeInsets.all(20.0), // Padding around the image
+                    padding: const EdgeInsets.all(5.0), // Slight padding around the image
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.0), // Rounded corners
                       child: Container(
-                        width: screenWidth * 0.7,
-                        height: screenHeight * 0.55,
+                        width: double.infinity,
+                        height: screenHeight * 0.6382,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: FileImage(File(widget.imagePath)), // Load image from file
@@ -121,62 +81,16 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                       ),
                     ),
                   ),
-                  // Spacer to push buttons to the bottom
-                  Spacer(),
-                  // Retake button
-                  Container(
-                    width: screenWidth * 0.7,
-                    margin: const EdgeInsets.only(bottom: 16.0),
-                    child: FloatingActionButton.extended(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Closes the pop-up
-                        setState(() {
-                          _isImageView = true;
-                        });
-                      },
-                      label: Text(
-                        'Retake',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.tertiary,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Continue button
-                  Container(
-                    width: screenWidth * 0.7,
-                    margin: const EdgeInsets.only(bottom: 16.0),
-                    child: FloatingActionButton.extended(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                      onPressed: () {
-                        setState(() {
-                          _isImageView = false;
-                        });
-                      },
-                      label: Text(
-                        'Continue',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.tertiary,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Spacer(),
                 ] else ...[
                   // Playlist details widget
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(0.0),
-                      child: PlaylistDetails(), // Display PlaylistDetails widget
+                      child: PlaylistDetails(
+                        playlistName: 'yappa',
+                        songCount: 23,
+                        playlistLink: 'kdsjfhlsdf',
+                      ), // Display PlaylistDetails widget
                     ),
                   ),
                 ],
@@ -184,6 +98,46 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
             ),
           ),
         ),
+        if (_isImageView)
+          Positioned(
+            bottom: screenHeight * 0.15,
+            left: screenWidth * 0.2,
+            right: screenWidth * 0.2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Retake button (backward arrow)
+                FloatingActionButton(
+                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Closes the pop-up
+                    setState(() {
+                      _isImageView = true;
+                    });
+                  },
+                  child: Icon(
+                    Icons.refresh,
+                    size: 50,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                // Continue button (forward arrow)
+                FloatingActionButton(
+                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  onPressed: () {
+                    setState(() {
+                      _isImageView = false;
+                    });
+                  },
+                  child: Icon(
+                    Icons.arrow_forward,
+                    size: 50,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
-import 'package:frontend/components/playlist_ribon.dart'; // Corrected import
-import '../auth/auth_service.dart'; // Import the AuthService for user details
+import 'package:frontend/components/playlist_ribon.dart';
+import '../auth/auth_service.dart';
 
 class PlaylistPage extends StatefulWidget {
   const PlaylistPage({Key? key}) : super(key: key);
@@ -22,14 +22,14 @@ class _PlaylistPageState extends State<PlaylistPage> {
   Future<void> _fetchSpotifyPlaylists() async {
     final playlistData = await SpotifyAuth.fetchUserPlaylists();
     print('Spotify playlists fetched:');
-    print(playlistData); // Debug print to check the returned data
+    print(playlistData);
     if (playlistData != null) {
       setState(() {
         playlists = playlistData;
       });
     } else {
       setState(() {
-        playlists = []; // Handle null case or error fetching playlists
+        playlists = [];
       });
     }
   }
