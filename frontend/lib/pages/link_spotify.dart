@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:frontend/auth/auth_service.dart';
 
+
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
 
@@ -41,6 +42,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
       final accessToken = await SpotifyAuth.authenticate(); // Retrieves access token
       if (accessToken != null) {
         // Navigate to camera page on successful authentication
+
         Navigator.pushReplacementNamed(context, '/camera');
       } else {
         // Handle authentication failure

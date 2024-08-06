@@ -44,7 +44,7 @@ public class MainActivity extends FlutterActivity {
     private void authenticate() {
         AuthorizationRequest.Builder builder =
                 new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming"});
+        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming, app-remote-control"});
         AuthorizationRequest request = builder.build();
         System.out.println("Login authentication will now happen");
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
@@ -54,7 +54,7 @@ public class MainActivity extends FlutterActivity {
 
     private void authenticateViaBrowser() {
         AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming"});
+        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming, app-remote-control"});
         builder.setShowDialog(true);
         AuthorizationRequest request = builder.build();
         AuthorizationClient.openLoginInBrowser(this, request);
