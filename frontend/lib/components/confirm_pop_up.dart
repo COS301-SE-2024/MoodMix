@@ -125,9 +125,17 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                 FloatingActionButton(
                   backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   onPressed: () {
-                    setState(() {
-                      _isImageView = false;
-                    });
+                    Navigator.of(context).pop(); // Closes the pop-up
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlaylistDetails(
+                          playlistName: 'yappa',
+                          songCount: 23,
+                          playlistLink: 'kdsjfhlsdf',
+                        ),
+                      ),
+                    );
                   },
                   child: Icon(
                     Icons.arrow_forward,

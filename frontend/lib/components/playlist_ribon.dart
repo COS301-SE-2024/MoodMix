@@ -240,7 +240,13 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
             shadowColor: Colors.transparent,
           ),
           onPressed: () {
+            if (text == "Discard") {
+              Navigator.pushReplacementNamed(context, '/camera');
+            } else if (text == "Regenerate") {
 
+            } else if (text == "Save Playlist") {
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+            }
           },
           child: Text(
             text,
