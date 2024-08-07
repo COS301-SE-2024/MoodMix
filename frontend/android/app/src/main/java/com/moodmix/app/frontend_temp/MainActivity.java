@@ -5,10 +5,19 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import android.net.Uri;
+import android.util.Log;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
+
+import com.spotify.android.appremote.api.ConnectionParams;
+import com.spotify.android.appremote.api.Connector;
+import com.spotify.android.appremote.api.SpotifyAppRemote;
+
+import com.spotify.protocol.client.Subscription;
+import com.spotify.protocol.types.PlayerState;
+import com.spotify.protocol.types.Track;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -22,6 +31,8 @@ public class MainActivity extends FlutterActivity {
     private static final String REDIRECT_URI = "moodmix://callback";
     private static final int REQUEST_CODE = 1337;
     private static final String CHANNEL = "spotify_auth";
+    private SpotifyAppRemote mSpotifyAppRemote;
+
 
 
     @Override
@@ -42,19 +53,20 @@ public class MainActivity extends FlutterActivity {
     }
 
     private void authenticate() {
-        AuthorizationRequest.Builder builder =
-                new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming, app-remote-control"});
-        AuthorizationRequest request = builder.build();
-        System.out.println("Login authentication will now happen");
-        AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
+//        AuthorizationRequest.Builder builder =
+//                new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
+//        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming, app-remote-control"});
+//        AuthorizationRequest request = builder.build();
+//        System.out.println("Login authentication will now happen");
+//        AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request);
+        authenticateViaBrowser();
 
     }
 
 
     private void authenticateViaBrowser() {
         AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, streaming, app-remote-control"});
+        builder.setScopes(new String[]{"user-read-private, user-read-email,  playlist-read-collaborative, playlist-modify-public, app-remote-control"});
         builder.setShowDialog(true);
         AuthorizationRequest request = builder.build();
         AuthorizationClient.openLoginInBrowser(this, request);
@@ -96,7 +108,7 @@ public class MainActivity extends FlutterActivity {
                     // Handle successful response
                     String accessToken = response.getAccessToken();
                     sendResultToFlutter(accessToken); // Sending access token to Flutter
-                    System.out.println(accessToken);
+
                     System.out.println("-----------------------------------------------------------");
                     break;
                 case ERROR:
@@ -113,6 +125,31 @@ public class MainActivity extends FlutterActivity {
 
     private void sendResultToFlutter(String accessToken) {
 
+        ConnectionParams connectionParams =
+                new ConnectionParams.Builder(CLIENT_ID)
+                        .setRedirectUri(REDIRECT_URI)
+                        .showAuthView(true)
+                        .build();
+
+        SpotifyAppRemote.connect(this, connectionParams,
+                new Connector.ConnectionListener() {
+
+                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                        mSpotifyAppRemote = spotifyAppRemote;
+                        Log.d("MainActivity", "Connected! Yay!");
+
+                        // Now you can start interacting with App Remote
+                        connected();
+
+                    }
+
+                    public void onFailure(Throwable throwable) {
+                        Log.e("MyActivity", throwable.getMessage(), throwable);
+
+                        // Something went wrong when attempting to connect! Handle errors here
+                    }
+                });
+
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .invokeMethod("onSuccess", accessToken); // Method to send access token to Flutter
     }
@@ -121,5 +158,27 @@ public class MainActivity extends FlutterActivity {
     private void sendErrorToFlutter(String error) {
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .invokeMethod("onError", error);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SpotifyAppRemote.disconnect(mSpotifyAppRemote);
+    }
+
+    private void connected() {
+        // Play a playlist
+        mSpotifyAppRemote.getPlayerApi().play("spotify:playlist:37i9dQZF1DX2sUQwD7tbmL");
+
+        // Subscribe to PlayerState
+        mSpotifyAppRemote.getPlayerApi()
+                .subscribeToPlayerState()
+                .setEventCallback(playerState -> {
+                    final Track track = playerState.track;
+                    if (track != null) {
+                        Log.d("MainActivity", track.name + " by " + track.artist.name);
+                    }
+                });
     }
 }
