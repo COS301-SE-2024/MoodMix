@@ -26,6 +26,7 @@ class PlaylistRibbon extends StatefulWidget {
 
 class _PlaylistRibbonState extends State<PlaylistRibbon> {
   String mood = 'Unknown';
+  bool isMoodLoading = true; // Track loading state for mood
 
   @override
   void initState() {
@@ -33,11 +34,22 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
     _fetchAndDisplayMood();
   }
 
-  void _fetchAndDisplayMood() async {
-    String fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
-    setState(() {
-      mood = fetchedMood;
-    });
+  Future<void> _fetchAndDisplayMood() async {
+    try {
+      final fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
+      setState(() {
+        mood = fetchedMood;
+      });
+    } catch (e) {
+      print('Error fetching mood: $e');
+      setState(() {
+        mood = 'Unknown'; // Handle error scenario
+      });
+    } finally {
+      setState(() {
+        isMoodLoading = false; // Update loading state after fetching
+      });
+    }
   }
 
   void _handleTap() {
@@ -75,26 +87,82 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
         ),
         child: Stack(
           children: [
-            Positioned(
-              right: 25,
-              top: 20,
-              child: Container(
-                child: playlistIcon,
-              ),
-            ),
-            Align(
-              alignment: widget.isFullSize ? Alignment.topLeft : Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  25,
-                  widget.isFullSize ? 20 : 0,
-                  20,
-                  widget.isFullSize ? 10 : 0,
+            if (isMoodLoading)
+              Center(
+                child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary),
+              )
+            else ...[
+              Positioned(
+                right: 25,
+                top: 20,
+                child: Container(
+                  child: playlistIcon,
                 ),
-                child: widget.isFullSize
-                    ? SingleChildScrollView(
-                  child: Column(
+              ),
+              Align(
+                alignment: widget.isFullSize ? Alignment.topLeft : Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    25,
+                    widget.isFullSize ? 20 : 0,
+                    20,
+                    widget.isFullSize ? 10 : 0,
+                  ),
+                  child: widget.isFullSize
+                      ? SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.playlistName,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Mood: $mood",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Song Count: ${widget.songCount}",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 20),
+                        SongRibbon(),
+                        SizedBox(height: 20),
+                        Column(
+                          children: [
+                            _buildButton('Discard', screenWidth),
+                            SizedBox(height: 10),
+                            _buildButton('Regenerate', screenWidth),
+                            SizedBox(height: 10),
+                            _buildButton('Save Playlist', screenWidth),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                      : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         widget.playlistName,
@@ -128,61 +196,11 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: 20),
-                      SongRibbon(),
-                      SizedBox(height: 20),
-                      Column(
-                        children: [
-                          _buildButton('Discard', screenWidth),
-                          SizedBox(height: 10),
-                          _buildButton('Regenerate', screenWidth),
-                          SizedBox(height: 10),
-                          _buildButton('Save Playlist', screenWidth),
-                        ],
-                      ),
                     ],
                   ),
-                )
-                    : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.playlistName,
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      "Mood: $mood",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      "Song Count: ${widget.songCount}",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
@@ -243,7 +261,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
             if (text == "Discard") {
               Navigator.pushReplacementNamed(context, '/camera');
             } else if (text == "Regenerate") {
-
+              // Handle regenerate action
             } else if (text == "Save Playlist") {
               Navigator.pushReplacementNamed(context, '/userplaylist');
             }
