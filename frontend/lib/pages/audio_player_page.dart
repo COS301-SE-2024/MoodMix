@@ -5,6 +5,7 @@ import 'package:frontend/auth/auth_service.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../components/navbar.dart';
 
 class AudioPlayerPage extends StatefulWidget {
@@ -17,6 +18,7 @@ class AudioPlayerPage extends StatefulWidget {
 class _AudioPlayerPageState extends State<AudioPlayerPage> {
   bool isPlaying = false; // Track play/pause state
   Map<String, dynamic>? _trackDetails;
+  final player = AudioPlayer();
 
   @override
   void initState() {
@@ -26,7 +28,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
 
   Future<void> _initializeTrack() async {
 
-
+    player.setSource(AssetSource('songs/I just shoved a nuke up my   [Shitpost].mp3'));
     final trackDetails = await _getTrackDetails('4CeeEOM32jQcH3eN9Q2dG');
     if (trackDetails != null) {
       setState(() {
@@ -68,21 +70,29 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
 
   void _playSong() async {
     try {
-      await SpotifySdk.play(spotifyUri: 'spotify:track:74loibzxXRL875X20kenvk');
+      await player.resume();
       setState(() {
         isPlaying = true;
       });
+
     } catch (e) {
       print('Error playing song: $e');
     }
   }
 
-  void _togglePlayPause() {
-    setState(() {
+  void _togglePlayPause() async {
+    if (isPlaying) {
+
+      player.pause();
+
+    }
+
+    setState((){
       if (isPlaying) {
-        SpotifySdk.pause(); // Add this if you want to handle pause separately
+
         isPlaying = false;
       } else {
+
         _playSong();
       }
     });
