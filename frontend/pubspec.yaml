@@ -83,6 +83,8 @@ flutter:
     - assets/fonts/
     - assets/icons/
     - assets/songs/song.mp3
+    - assets/songs/poland.mp3
+    - assets/songs/
     - assets/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see

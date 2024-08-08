@@ -28,8 +28,9 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
 
   Future<void> _initializeTrack() async {
 
-    player.setSource(AssetSource('songs/I just shoved a nuke up my   [Shitpost].mp3'));
-    final trackDetails = await _getTrackDetails('4CeeEOM32jQcH3eN9Q2dG');
+    player.setSource(AssetSource('songs/I Wonder.mp3'));
+    final trackDetails = await _getTrackDetails('3GDX4JRXR8VaemaTS6qdiC');
+    print(trackDetails);
     if (trackDetails != null) {
       setState(() {
         _trackDetails = trackDetails;
@@ -45,7 +46,7 @@ class _AudioPlayerPageState extends State<AudioPlayerPage> {
       print("Busy fetching song details");
       print(token);
       final response = await http.get(
-        Uri.parse('https://api.spotify.com/v1/tracks/74loibzxXRL875X20kenvk'),
+        Uri.parse('https://api.spotify.com/v1/tracks/$trackId'),
         headers: {
           'Authorization': 'Bearer $token',
         },
