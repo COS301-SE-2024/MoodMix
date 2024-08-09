@@ -9,8 +9,6 @@ import whisper
 from pathlib import Path
 from textblob import TextBlob
 
-
-
 SAMPLE_RATE = 44100
 DURATION = 5
 INTERVAL = 5
@@ -19,9 +17,6 @@ def analyze_emotions(transcript):
     """Analyze emotions using TextBlob."""
     blob = TextBlob(transcript)
     sentiment = blob.sentiment
-
-    print(f"Sentiment Polarity: {sentiment.polarity}")  # Range is [-1.0, 1.0]
-    print(f"Sentiment Subjectivity: {sentiment.subjectivity}")  # Range is [0.0, 1.0]
     
     if sentiment.polarity > 0.5:
         mood = "Happy"
