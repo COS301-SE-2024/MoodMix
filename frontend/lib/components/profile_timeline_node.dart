@@ -57,7 +57,7 @@ class _ProfileTimelineNodeState extends State<ProfileTimelineNode> {
                       Icon(
                         iconMood, // Replace with your desired icon
                         size: 80.0 * widget.scale, // Adjust the size as needed
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ],
                   ),

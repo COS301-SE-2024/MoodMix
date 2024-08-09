@@ -3,7 +3,9 @@ import 'package:camera/camera.dart';
 import 'dart:io';
 
 import 'package:frontend/components/navbar.dart';
-import 'package:frontend/components/playlist_ribon.dart';
+import 'package:frontend/components/confirm_pop_up.dart'; // Import ConfirmationPopUp
+
+import '../components/audio_recorder.dart'; // Import AudioRecorder
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -22,18 +24,13 @@ class _CameraPageState extends State<CameraPage> {
   void initState() {
     super.initState();
     if (widget.cameras.isNotEmpty) {
-      print('Cameras available: ${widget.cameras}');
       controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
       controller?.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
+        if (!mounted) return;
         setState(() {});
       }).catchError((error) {
         print('Camera initialization error: $error');
       });
-    } else {
-      print('No cameras available');
     }
   }
 
@@ -48,14 +45,29 @@ class _CameraPageState extends State<CameraPage> {
       selectedCameraIndex = (selectedCameraIndex + 1) % widget.cameras.length;
       controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
       controller?.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
+        if (!mounted) return;
         setState(() {});
       }).catchError((error) {
         print('Camera initialization error: $error');
       });
     }
+  }
+
+  void _showConfirmImage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          imagePath: pictureFile!.path,
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front, mood: 'Happy', // Check if the front camera was used
+        );
+      },
+    ).then((_) {
+      // Reset pictureFile after dialog is closed
+      setState(() {
+        pictureFile = null;
+      });
+    });
   }
 
   @override
@@ -87,16 +99,8 @@ class _CameraPageState extends State<CameraPage> {
                           margin: const EdgeInsets.only(top: 20),
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.tertiary,
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Theme.of(context).colorScheme.tertiary,
-                                spreadRadius: 2,
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20.0),
@@ -107,16 +111,6 @@ class _CameraPageState extends State<CameraPage> {
                                   aspectRatio: controller!.value.aspectRatio,
                                   child: CameraPreview(controller!),
                                 ),
-                                if (pictureFile != null)
-                                  Positioned.fill(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      child: Image.file(
-                                        File(pictureFile!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
                                 Align(
                                   alignment: Alignment.center,
                                   child: Padding(
@@ -130,10 +124,13 @@ class _CameraPageState extends State<CameraPage> {
                                             onPressed: () async {
                                               pictureFile = await controller?.takePicture();
                                               setState(() {});
+                                              if (pictureFile != null) {
+                                                _showConfirmImage(); // Show ConfirmImage after taking the picture
+                                              }
                                             },
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.camera_alt,
-                                              color: Colors.white,
+                                              color: Color.fromARGB(255, 200, 200, 200),
                                               size: 40.0,
                                             ),
                                           ),
@@ -143,9 +140,9 @@ class _CameraPageState extends State<CameraPage> {
                                           right: 16.0,
                                           child: IconButton(
                                             onPressed: _switchCamera,
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.swap_horiz,
-                                              color: Colors.white,
+                                              color: Color.fromARGB(255, 200, 200, 200),
                                               size: 30.0,
                                             ),
                                           ),
@@ -164,14 +161,11 @@ class _CameraPageState extends State<CameraPage> {
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                           alignment: Alignment.center,
-                          child: PlaylistRibbon(
-                            onTap: (playlistIcon) {
-                              // Handle onTap action if needed
-                              print('Tapped on playlist: ');
+                          child: AudioRecorder(
+                            onPressed: () {
+                              // Handle the recording state change here
+                              print('Audio recording toggled');
                             },
-                            songCount: 12,
-                            playlistLink: '12123231',
-                            playlistName: 'dsfsdfsdf',
                           ),
                         ),
                       ),
@@ -191,16 +185,13 @@ class _CameraPageState extends State<CameraPage> {
               Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
-              Navigator.pushReplacementNamed(context, '/userprofile');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, '/audio');
-              break;
-            case 3:
               Navigator.pushReplacementNamed(context, '/userplaylist');
               break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/help');
+            case 2:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/settings');
               break;
           }
         },

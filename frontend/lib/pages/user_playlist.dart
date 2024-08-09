@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
-import 'package:frontend/components/playlist_ribon.dart'; // Corrected import
-import '../auth/auth_service.dart'; // Import the AuthService for user details
+import 'package:frontend/components/playlist_ribon.dart';
+import '../auth/auth_service.dart';
 
 class PlaylistPage extends StatefulWidget {
   const PlaylistPage({Key? key}) : super(key: key);
@@ -12,6 +12,8 @@ class PlaylistPage extends StatefulWidget {
 
 class _PlaylistPageState extends State<PlaylistPage> {
   List<dynamic> playlists = [];
+  bool isLoading = true;
+  bool isFadeOut = false;
 
   @override
   void initState() {
@@ -20,16 +22,27 @@ class _PlaylistPageState extends State<PlaylistPage> {
   }
 
   Future<void> _fetchSpotifyPlaylists() async {
-    final playlistData = await SpotifyAuth.fetchUserPlaylists();
-    print('Spotify playlists fetched:');
-    print(playlistData); // Debug print to check the returned data
-    if (playlistData != null) {
-      setState(() {
-        playlists = playlistData;
-      });
-    } else {
-      setState(() {
-        playlists = []; // Handle null case or error fetching playlists
+    try {
+      final playlistData = await SpotifyAuth.fetchUserPlaylists();
+      if (playlistData != null) {
+        setState(() {
+          playlists = playlistData;
+        });
+      } else {
+        setState(() {
+          playlists = [];
+        });
+      }
+    } finally {
+      Future.delayed(Duration(milliseconds: 300), () {
+        setState(() {
+          isFadeOut = true;
+        });
+        Future.delayed(Duration(milliseconds: 500), () {
+          setState(() {
+            isLoading = false;
+          });
+        });
       });
     }
   }
@@ -37,61 +50,75 @@ class _PlaylistPageState extends State<PlaylistPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            width: screenWidth,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 25, 0, 0),
-                  child: Text(
-                    "My Playlists",
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.secondary,
+      body: Stack(
+        children: [
+          Visibility(
+            visible: !isLoading,
+            child: SingleChildScrollView(
+              child: SizedBox(
+                width: screenWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 25, 0, 0),
+                      child: Text(
+                        "My Playlists",
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                    textAlign: TextAlign.left,
-                  ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                      child: Text(
+                        "Recently Generated",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    ...playlists.map((playlist) {
+                      return Padding(
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        child: PlaylistRibbon(
+                          onTap: (playlistIcon) {
+                            print('Tapped on playlist: ${playlist['name']}');
+                          },
+                          songCount: playlist['tracks']['total'],
+                          playlistLink: playlist['id'],
+                          playlistName: playlist['name'],
+                        ),
+                      );
+                    }).toList(),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                  child: Text(
-                    "Recently Generated",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                // Display playlists dynamically
-                ...playlists.map((playlist) {
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: PlaylistRibbon(
-                      onTap: (playlistIcon) {
-                        // Handle onTap action if needed
-                        print('Tapped on playlist: ${playlist['name']}');
-                      },
-                      songCount: playlist['tracks']['total'],
-                      playlistLink: playlist['id'],
-                      playlistName: playlist['name'],
-                    ),
-                  );
-                }).toList(),
-              ],
+              ),
             ),
           ),
-        ),
+          // Loading indicator
+          AnimatedOpacity(
+            opacity: isLoading ? 1.0 : isFadeOut ? 0.0 : 1.0,
+            duration: Duration(milliseconds: 300),
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: NavBar(
         currentIndex: 1,
@@ -101,16 +128,13 @@ class _PlaylistPageState extends State<PlaylistPage> {
               Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
-              Navigator.pushReplacementNamed(context, '/userprofile');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, '/audio');
-              break;
-            case 3:
               Navigator.pushReplacementNamed(context, '/userplaylist');
               break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/help');
+            case 2:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/settings');
               break;
           }
         },
