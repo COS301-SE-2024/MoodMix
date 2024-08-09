@@ -128,9 +128,9 @@ class _CameraPageState extends State<CameraPage> {
                                                 _showConfirmImage(); // Show ConfirmImage after taking the picture
                                               }
                                             },
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.camera_alt,
-                                              color: Colors.white,
+                                              color: Color.fromARGB(255, 200, 200, 200),
                                               size: 40.0,
                                             ),
                                           ),
@@ -140,9 +140,9 @@ class _CameraPageState extends State<CameraPage> {
                                           right: 16.0,
                                           child: IconButton(
                                             onPressed: _switchCamera,
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.swap_horiz,
-                                              color: Colors.white,
+                                              color: Color.fromARGB(255, 200, 200, 200),
                                               size: 30.0,
                                             ),
                                           ),
@@ -185,16 +185,13 @@ class _CameraPageState extends State<CameraPage> {
               Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
-              Navigator.pushReplacementNamed(context, '/userprofile');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, '/audio');
-              break;
-            case 3:
               Navigator.pushReplacementNamed(context, '/userplaylist');
               break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/help');
+            case 2:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/settings');
               break;
           }
         },

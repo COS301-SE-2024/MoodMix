@@ -33,7 +33,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
           child: Container(
-            color: Colors.black.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         // Positioned Container to move it up

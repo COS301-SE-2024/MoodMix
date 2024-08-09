@@ -114,7 +114,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
             duration: Duration(milliseconds: 300),
             child: Center(
               child: CircularProgressIndicator(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
           ),
@@ -128,16 +128,13 @@ class _PlaylistPageState extends State<PlaylistPage> {
               Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
-              Navigator.pushReplacementNamed(context, '/userprofile');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, '/audio');
-              break;
-            case 3:
               Navigator.pushReplacementNamed(context, '/userplaylist');
               break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/help');
+            case 2:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/settings');
               break;
           }
         },
