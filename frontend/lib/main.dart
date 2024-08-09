@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
         '/playlisthelp': (context) => PlaylistHelpPage(),
         '/camerahelp': (context) => CameraVoiceHelpPage(),
         '/settings': (context) => SettingsPage(),
-        // '/playlistdetails': (context) => PlaylistDetails(playlistName: 'dfsfsdf', songCount: 12, playlistLink: '2',),
+        '/audio': (context) => AudioPlayerPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
