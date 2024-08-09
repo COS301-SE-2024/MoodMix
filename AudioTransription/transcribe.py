@@ -3,14 +3,36 @@ import sounddevice as sd
 import numpy as np
 from pydub import AudioSegment
 from pydub.playback import play
+import re
 
 import whisper
 from pathlib import Path
+from textblob import TextBlob
 
 
-SAMPLE_RATE = 44100  # Sample rate in Hertz
-DURATION = 10  # Duration of each recording in seconds
-INTERVAL = 30
+
+SAMPLE_RATE = 44100
+DURATION = 5
+INTERVAL = 5
+
+def analyze_emotions(transcript):
+    """Analyze emotions using TextBlob."""
+    blob = TextBlob(transcript)
+    sentiment = blob.sentiment
+
+    print(f"Sentiment Polarity: {sentiment.polarity}")  # Range is [-1.0, 1.0]
+    print(f"Sentiment Subjectivity: {sentiment.subjectivity}")  # Range is [0.0, 1.0]
+    
+    if sentiment.polarity > 0.5:
+        mood = "Happy"
+    elif sentiment.polarity < -0.5:
+        mood = "Sad"
+    elif -0.5 <= sentiment.polarity <= 0.5 and sentiment.subjectivity > 0.5:
+        mood = "Angry"
+    else:
+        mood = "Neutral"
+
+    print(f"Detected Mood: {mood}")
     
 def record_audio(duration, sample_rate):
     """Record audio for a given duration and sample rate."""
@@ -35,24 +57,21 @@ def transcribe_audio(path):
     """Transcribe audio using whisper model."""
     model = whisper.load_model('tiny')
     result = model.transcribe(str(path), language='en', verbose=True)
-    with open('transcript.txt', "w") as file:
-        file.write(result['text'])
-    print("Transcription saved to transcript.txt")
+     
+    transcript = result['text']
+    
+    analyze_emotions(transcript)
     
     
 def main():
     try:
         while True:
-            # Record audio
             audio_data = record_audio(DURATION, SAMPLE_RATE)
-            
-            # Save audio to file
+
             save_audio(audio_data, "Latest.mp3", SAMPLE_RATE)
             
-            #transcribe the audio
             transcribe_audio(Path('Latest.mp3'))
-            
-            # Wait for the next recording
+
             time.sleep(INTERVAL)
     except KeyboardInterrupt:
         print("Script stopped by user.")
