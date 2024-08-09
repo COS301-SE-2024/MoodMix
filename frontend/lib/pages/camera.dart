@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/confirm_pop_up.dart'; // Import ConfirmationPopUp
 
-import '../components/playlist_ribon.dart'; // Import PlaylistRibbon
+import '../components/audio_recorder.dart'; // Import AudioRecorder
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -161,15 +161,11 @@ class _CameraPageState extends State<CameraPage> {
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                           alignment: Alignment.center,
-                          child: PlaylistRibbon(
-                            onTap: (playlistIcon) {
-                              // Handle onTap action if needed
-                              print('Tapped on playlist: ');
+                          child: AudioRecorder(
+                            onPressed: () {
+                              // Handle the recording state change here
+                              print('Audio recording toggled');
                             },
-                            songCount: 12,
-                            playlistLink: '12123231',
-                            playlistName: 'dsfsdfsdf',
-                            isFullSize: false,
                           ),
                         ),
                       ),
