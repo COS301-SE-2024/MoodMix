@@ -6,6 +6,7 @@ import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/confirm_pop_up.dart'; // Import ConfirmationPopUp
 
 import '../components/audio_recorder.dart'; // Import AudioRecorder
+import '../auth/auth_service.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -32,6 +33,8 @@ class _CameraPageState extends State<CameraPage> {
         print('Camera initialization error: $error');
       });
     }
+
+    SpotifyAuth.fetchUserDetails();
   }
 
   @override

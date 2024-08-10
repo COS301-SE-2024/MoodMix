@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/pages/link_spotify.dart';
+
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -185,10 +187,40 @@ class AuthService {
 }
 
 
+
+class SpotifyUser {
+  final String id;
+  final String displayName;
+  final String email;
+  final String country;
+  final String profileImageUrl;
+
+  SpotifyUser({
+    required this.id,
+    required this.displayName,
+    required this.email,
+    required this.country,
+    required this.profileImageUrl,
+  });
+
+  factory SpotifyUser.fromJson(Map<String, dynamic> json) {
+    return SpotifyUser(
+      id: json['id'] as String,
+      displayName: json['display_name'] as String,
+      email: json['email'] as String,
+      country: json['country'] as String,
+      profileImageUrl: json['images'] != null && json['images'].isNotEmpty
+          ? json['images'][0]['url'] as String
+          : '', // Handle case where there are no images
+    );
+  }
+}
+
 class SpotifyAuth {
   static const MethodChannel _channel = MethodChannel('spotify_auth');
   static String? _accessToken; // Static variable to hold the access token
   static Function(String)? _onSuccessCallback; // Callback function
+  static SpotifyUser? currentUser;
 
 
   static Future<String?> authenticate() async {
@@ -257,10 +289,16 @@ class SpotifyAuth {
         headers: {'Authorization': 'Bearer $_accessToken'},
       );
       if (response.statusCode == 200) {
-        final userDetails = jsonDecode(response.body);
+        final userdetails = jsonDecode(response.body);
         print('User details fetched and stored:');
-        print(userDetails);
-        return userDetails;
+        print(userdetails);
+
+
+        //this will store everything into an object for later use so that we can fetch the ID.
+        currentUser = SpotifyUser.fromJson(userdetails);
+
+
+        return userdetails;
       } else {
         print('Failed to fetch user details: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -464,4 +502,96 @@ class SpotifyAuth {
       return 'Sad'; // For any cases not covered by the above conditions
     }
   }
+
+
+  static Future<void> createAndPopulatePlaylist(
+      String playlistName,
+      String mood,
+      List<String> trackUris
+      ) async {
+    if (_accessToken == null) {
+      print('Access token is not available');
+      return;
+    }
+
+    if (currentUser == null) {
+      print('User details not available');
+      return;
+    }
+
+    final String userId = currentUser!.id;
+    final String createPlaylistEndpoint = 'https://api.spotify.com/v1/users/$userId/playlists';
+
+    final Map<String, dynamic> requestBody = {
+      'name': '$playlistName - $mood',
+      'description': 'A $mood playlist created by MoodMix!',
+      'public': true,
+    };
+
+    try {
+      final createPlaylistResponse = await http.post(
+        Uri.parse(createPlaylistEndpoint),
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      if (createPlaylistResponse.statusCode == 201) {
+        print('Playlist created successfully');
+        final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
+        final String playlistId = playlistDetails['id'];
+
+        print('Playlist ID: $playlistId');
+        print('Playlist details: $playlistDetails');
+
+        // Add tracks to the playlist
+        await addTracksToPlaylist(playlistId, trackUris);
+      } else {
+        print('Failed to create playlist: ${createPlaylistResponse.statusCode}');
+        print('Response body: ${createPlaylistResponse.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+  // Function to add tracks to a playlist
+  static Future<void> addTracksToPlaylist(String playlistId, List<String> trackUris) async {
+    if (_accessToken == null) {
+      print('Access token is not available');
+      return;
+    }
+
+    final String addTracksEndpoint = 'https://api.spotify.com/v1/playlists/$playlistId/tracks';
+
+    final Map<String, dynamic> requestBody = {
+      'uris': trackUris,
+    };
+
+    try {
+      final addTracksResponse = await http.post(
+        Uri.parse(addTracksEndpoint),
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      if (addTracksResponse.statusCode == 201 || addTracksResponse.statusCode == 200) {
+        print('Tracks added successfully to playlist');
+      } else {
+        print('Failed to add tracks: ${addTracksResponse.statusCode}');
+        print('Response body: ${addTracksResponse.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+
 }
