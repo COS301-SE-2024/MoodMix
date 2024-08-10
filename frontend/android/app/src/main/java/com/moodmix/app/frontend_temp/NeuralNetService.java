@@ -11,6 +11,19 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
+import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.datavec.image.loader.NativeImageLoader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class NeuralNetService {
     private Context context;
@@ -27,5 +40,6 @@ public class NeuralNetService {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
         return "Doing stuff with image";
+
     }
 }
