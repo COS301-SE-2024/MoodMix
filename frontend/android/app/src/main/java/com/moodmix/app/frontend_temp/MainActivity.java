@@ -22,6 +22,7 @@ public class MainActivity extends FlutterActivity {
     private static final String REDIRECT_URI = "moodmix://callback";
     private static final int REQUEST_CODE = 1337;
     private static final String CHANNEL = "spotify_auth";
+    private static final String NEURAL_NET_CHANNEL = "neural_net_method_channel";
 
 
     @Override
@@ -34,6 +35,25 @@ public class MainActivity extends FlutterActivity {
                             if (call.method.equals("authenticate")) {
                                 authenticate();
                                 result.success(null);
+                            } else {
+                                result.notImplemented();
+                            }
+                        }
+                );
+
+        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), NEURAL_NET_CHANNEL)
+                .setMethodCallHandler(
+                        (call, result) -> {
+                            if (call.method.equals("get_mood")) {
+                                byte[] image_bytes = call.argument("image");
+                                NeuralNetService neuralNetService = new NeuralNetService(this);
+
+                                if (image_bytes != null) {
+                                    String mood_result = neuralNetService.getMood(image_bytes);
+                                    result.success(mood_result);
+                                } else {
+                                    result.error("UNAVAILABLE", "Image bytes failed", "null");
+                                }
                             } else {
                                 result.notImplemented();
                             }
