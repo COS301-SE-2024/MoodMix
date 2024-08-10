@@ -4,10 +4,12 @@ import 'dart:io';
 
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart';
+import 'package:frontend/neural_net/neural_net_method_channel.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
   const CameraPage({Key? key, required this.cameras}) : super(key: key);
+
 
   @override
   _CameraPageState createState() => _CameraPageState();
@@ -17,6 +19,8 @@ class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   XFile? pictureFile;
   int selectedCameraIndex = 0;
+
+  final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
 
   @override
   void initState() {
@@ -129,6 +133,7 @@ class _CameraPageState extends State<CameraPage> {
                                           child: IconButton(
                                             onPressed: () async {
                                               pictureFile = await controller?.takePicture();
+                                              print(await _neuralNetMethodChannel.get_mood(pictureFile));
                                               setState(() {});
                                             },
                                             icon: const Icon(
