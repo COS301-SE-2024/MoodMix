@@ -39,6 +39,52 @@ public class NeuralNetService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
+
+
+        int image_height = 48; // pixel size
+        int image_width = 48;  // pixel size
+        int color_channels = 1; // 1 means grayscale
+
+        List<String> labelList = Arrays.asList("angry", "happy", "neutral", "sad");
+
+        //file choose pop-up
+
+        String fileChose = fileChose().toString();
+
+
+        log.info("------LOAD TRAINED MODEL------");
+
+        File loadLocation = new File("savedNeuralNet.zip");
+
+        MultiLayerNetwork model = ModelSerializer.restoreMultiLayerNetwork(loadLocation);
+
+
+        log.info("--------EVALUATE CHOSEN FILE WITH LOADED NEURAL NET--------");
+
+        File file = new File(fileChose);
+
+        // need to convert loaded image to matrix of pixel values
+
+        NativeImageLoader loader = new NativeImageLoader(image_height, image_width, color_channels);
+
+        // load image as INDArray
+
+        INDArray image = loader.asMatrix(file);
+
+        DataNormalization scaler = new ImagePreProcessingScaler(0,1);
+        scaler.transform(image);
+
+        INDArray output = model.output(image);  // pass image to neural net
+
+        log.info("---- CHOSEN FILE: " + fileChose);
+        log.info("-----NEURAL NET PREDICTION-----");
+        log.info("---LIST OF PROBABILITIES PER LABEL");
+        log.info("---LIST OF LABELS IN ORDER");
+        log.info(output.toString());
+        log.info(labelList.toString());
+
+
+
         return "Doing stuff with image";
 
     }
