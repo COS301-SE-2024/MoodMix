@@ -263,6 +263,14 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
             } else if (text == "Regenerate") {
               // Handle regenerate action
             } else if (text == "Save Playlist") {
+
+               SpotifyAuth.createAndPopulatePlaylist(
+              'My Awesome Playlist',
+              'Happy',
+              ['spotify:track:1vZXcUVPaSwE4nSCdHY31N', 'spotify:track:3n3Ppam7vgaVa1iaRUc9Lp']
+              );
+
+
               Navigator.pushReplacementNamed(context, '/userplaylist');
             }
           },
