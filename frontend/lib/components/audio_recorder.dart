@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AudioRecorder extends StatefulWidget {
   final VoidCallback onPressed;
@@ -28,18 +31,56 @@ class _AudioRecorderState extends State<AudioRecorder> with SingleTickerProvider
     super.dispose();
   }
 
-  void _toggleRecording() {
+  String transcript = "";
+  String mood = "";
+  bool isRecording1 = false;
+
+  Future<void> recordAudio() async {
     setState(() {
-      isRecording = !isRecording;
-      if (isRecording) {
-        _controller.repeat(reverse: true);
-      } else {
+      isRecording1 = true;
+    });
+
+    final response = await http.post(
+      Uri.parse('http://192.168.0.109:8550/record'),
+    );
+
+    setState(() {
+      isRecording1 = false;
+    });
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print(data);
+      setState(() {
+        transcript = data['transcript'] ?? 'No transcript';
+        mood = data['mood'] ?? 'No mood';
+      });
+    } else {
+      setState(() {
+        transcript = 'Error: ${response.body}';
+        mood = '';
+      });
+    }
+  }
+
+  void _toggleRecording() {
+    recordAudio();
+    setState(() {
+      isRecording = true;
+      _controller.repeat(reverse: true);
+    });
+
+    widget.onPressed();
+
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        isRecording = false;
         _controller.stop();
         _controller.value = 1.0;
-      }
+      });
     });
-    widget.onPressed();
   }
+
 
   @override
   Widget build(BuildContext context) {
