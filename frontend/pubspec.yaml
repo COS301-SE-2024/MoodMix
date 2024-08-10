@@ -54,7 +54,6 @@ dependencies:
   network_info_plus: ^5.0.3 # Check for the latest version
 
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

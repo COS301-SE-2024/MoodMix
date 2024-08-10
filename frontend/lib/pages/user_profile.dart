@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import this for SVG support
 import 'package:frontend/components/profile_timeline_node.dart';
@@ -6,8 +5,6 @@ import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/components/navbar.dart';
 import '../auth/auth_service.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -61,37 +58,13 @@ class _UserProfileState extends State<UserProfile> {
         setState(() {
           isLoading = false;
         });
+      });
+    });
+  }
 
-
-        //Updating the DisplayName in the Firestore DB
-        // DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection('Users')
-        // .doc(_displayName)
-        // .get();
-
-        User? user1 = FirebaseAuth.instance.currentUser;
-        QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('Users').where('email', isEqualTo: user1?.email).get();
-
-        String doc = querySnapshot.docs.first.id;
-        
-
-        Map<String, dynamic> data = {
-          'UserEmail':user1?.email,
-          'UserName':newDisplayName,
-        }; 
-
-        await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(doc)
-        .update(data);
-
-        // Optionally, you can show a success message to the user here
-      } catch (e) {
-        // Handle error
-        print("Failed to update username: $e");
-        // Optionally, you can show an error message to the user here
-      }
-    }
-
+  void _onOptionsPressed() {
+    // Implement options button functionality here
+    print('Options button pressed');
   }
 
   @override

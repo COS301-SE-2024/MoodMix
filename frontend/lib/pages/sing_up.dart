@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../auth/auth_service.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
 
@@ -49,19 +46,6 @@ class _SignUpState extends State<SignUp> {
 
     if (result == 'Success') {
       Navigator.pushNamed(context, '/linkspotify');
-
-      
-      // String username = email.substring(0,5);
-      
-      Map<String, dynamic> data = {'UserEmail':email, "UserName":username};
-
-      try {
-        await FirebaseFirestore.instance.collection('Users').add(data);
-        print('User added successfully');
-      } catch (e) {
-        print('Failed to add user: $e');
-      }
-
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result ?? 'Registration failed')),
