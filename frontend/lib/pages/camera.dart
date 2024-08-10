@@ -131,7 +131,7 @@ class _CameraPageState extends State<CameraPage> {
                                           child: IconButton(
                                             onPressed: () async {
                                               pictureFile = await controller?.takePicture();
-                                              print(await _neuralNetMethodChannel.get_mood(pictureFile));
+                                              await _neuralNetMethodChannel.get_mood(pictureFile);
                                               setState(() {});
                                               if (pictureFile != null) {
                                                 _showConfirmImage(); // Show ConfirmImage after taking the picture
