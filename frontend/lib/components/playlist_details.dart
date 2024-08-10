@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/song_ribon.dart';
 import 'package:spotify/spotify.dart' as spotify;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PlaylistDetails extends StatefulWidget {
   final spotify.SpotifyApi api;
@@ -46,6 +49,23 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
       print(error);
     }
   }
+
+  // Future<void> _linkToFirestore() async {
+  //   try{
+  //       String description = "Add a Description for the Playlist";
+  //       User? user = FirebaseAuth.instance.currentUser;
+  //       Map<String, dynamic> data = {'UserPlaylist_Name':playlistName, "UserPlaylist_Description":description, "UserPlaylist_Link":widget.playlistLink
+  //       };
+
+  //       await FirebaseFirestore.instance.collection('Users').doc(user?.uid).collection('Playlists').add(data);
+
+  //       print("Added the Playlist to the Firestore Database");
+  //   }
+  //   catch(error){
+  //       print("Failed to enter the Playlist into the Firestore Database $error");
+  //   }
+  // }
+
 
   @override
   Widget build(BuildContext context) {
