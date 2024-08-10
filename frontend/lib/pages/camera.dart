@@ -3,14 +3,17 @@ import 'package:camera/camera.dart';
 import 'dart:io';
 
 import 'package:frontend/components/navbar.dart';
+import 'package:frontend/components/playlist_ribon.dart';
+import 'package:frontend/neural_net/neural_net_method_channel.dart';
 import 'package:frontend/components/confirm_pop_up.dart'; // Import ConfirmationPopUp
-
 import '../components/audio_recorder.dart'; // Import AudioRecorder
 import '../auth/auth_service.dart';
+
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
   const CameraPage({Key? key, required this.cameras}) : super(key: key);
+
 
   @override
   _CameraPageState createState() => _CameraPageState();
@@ -20,6 +23,8 @@ class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   XFile? pictureFile;
   int selectedCameraIndex = 0;
+
+  final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
 
   @override
   void initState() {
@@ -126,6 +131,7 @@ class _CameraPageState extends State<CameraPage> {
                                           child: IconButton(
                                             onPressed: () async {
                                               pictureFile = await controller?.takePicture();
+                                              print(await _neuralNetMethodChannel.get_mood(pictureFile));
                                               setState(() {});
                                               if (pictureFile != null) {
                                                 _showConfirmImage(); // Show ConfirmImage after taking the picture
