@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
@@ -504,3 +505,4 @@ class _PlaylistPageState extends State<PlaylistPage> {
     }*/
     
 }
+

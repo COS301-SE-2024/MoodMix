@@ -1,165 +1,160 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../components/navbar.dart';
 
 class AudioPlayerPage extends StatefulWidget {
+  const AudioPlayerPage({Key? key}) : super(key: key);
+
   @override
-  _AudioPlayerPageState createState() => _AudioPlayerPageState();
+  State<AudioPlayerPage> createState() => _AudioPlayerPageState();
 }
 
 class _AudioPlayerPageState extends State<AudioPlayerPage> {
-  late AudioPlayer _audioPlayer;
-  bool isPlaying = false;
-  String audioUrl = 'assets/songs/song.mp3'; // Adjust path as per your project structure
-  late Timer _timer;
-  int _currentSeconds = 0;
-  Duration _position = Duration.zero; // To store current playback position
+  bool isPlaying = false; // Track play/pause state
 
   @override
   void initState() {
     super.initState();
-    _audioPlayer = AudioPlayer();
-
-    // Listeners for audio player
-    _audioPlayer.onPlayerCompletion.listen((event) {
-      setState(() {
-        isPlaying = false;
-        _currentSeconds = 0;
-        _position = Duration.zero; // Reset position on completion
-      });
-      _timer.cancel(); // Stop the timer on completion
-    });
-
-    _audioPlayer.onPlayerError.listen((msg) {
-      print('audioPlayer error : $msg');
-      setState(() {
-        isPlaying = false;
-      });
-    });
-
-    // Listen for audio position changes
-    _audioPlayer.onAudioPositionChanged.listen((Duration duration) {
-      setState(() {
-        _currentSeconds = duration.inSeconds;
-      });
-    });
   }
 
-  void _playPause() async {
-    if (isPlaying) {
-      // Pause the audio
-      await _audioPlayer.pause();
-      _timer.cancel(); // Cancel the timer
-    } else {
-      if (_position == Duration.zero) {
-        // If it's the first play or resumed from the beginning
-        int result = await _audioPlayer.play(audioUrl, isLocal: true);
-        if (result == 1) {
-          // Success
-          _startTimer();
-        } else {
-          // Handle failure to play audio
-          print('Failed to play audio');
-        }
-      } else {
-        // Resume from the stored position
-        int result = await _audioPlayer.seek(_position);
-        if (result == 1) {
-          // Success
-          await _audioPlayer.resume();
-          _startTimer();
-        } else {
-          // Handle failure to resume
-          print('Failed to resume audio');
-        }
-      }
-    }
+  void _togglePlayPause() {
     setState(() {
       isPlaying = !isPlaying;
-      if (!isPlaying) {
-        // Reset timer and current playback position when paused
-        _timer.cancel();
-        _currentSeconds = 0;
-      }
     });
-  }
-
-  void _startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        setState(() {
-          if (_currentSeconds < 242) {
-            _currentSeconds++;
-          } else {
-            timer.cancel();
-          }
-        });
-      },
-    );
   }
 
   @override
-Widget build(BuildContext context) {
-  String currentTime = _currentSeconds != null
-      ? '${(_currentSeconds ~/ 60).toString().padLeft(2, '0')}:${(_currentSeconds % 60).toString().padLeft(2, '0')}'
-      : '00:00';
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
 
-  double progress = (_currentSeconds / 242);
-
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Audio Player'),
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          _audioPlayer.pause(); // Pause audio before navigating back
-          Navigator.pushReplacementNamed(context, '/camera'); // Navigate back to /homepage
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 25, left: 20, right: 20),
+                  width: screenWidth,
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: SvgPicture.asset(
+                          'assets/images/SimpleLogo.svg',
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: screenWidth * 0.75,  // Adjust width as needed
+                        height: screenWidth * 0.75, // Adjust height as needed
+                        color: Colors.orange,
+                        child: Center(
+                          child: Image.asset("dkfjdf"), // Update with your asset path
+                        ),
+                      ),
+                      SizedBox(height: 20), // Space between container and text
+                      Text(
+                        'Song',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Artist',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      SizedBox(height: 20), // Space between text and progress bar
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          children: [
+                            // Progress bar
+                            Slider(
+                              value: 0.0, // Example value
+                              onChanged: (value) {
+                                // Handle progress bar change
+                              },
+                              activeColor: Theme.of(context).colorScheme.secondary,
+                              inactiveColor: Colors.grey,
+                            ),
+                            SizedBox(height: 20), // Space between progress bar and buttons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.skip_previous),
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  iconSize: 30,
+                                  onPressed: () {
+                                    // Handle previous button press
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  iconSize: 40,
+                                  onPressed: _togglePlayPause,
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.skip_next),
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  iconSize: 30,
+                                  onPressed: () {
+                                    // Handle next button press
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+      bottomNavigationBar: NavBar(
+        currentIndex: 1,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/camera');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/userprofile');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/audio');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/help');
+              break;
+          }
         },
       ),
-    ),
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Image.asset(
-            'assets/images/album_cover.jpg', // Replace with your image path
-            width: 200,
-            height: 200,
-            fit: BoxFit.cover,
-          ),
-          SizedBox(height: 20),
-          Text(
-            currentTime,
-            style: TextStyle(fontSize: 24.0),
-          ),
-          SizedBox(height: 10),
-          Container(
-            width: 250, // Adjust width as per your preference
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 10,
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          IconButton(
-            icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-            iconSize: 64.0,
-            onPressed: _playPause,
-          ),
-        ],
-      ),
-    ),
-  );
+    );
+  }
 }
-
-}
-
-
-

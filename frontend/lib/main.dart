@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:frontend/components/playlist_details.dart';
 import 'package:frontend/pages/account_help_page.dart';
 import 'package:frontend/pages/camera_voice_help_page.dart';
 import 'package:frontend/pages/help_page.dart';
 import 'package:frontend/pages/playlist_help_page.dart';
-import 'package:frontend/pages/stub_homepage.dart';
+import 'package:frontend/pages/settings.dart';
 import 'package:frontend/pages/user_profile.dart';
 import 'package:frontend/pages/link_spotify.dart';
 import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'package:frontend/pages/loading.dart';
 import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
 import 'package:frontend/pages/welcome.dart';
@@ -29,7 +29,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-    await dotenv.load(fileName: "../.env");
+    await dotenv.load(fileName: "assets/.env");
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
@@ -50,22 +50,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/camera',
+      initialRoute: '/linkspotify',
       routes: {
-        '/': (context) => const Loading(),
-        '/welcome': (context) => const Welcome(),
+        '/': (context) => const Welcome(),
         '/signup': (context) => const SignUp(),
         '/login': (context) => const LogIn(),
         '/userprofile': (context) => const UserProfile(),
         '/linkspotify': (context) => const LinkSpotify(),
-        '/homepage': (context) => const StubHomePage(),
         '/userplaylist': (context) => const PlaylistPage(),
-        '/camera': (context) => const CameraPage(cameras: [],),
-        '/audio': (context) => AudioPlayerPage(),
+        '/camera': (context) => CameraPage(cameras: cameras), // Pass the actual cameras list here
         '/help': (context) => HelpPage(),
         '/accounthelp': (context) => AccountHelpPage(),
         '/playlisthelp': (context) => PlaylistHelpPage(),
         '/camerahelp': (context) => CameraVoiceHelpPage(),
+        '/settings': (context) => SettingsPage(),
+        '/audio': (context) => AudioPlayerPage(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );

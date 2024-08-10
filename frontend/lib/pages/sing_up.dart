@@ -1,5 +1,5 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../auth/auth_service.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,8 +17,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -36,14 +35,12 @@ class _SignUpState extends State<SignUp> {
     final confirmPassword = _confirmPasswordController.text.trim();
 
     if (password != confirmPassword) {
-      // Show error message if passwords do not match
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Passwords do not match')),
       );
       return;
     }
 
-    // Call the registration function in AuthService
     final result = await _authService.registration(
       email: email,
       password: password,
@@ -51,7 +48,6 @@ class _SignUpState extends State<SignUp> {
     );
 
     if (result == 'Success') {
-      // Link spotify navigation
       Navigator.pushNamed(context, '/linkspotify');
 
       
@@ -67,7 +63,6 @@ class _SignUpState extends State<SignUp> {
       }
 
     } else {
-      // Show error message if registration fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result ?? 'Registration failed')),
       );
@@ -76,256 +71,292 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 25, 0, 30),
-              child: Text(
-                "Create Your\nAccount",
-                style: TextStyle(
-                  fontSize: 40,
-                  fontFamily: "Roboto",
-                  fontWeight: FontWeight.w200,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Form(
-              child: Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      width: screenWidth / 1.4,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),
-                        controller:
-                            _usernameController, // Attach the controller
-                        decoration: InputDecoration(
-                          hintText: 'Username',
-                          hintStyle: TextStyle(
-                            color: const Color.fromARGB(171, 255, 255, 255),
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          fillColor: Colors.white,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 25),
-                    SizedBox(
-                      width: screenWidth / 1.4,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),
-                        controller: _emailController, // Attach the controller
-                        decoration: InputDecoration(
-                          hintText: 'Email',
-                          hintStyle: TextStyle(
-                            color: const Color.fromARGB(171, 255, 255, 255),
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          fillColor: Colors.white,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 25),
-                    SizedBox(
-                      width: screenWidth / 1.4,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),
-                        controller:
-                            _passwordController, // Attach the controller
-                        obscureText: true, // Obscure password input
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          hintStyle: TextStyle(
-                            color: const Color.fromARGB(171, 255, 255, 255),
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          fillColor: Colors.white,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 25),
-                    SizedBox(
-                      width: screenWidth / 1.4,
-                      child: TextField(
-                        cursorColor: Colors.white,
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),
-                        controller:
-                            _confirmPasswordController, // Attach the controller
-                        obscureText: true, // Obscure password input
-                        decoration: InputDecoration(
-                          hintText: 'Confirm Password',
-                          hintStyle: TextStyle(
-                            color: const Color.fromARGB(171, 255, 255, 255),
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          fillColor: Colors.white,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Spacer(), // Add Spacer to push button to bottom
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
-                      child: SizedBox(
-                        height: 80,
-                        width: screenWidth / 1.4,
-                        child: OutlinedButton(
-                          onPressed: _createAccount, // Call the function
-                          style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            foregroundColor: Colors.white,
-                          ),
-                          child: Text(
-                            'Create',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w200,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Spacer(),
-                    ElevatedButton(
-                      onPressed: () async {
-                        String? signInResult =
-                            await AuthService().signInWithGoogle();
-                        if (signInResult == 'Success') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Sign-in successful!'),
-                                duration: Duration(seconds: 2), // Optional: Set the duration for the SnackBar
-                              ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Sign-in failed: $signInResult'),
-                              duration: Duration(
-                                  seconds:
-                                      3), // Optional: Set the duration for the SnackBar
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue, // Set the button color (optional)
-                          foregroundColor: Colors.white, // Set the text color to white
-                      ),
-                      child: Text('Sign in with Google'),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
-                        child: Text.rich(
-                          TextSpan(
-                            text: "Already have an account?\n",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: "Log In",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w700,
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  decoration: TextDecoration.underline,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(top: 25, left: 20, right: 20),
+                        width: screenWidth,
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                iconSize: 35,
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/welcome');
+                                  dispose();
+                                },
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(context, '/login');
-                                  },
                               ),
-                              TextSpan(
-                                  text: "\n\nTerms and Conditions",
-                                  style: TextStyle(
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: SvgPicture.asset(
+                                'assets/images/SimpleLogo.svg',
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: constraints.maxHeight * 0.1),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: Text(
+                                'Create your account',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.06,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            SizedBox(height: 35),
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: TextField(
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                                controller: _usernameController,
+                                decoration: InputDecoration(
+                                  hintText: 'Username',
+                                  hintStyle: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).colorScheme.secondary,
                                     fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w700,
-                                  )),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: TextField(
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                                controller: _emailController,
+                                decoration: InputDecoration(
+                                  hintText: 'Email',
+                                  hintStyle: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: TextField(
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                                controller: _passwordController,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Password',
+                                  hintStyle: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 50),
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: TextField(
+                                cursorColor: Theme.of(context).colorScheme.secondary,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                                controller: _confirmPasswordController,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Confirm Password',
+                                  hintStyle: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          color: Theme.of(context).colorScheme.primary,
+                          height: 180,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Divider(
+                                color: Theme.of(context).colorScheme.secondary,
+                                thickness: 2,
+                              ),
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 6,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Already have an account? Log In",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Theme.of(context).colorScheme.secondary,
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          SizedBox(height: 20),
+                                          Text(
+                                            "Terms and Conditions",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Theme.of(context).colorScheme.secondary,
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      height: 70,
+                                      padding: EdgeInsets.fromLTRB(0, 0, screenWidth * 0.1, 0),
+                                      child: FloatingActionButton.extended(
+                                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                        onPressed: _createAccount,
+                                        label: Text(
+                                          'Create',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Theme.of(context).colorScheme.tertiary,
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
