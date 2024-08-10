@@ -4,6 +4,7 @@ import 'package:frontend/components/playlist_details.dart';
 import 'package:frontend/components/song_ribon.dart';
 import '../auth/auth_service.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/neural_net/neural_net_method_channel.dart';
 
 class PlaylistRibbon extends StatefulWidget {
   final Function(int) onTap;
@@ -209,25 +210,25 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
   }
 
   SvgPicture _getPlaylistIcon() {
-    if (mood == 'Happy') {
+    if (mood == 'happy') {
       return SvgPicture.asset(
         'assets/icons/Open_Up.svg',
         width: 100,
         color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
       );
-    } else if (mood == 'Sad') {
+    } else if (mood == 'sad') {
       return SvgPicture.asset(
         'assets/icons/Sad_Down.svg',
         width: 100,
         color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
       );
-    } else if (mood == 'Angry') {
+    } else if (mood == 'angry') {
       return SvgPicture.asset(
         'assets/icons/Angry_Down.svg',
         width: 100,
         color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
       );
-    } else if (mood == 'Surprised') {
+    } else if (mood == 'neutral') {
       return SvgPicture.asset(
         'assets/icons/Open_O.svg',
         width: 100,
@@ -265,9 +266,12 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
               // Handle regenerate action
             } else if (text == "Save Playlist") {
 
+
+              String mood = NeuralNetMethodChannel().returnMood();
+
                SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
               'IAN GOES HARD',
-              'Happy'
+               mood
 
               );
 
