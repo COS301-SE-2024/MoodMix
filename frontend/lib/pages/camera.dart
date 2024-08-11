@@ -109,7 +109,7 @@ class _CameraPageState extends State<CameraPage> {
       builder: (BuildContext context) {
         return ConfirmationPopUp(
           imagePath: pictureFile!.path,
-          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front, mood: 'Happy', // Check if the front camera was used
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front, mood: MoodService().mood, // Check if the front camera was used
         );
       },
     ).then((_) {
