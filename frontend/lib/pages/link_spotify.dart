@@ -1,138 +1,188 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
-import '../auth/auth_service.dart';
-import 'dart:js' as js;
+import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:frontend/auth/auth_service.dart';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
+
 
   @override
   State<LinkSpotify> createState() => _LinkSpotifyState();
 }
 
 class _LinkSpotifyState extends State<LinkSpotify> {
-  final AuthService _authService = AuthService();
-
-  void _linkSpotify() async {
-
-    await _authService.authenticateWithSpotify(context);
-  }
+  String backendUrl = '';
 
   @override
   void initState() {
     super.initState();
-    handleCallback();
+    _initializeBackendUrl();
+    SpotifyAuth.initialize(_onLoginSuccess);
+
   }
 
-  void handleCallback() {
-    final Uri uri = Uri.parse(js.context['window'].location.href);
-    final String? code = uri.queryParameters['code'];
-    final String? error = uri.queryParameters['error'];
-    if (code != null) {
-      print('Authorization code: $code');
-    } else if (error != null) {
-      print('Authentication error: $error');
+  Future<void> _initializeBackendUrl() async {
+    final NetworkInfo networkInfo = NetworkInfo();
+    final String? ipAddress = await networkInfo.getWifiIP();
+    if (ipAddress != null) {
+      setState(() {
+        backendUrl = 'http://$ipAddress:5002/login'; // Update with your backend URL
+      });
     } else {
-      print('Unexpected callback');
+      print('Failed to get IP address');
     }
+  }
+
+  Future<void> _linkSpotify() async {
+    try {
+
+      final accessToken = await SpotifyAuth.authenticate(); // Retrieves access token
+      if (accessToken != null) {
+        // Navigate to camera page on successful authentication
+        Navigator.pushReplacementNamed(context, '/camera');
+      } else {
+        // Handle authentication failure
+        print(accessToken);
+        print('Authentication failed');
+        //Navigator.pushReplacementNamed(context, '/camera');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+
+  void _linkSpotify2() async { //this is the method for web, which we are not going to currently use
+    if (backendUrl.isEmpty) {
+      print('Backend URL is not initialized');
+      return;
+    }
+    final Uri uri = Uri.parse(backendUrl);
+
+    try {
+      // Open the backend /login endpoint in the user's browser
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        print('Could not launch $backendUrl');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+
+  void _onLoginSuccess(String accessToken){ //if the user sccesfully logs in then we can redirect them
+
+    Navigator.pushReplacementNamed(context, '/camera');
+
+
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 33, 33, 33),
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 25, 0, 60),
-              child: Text(
-                "Link Your\nSpotify",
-                style: TextStyle(
-                  fontSize: 40,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w200,
-                  color: Colors.white,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(top: 25, left: 20, right: 20),
+                        width: screenWidth,
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                iconSize: 35,
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/welcome');
+                                  dispose();
+                                },
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: SvgPicture.asset(
+                                'assets/images/SimpleLogo.svg',
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: constraints.maxHeight * 0.15),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: Text(
+                                'Link your Spotify',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.065,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w900,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            SizedBox(height: 35),
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: Text(
+                                "Why do you need to link your Spotify?\n\nLinking your Spotify is necessary for the use of the MoodMix application. This application communicates directly with Spotify to create playlists, save playlists to your personal library, and more!",
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.035,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            SizedBox(height: 35),
+                            Container(
+                              width: screenWidth * 0.75,
+                              child: FloatingActionButton.extended(
+                                backgroundColor: Theme.of(context).colorScheme.secondary,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                                onPressed: _linkSpotify,
+                                icon: Image.asset(
+                                  "assets/icons/Spotify_Full_Logo_RGB_Black.png",
+                                  color: Theme.of(context).colorScheme.primary,
+                                  width: 200,
+                                ),
+                                label: Text(''),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: screenWidth / 1.4,
-                    child: Text(
-                      "Why link your Spotify?",
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        color: const Color.fromARGB(171, 255, 255, 255),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight / 25),
-                  SizedBox(
-                    width: screenWidth / 1.4,
-                    child: Text(
-                      "This application offers many features that are reliant on the link between this application and your Spotify account.",
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w500,
-                        color: const Color.fromARGB(171, 255, 255, 255),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Spacer(), 
-                  SizedBox(
-                    height: 80,
-                    width: screenWidth / 1.4,
-                    child: OutlinedButton(
-                      onPressed: _linkSpotify, 
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        foregroundColor: Colors.white,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Image(
-                          image: AssetImage(
-                              "assets/images/Spotify_Full_Logo_RGB_White.png"),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 50),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text(
-                        "\n\nTerms and Conditions",
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
   }
 }
-

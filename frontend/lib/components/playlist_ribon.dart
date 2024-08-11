@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:frontend/components/playlist_details.dart';
-import 'package:spotify/spotify.dart' as spotify;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/components/song_ribon.dart';
+import 'package:frontend/mood_service.dart';
+import '../auth/auth_service.dart';
+import 'package:flutter/services.dart';
+import 'package:frontend/neural_net/neural_net_method_channel.dart';
+import 'package:frontend/pages/camera.dart';
+
 
 class PlaylistRibbon extends StatefulWidget {
-  final int currentIndex;
   final Function(int) onTap;
-  final String mood;
   final int songCount;
   final String playlistLink;
+  final String playlistName;
+  final bool isFullSize;
 
   const PlaylistRibbon({
     Key? key,
-    required this.currentIndex,
     required this.onTap,
-    required this.mood,
     required this.songCount,
     required this.playlistLink,
+    required this.playlistName,
+    this.isFullSize = false,
   }) : super(key: key);
 
   @override
@@ -24,150 +30,276 @@ class PlaylistRibbon extends StatefulWidget {
 }
 
 class _PlaylistRibbonState extends State<PlaylistRibbon> {
-  late spotify.SpotifyApi spotifyApi;
-  String playlistName = "Loading...";
-  String mood = "Unknown Mood";
-  int songCount = 0;
-  late Iterable<dynamic>? tracks;
+  String mood = 'Unknown';
+  bool isMoodLoading = true; // Track loading state for mood
+  static String playlistMood = "";
 
   @override
   void initState() {
     super.initState();
+    _fetchAndDisplayMood();
 
-    final clientId = dotenv.env['SPOTIFY_CLIENT_ID'];
-    final clientSecret = dotenv.env['SPOTIFY_CLIENT_SECRET'];
-    final credentials = spotify.SpotifyApiCredentials(clientId!, clientSecret!);
-    spotifyApi = spotify.SpotifyApi(credentials);
-
-    _fetchSpotifyData();
   }
 
-  Future<void> _fetchSpotifyData() async {
+  Future<void> _fetchMood() async {
+    // Fetch the mood stored in camera.dart
+    setState(() {
+      playlistMood = MoodService().mood;
+      mood = playlistMood;// Adjust the call as needed
+    });
+  }
+
+  Future<void> _fetchAndDisplayMood() async {
     try {
-      var playlist = await spotifyApi.playlists.get(widget.playlistLink);
+      // final fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
+      // setState(() {
+      //   mood = fetchedMood;
+      // });
+      await _fetchMood();
+
+    } catch (e) {
+      print('Error fetching mood: $e');
       setState(() {
-        playlistName = playlist.name!;
-        tracks = playlist.tracks?.itemsNative;
-        for (var temp in tracks!) {
-          // print(temp);
-        }
-        songCount = playlist.tracks!.total;
+        mood = 'Unknown'; // Handle error scenario
       });
-    } catch (error) {
+    } finally {
       setState(() {
-        playlistName = "Error loading playlist";
+        isMoodLoading = false; // Update loading state after fetching
       });
-      print(error);
     }
   }
 
-  // Function to handle tap event
-  void _handleTap(String pIcon) {
-    // You can navigate to another screen or perform an action here
-    // For example, navigate to a new route passing some data
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PlaylistDetails(
-          playlistIcon: pIcon,
-          api: spotifyApi,
-          playlistLink: widget.playlistLink,
-          mood: widget.mood,
-          songCount: widget.songCount,
+  void _handleTap() {
+    if (!widget.isFullSize) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PlaylistDetails(
+            playlistName: widget.playlistName,
+            songCount: widget.songCount,
+            playlistLink: widget.playlistLink,
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final playlistIcon = _getPlaylistIcon();
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: _handleTap,
+      child: Container(
+        width: widget.isFullSize ? double.infinity : null,
+        height: widget.isFullSize ? double.infinity : 140,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+          borderRadius: widget.isFullSize ? BorderRadius.zero : BorderRadius.all(Radius.circular(20)),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+            width: 2,
+          ),
+        ),
+        child: Stack(
+          children: [
+            if (isMoodLoading)
+              Center(
+                child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary),
+              )
+            else ...[
+              Positioned(
+                right: 25,
+                top: 20,
+                child: Container(
+                  child: playlistIcon,
+                ),
+              ),
+              Align(
+                alignment: widget.isFullSize ? Alignment.topLeft : Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    25,
+                    widget.isFullSize ? 20 : 0,
+                    20,
+                    widget.isFullSize ? 10 : 0,
+                  ),
+                  child: widget.isFullSize
+                      ? SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.playlistName,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis, // Add this
+                          maxLines: 1, // Add this
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Mood: $mood",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Song Count: ${widget.songCount}",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                        SizedBox(height: 20),
+                        SongRibbon(),
+                        SizedBox(height: 20),
+                        Column(
+                          children: [
+                            _buildButton('Discard', screenWidth),
+                            SizedBox(height: 10),
+                            _buildButton('Regenerate', screenWidth),
+                            SizedBox(height: 10),
+                            _buildButton('Save Playlist', screenWidth),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                      : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.playlistName,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis, // Add this
+                        maxLines: 1, // Add this
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Mood: $mood",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Song Count: ${widget.songCount}",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final playlistIcon;
-
-    Color containerColor;
-    if (widget.mood == 'Happy') {
-      containerColor = Theme.of(context).colorScheme.tertiary;
-      playlistIcon = 'assets/images/happy_playlist_icon.png';
-    } else if (widget.mood == 'Sad') {
-      containerColor = Theme.of(context).colorScheme.tertiary;
-      playlistIcon = 'assets/images/sad_playlist_icon.png';
-    } else if (widget.mood == 'Angry') {
-      containerColor = Theme.of(context).colorScheme.tertiary;
-      playlistIcon = 'assets/images/angry_playlist_icon.png';
+  SvgPicture _getPlaylistIcon() {
+    if (mood == 'happy') {
+      return SvgPicture.asset(
+        'assets/icons/Open_Up.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+      );
+    } else if (mood == 'sad') {
+      return SvgPicture.asset(
+        'assets/icons/Sad_Down.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+      );
+    } else if (mood == 'angry') {
+      return SvgPicture.asset(
+        'assets/icons/Angry_Down.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+      );
+    } else if (mood == 'neutral') {
+      return SvgPicture.asset(
+        'assets/icons/Open_O.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+      );
     } else {
-      containerColor =
-          Colors.grey; // Default color if mood doesn't match any case
-      playlistIcon = 'assets/images/sad_playlist_icon.png';
+      return SvgPicture.asset(
+        'assets/icons/Open_Norm.svg',
+        width: 100,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+      );
     }
+  }
 
-    return GestureDetector(
-      onTap: () {
-        _handleTap(playlistIcon);
-      },
-      child: Container(
-        height: 140,
-        decoration: BoxDecoration(
-          color: containerColor,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+  Widget _buildButton(String text, double screenWidth) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+          width: 2,
         ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Image.asset(
-                playlistIcon,
-                fit: BoxFit.cover,
-                height: 130,
-                width: 130,
-              ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: SizedBox(
+        width: screenWidth * 0.9,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+          ),
+          onPressed: () {
+            if (text == "Discard") {
+              Navigator.pushReplacementNamed(context, '/camera');
+            } else if (text == "Regenerate") {
+              // Handle regenerate action
+            } else if (text == "Save Playlist") {
+               SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
+              'MoodMix',
+               mood
+              );
+              Navigator.pushReplacementNamed(context, '/userplaylist');
+            }
+          },
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 25,
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w400,
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
             ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: Text(
-                      playlistName,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: Text(
-                      "Mood: ${widget.mood}",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: Text(
-                      "Song Count: $songCount",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
