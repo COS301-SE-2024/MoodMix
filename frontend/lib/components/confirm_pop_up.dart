@@ -101,7 +101,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                     child: Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: PlaylistDetails(
-                        playlistName: "MoodMix Playlist for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}",
+                        playlistName: "MoodMix for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}",
                         songCount: 23,
                         playlistLink: 'kdsjfhlsdf',
                       ),
@@ -141,7 +141,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PlaylistDetails(
-                          playlistName: 'MoodMix Playlist for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}',
+                          playlistName: 'MoodMix for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}',
                           songCount: 23,
                           playlistLink: 'kdsjfhlsdf',
                         ),
