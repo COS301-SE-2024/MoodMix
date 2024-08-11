@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:frontend/components/playlist_details.dart';
 import 'package:frontend/components/song_ribon.dart';
+import 'package:frontend/mood_service.dart';
 import '../auth/auth_service.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/neural_net/neural_net_method_channel.dart';
+import 'package:frontend/pages/camera.dart';
+
 
 class PlaylistRibbon extends StatefulWidget {
   final Function(int) onTap;
@@ -29,19 +32,35 @@ class PlaylistRibbon extends StatefulWidget {
 class _PlaylistRibbonState extends State<PlaylistRibbon> {
   String mood = 'Unknown';
   bool isMoodLoading = true; // Track loading state for mood
+  static String playlistMood = "";
 
   @override
   void initState() {
     super.initState();
     _fetchAndDisplayMood();
+
   }
+
+  Future<void> _fetchMood() async {
+    // Fetch the mood stored in camera.dart
+    setState(() {
+      playlistMood = MoodService().mood;
+      mood = playlistMood;// Adjust the call as needed
+    });
+  }
+
+
+
+
 
   Future<void> _fetchAndDisplayMood() async {
     try {
-      final fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
-      setState(() {
-        mood = fetchedMood;
-      });
+      // final fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
+      // setState(() {
+      //   mood = fetchedMood;
+      // });
+      await _fetchMood();
+
     } catch (e) {
       print('Error fetching mood: $e');
       setState(() {
@@ -267,10 +286,10 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
             } else if (text == "Save Playlist") {
 
 
-              String mood = NeuralNetMethodChannel().returnMood();
+
 
                SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
-              'IAN GOES HARD',
+              'MoodMix Playlist ',
                mood
 
               );

@@ -50,6 +50,9 @@ public class MainActivity extends FlutterActivity {
 
                                 if (image_bytes != null) {
                                     String mood_result = neuralNetService.getMood(image_bytes);
+                                    System.out.println("MOODRESULT IS AS FOLLOWS:");
+                                    System.out.println(mood_result);
+                                    sendMood(mood_result);
                                     result.success(mood_result);
                                 } else {
                                     result.error("UNAVAILABLE", "Image bytes failed", "null");
@@ -60,6 +63,16 @@ public class MainActivity extends FlutterActivity {
                         }
                 );
     }
+
+    private void sendMood(String mood) {
+
+        new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), NEURAL_NET_CHANNEL)
+                .invokeMethod("recieveMood", mood); // Method to send access token to Flutter
+    }
+
+
+
+
 
     private void authenticate() {
         AuthorizationRequest.Builder builder =
