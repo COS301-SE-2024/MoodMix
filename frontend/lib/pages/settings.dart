@@ -34,6 +34,7 @@ class SettingsPage extends StatelessWidget {
                     onChanged: (bool value) {
                       themeProvider.toggleTheme();
                     },
+                    activeColor: Colors.white,
                   );
                 },
               ),

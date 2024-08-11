@@ -6,19 +6,19 @@ import 'package:frontend/mood_service.dart';
 import 'playlist_details.dart';
 
 class ConfirmationPopUp extends StatefulWidget {
-  final String? imagePath;  // Nullable imagePath for image confirmation
-  final String? transcribedText; // Nullable transcribedText for audio confirmation
+  final String? imagePath;
+  final String? transcribedText;
   final bool isFrontCamera;
   final String mood;
   final bool isImage;
 
   const ConfirmationPopUp({
     Key? key,
-    this.imagePath,          // Optional parameter for image confirmation
-    this.transcribedText,    // Optional parameter for audio confirmation
+    this.imagePath,
+    this.transcribedText,
     required this.mood,
     this.isFrontCamera = false,
-    this.isImage = true,     // Determines whether to display image or text
+    this.isImage = true,
   }) : super(key: key);
 
   @override
@@ -42,7 +42,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
         ),
         // Positioned Container to move it up
         Positioned(
-          top: screenHeight * 0.035, // Adjust this value to move the container up or down
+          top: screenHeight * 0.035,
           left: screenWidth * 0.1,
           right: screenWidth * 0.1,
           child: Container(
@@ -57,30 +57,24 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                 if (widget.isImage && widget.imagePath != null) ...[
                   // Image container with padding
                   Padding(
-                    padding: const EdgeInsets.all(5.0), // Slight padding around the image
+                    padding: const EdgeInsets.all(6.5),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0), // Rounded corners
+                      borderRadius: BorderRadius.circular(20.0),
                       child: Container(
                         width: double.infinity,
-                        height: screenHeight * 0.6382,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: FileImage(File(widget.imagePath!)), // Load image from file
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        height: screenHeight * 0.63, // Dynamically adjust this to fill the container
                         child: widget.isFrontCamera
                             ? Transform(
                           alignment: Alignment.center,
                           transform: Matrix4.rotationY(3.14159), // Mirror the image
                           child: Image.file(
                             File(widget.imagePath!),
-                            fit: BoxFit.cover,
+                            fit: BoxFit.cover, // Ensure the image fills the container
                           ),
                         )
                             : Image.file(
                           File(widget.imagePath!),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.cover, // Ensure the image fills the container
                         ),
                       ),
                     ),
@@ -108,10 +102,9 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                       padding: const EdgeInsets.all(0.0),
                       child: PlaylistDetails(
                         playlistName: "MoodMix Playlist for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}",
-
                         songCount: 23,
                         playlistLink: 'kdsjfhlsdf',
-                      ), // Display PlaylistDetails widget
+                      ),
                     ),
                   ),
                 ],
