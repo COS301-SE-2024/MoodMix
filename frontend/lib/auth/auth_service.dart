@@ -629,6 +629,8 @@ class SpotifyAuth {
         return 0.2;
       case 'angry':
         return 1.0;
+      case 'neutral':
+        return 0.5;
 
 
       default:
