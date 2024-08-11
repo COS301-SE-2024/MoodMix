@@ -139,6 +139,8 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                             color: Theme.of(context).colorScheme.secondary,
                           ),
                           textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis, // Add this
+                          maxLines: 1, // Add this
                         ),
                         SizedBox(height: 5),
                         Text(
@@ -190,6 +192,8 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                         textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis, // Add this
+                        maxLines: 1, // Add this
                       ),
                       SizedBox(height: 5),
                       Text(
@@ -229,31 +233,31 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
       return SvgPicture.asset(
         'assets/icons/Open_Up.svg',
         width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
       );
     } else if (mood == 'sad') {
       return SvgPicture.asset(
         'assets/icons/Sad_Down.svg',
         width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
       );
     } else if (mood == 'angry') {
       return SvgPicture.asset(
         'assets/icons/Angry_Down.svg',
         width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
       );
     } else if (mood == 'neutral') {
       return SvgPicture.asset(
         'assets/icons/Open_O.svg',
         width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
       );
     } else {
       return SvgPicture.asset(
         'assets/icons/Open_Norm.svg',
         width: 100,
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
       );
     }
   }
@@ -280,17 +284,10 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
             } else if (text == "Regenerate") {
               // Handle regenerate action
             } else if (text == "Save Playlist") {
-
-
-
-
                SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
               'MoodMix Playlist ',
                mood
-
               );
-
-
               Navigator.pushReplacementNamed(context, '/userplaylist');
             }
           },

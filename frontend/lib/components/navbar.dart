@@ -42,7 +42,7 @@ class NavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.help,
+            Icons.settings,
             color: Theme.of(context).colorScheme.secondary,
           ),
           label: "HELP",
