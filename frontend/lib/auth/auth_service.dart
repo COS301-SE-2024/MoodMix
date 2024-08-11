@@ -572,7 +572,7 @@ class SpotifyAuth {
     seedTracks.shuffle();
 
     final Random random = Random();
-    int numOfTracksToPick = random.nextInt(5)+1; // 0 to 4
+    int numOfTracksToPick = random.nextInt(5); // 0 to 4
     int rando2 = 4-numOfTracksToPick;
 
     final List<String> seedArtistslimited = seedArtists.take(rando2).toList();
