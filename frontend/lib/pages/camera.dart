@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'dart:io';
 
@@ -8,6 +9,7 @@ import 'package:frontend/neural_net/neural_net_method_channel.dart';
 import 'package:frontend/components/confirm_pop_up.dart'; // Import ConfirmationPopUp
 import '../components/audio_recorder.dart'; // Import AudioRecorder
 import '../auth/auth_service.dart';
+import '../mood_service.dart';
 
 
 class CameraPage extends StatefulWidget {
@@ -23,7 +25,9 @@ class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   XFile? pictureFile;
   int selectedCameraIndex = 0;
+  String? _mood;
 
+  static String playlistMood = "";
   final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
 
   @override
@@ -38,9 +42,47 @@ class _CameraPageState extends State<CameraPage> {
         print('Camera initialization error: $error');
       });
     }
-
+    _initializeMethodChannel();
     SpotifyAuth.fetchUserDetails();
   }
+
+
+
+
+  void _initializeMethodChannel() {
+    const MethodChannel _channel = MethodChannel('neural_net_method_channel');
+    _channel.setMethodCallHandler(_handleMethodCall);
+  }
+
+  static Future<void> _handleMethodCall(MethodCall call) async {
+    switch (call.method) {
+      case 'recieveMood':
+        String mood = call.arguments;
+        _handleSuccess(mood);
+        break;
+      case 'onError':
+        String error = call.arguments;
+        _handleError(error);
+        break;
+      default:
+        throw MissingPluginException('Not implemented: ${call.method}');
+    }
+  }
+
+  static void _handleSuccess(String mood) {
+    print("Received mood from AI: $mood");
+    MoodService().setMood(mood);
+    // Update UI or do other things with mood if needed
+  }
+
+  static void _handleError(String error) {
+    print('Error: $error');
+  }
+
+  String sendMood() {
+    return playlistMood;
+  }
+
 
   @override
   void dispose() {
@@ -76,6 +118,16 @@ class _CameraPageState extends State<CameraPage> {
         pictureFile = null;
       });
     });
+  }
+
+  void _fetchMood() async {
+    String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+    if (mood != null) {
+      setState(() {
+        _mood = mood;
+      });
+      _showConfirmImage();
+    }
   }
 
   @override
@@ -131,7 +183,7 @@ class _CameraPageState extends State<CameraPage> {
                                           child: IconButton(
                                             onPressed: () async {
                                               pictureFile = await controller?.takePicture();
-                                              print(await _neuralNetMethodChannel.get_mood(pictureFile));
+                                              await _neuralNetMethodChannel.get_mood(pictureFile);
                                               setState(() {});
                                               if (pictureFile != null) {
                                                 _showConfirmImage(); // Show ConfirmImage after taking the picture

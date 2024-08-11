@@ -687,10 +687,10 @@ class SpotifyAuth {
 
     final String userId = currentUser!.id;
     final String createPlaylistEndpoint = 'https://api.spotify.com/v1/users/$userId/playlists';
-
+    final String userName = currentUser!.displayName;
     final Map<String, dynamic> requestBody = {
-      'name': '$playlistName - $mood',
-      'description': 'LETSGOOOOO $mood',
+      'name': '$playlistName for $userName - $mood',
+      'description': 'a $mood made and curated by MoodMix',
       'public': true,
     };
 

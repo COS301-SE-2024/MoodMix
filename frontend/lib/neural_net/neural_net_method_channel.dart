@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 class NeuralNetMethodChannel {
 
   static const MethodChannel _channel = MethodChannel('neural_net_method_channel');
+  String mood = "angry";
 
   Future<String> get_mood(XFile? image) async {
+
     try {
       if (image != null)
         {
@@ -13,6 +15,7 @@ class NeuralNetMethodChannel {
       final image_bytes = await image.readAsBytes();
       final result = await _channel.invokeMethod('get_mood', {'image' : image_bytes});
       print('neural_net method channel result: $result');
+      final mood = await result;
       return result;
         } else {
         return "";
@@ -22,4 +25,10 @@ class NeuralNetMethodChannel {
       return "";
     }
   }
+
+  String returnMood(){
+    print(mood + "EASY TO FIND");
+    return mood;
+  }
+
 }
