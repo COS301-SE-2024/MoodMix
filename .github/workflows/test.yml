@@ -1,0 +1,52 @@
+name: Flutter Test
+
+on:
+  push:
+    branches:
+      - master
+      - development
+  pull_request:
+    branches:
+      - master
+      - development
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+   
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+       
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '3.22.1' # specify your Flutter version
+
+    - name: Install Dependancies
+      run: flutter pub get
+      working-directory: ./frontend
+
+    - name: Run tests
+      run: flutter test --coverage
+      working-directory: ./frontend
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+           token: ${{ secrets.CODECOV_TOKEN }}
+
+
+      
+   
+    
+
+ 
+
+  
+
+
+
+    

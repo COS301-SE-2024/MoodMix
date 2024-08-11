@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+      - development
+  pull_request:
+    branches:
+      - master
+      - development
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+      - run: flutter build web
+        working-directory: ./frontend
+ 

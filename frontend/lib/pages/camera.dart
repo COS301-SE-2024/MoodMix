@@ -239,7 +239,9 @@ class _CameraPageState extends State<CameraPage> {
         ),
       ),
       bottomNavigationBar: NavBar(
+
         currentIndex: 1,
+
         onTap: (index) {
           switch (index) {
             case 0:
@@ -249,7 +251,9 @@ class _CameraPageState extends State<CameraPage> {
               Navigator.pushReplacementNamed(context, '/userplaylist');
               break;
             case 2:
+
               Navigator.pushReplacementNamed(context, '/userprofile');
+
               break;
             case 3:
               Navigator.pushReplacementNamed(context, '/settings');
