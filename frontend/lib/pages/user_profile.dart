@@ -136,7 +136,7 @@ class _UserProfileState extends State<UserProfile> {
                                           ),
                                         ),
                                         Text(
-                                          'Temp $_displayName',
+                                          '$_displayName',
                                           style: TextStyle(
                                             fontSize: parentWidth * 0.07,
                                             fontFamily: 'Roboto',

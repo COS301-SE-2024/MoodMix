@@ -583,7 +583,7 @@ class SpotifyAuth {
     final Map<String,String> queryParams = {
       'limit' : '50',
       'seed_artists': seedArtistslimited.join(','),
-      'seed_genres' : 'pop',
+      'seed_genres' : 'south african metal',
       'seed_tracks': seedTrackslimited.join(','),
       'target_valence': valence.toString(),
     };
