@@ -285,7 +285,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
               // Handle regenerate action
             } else if (text == "Save Playlist") {
                SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
-              'MoodMix Playlist ',
+              'MoodMix',
                mood
               );
               Navigator.pushReplacementNamed(context, '/userplaylist');
