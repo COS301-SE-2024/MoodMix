@@ -1,6 +1,12 @@
 package com.moodmix.app.frontend_temp;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,12 +42,31 @@ public class NeuralNetService {
         this.context = context;
     }
 
+
+    public Bitmap convertToGrayscale(Bitmap originalBitmap) {
+        int width, height;
+        height = originalBitmap.getHeight();
+        width = originalBitmap.getWidth();
+
+        Bitmap grayscaleBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(grayscaleBitmap);
+        Paint paint = new Paint();
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+        paint.setColorFilter(colorFilter);
+        canvas.drawBitmap(originalBitmap, 0, 0, paint);
+
+        return grayscaleBitmap;
+    }
+
+
     public String getMood(byte[] imageBytes) {
         InputStream inputStream = new ByteArrayInputStream(imageBytes);
         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
         int image_height = 48; // pixel size
         int image_width = 48;  // pixel size
@@ -55,18 +80,32 @@ public class NeuralNetService {
         MultiLayerNetwork model = null;
         try {
             AssetManager assetManager = context.getAssets();
-            InputStream modelInputStream = assetManager.open("savedNeuralNet.zip");
+            InputStream modelInputStream = assetManager.open("savedNeuralNet_new.zip");
             model = ModelSerializer.restoreMultiLayerNetwork(modelInputStream);
         } catch (IOException e) {
             e.printStackTrace();
             return "Error loading model";
         }
 
-    //    String fileChose = "face_test.jfif";
-    //    File file = new File(fileChose);
 
         NativeImageLoader loader = new NativeImageLoader(image_height, image_width, color_channels);
         INDArray image = null;
+
+//        Bitmap grayscaleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//
+//        for (int y = 0; y < bitmap.getHeight(); y++) {
+//            for (int x = 0; x < bitmap.getWidth(); x++) {
+//                int pixel = bitmap.getPixel(x, y);
+//                int red = (pixel >> 16) & 0xff;
+//                int green = (pixel >> 8) & 0xff;
+//                int blue = pixel & 0xff;
+//                int gray = (red + green + blue) / 3;
+//                grayscaleBitmap.setPixel(x, y, Color.rgb(gray, gray, gray));
+//            }
+//        }
+
+        Bitmap grayscaleBitmap = convertToGrayscale(bitmap);
+
 
         try {
             // Load the image as INDArray
