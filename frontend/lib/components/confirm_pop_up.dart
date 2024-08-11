@@ -1,18 +1,24 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'playlist_details.dart'; // Import the playlist_details.dart file
+import 'package:frontend/auth/auth_service.dart';
+import 'package:frontend/mood_service.dart';
+import 'playlist_details.dart';
 
 class ConfirmationPopUp extends StatefulWidget {
-  final String imagePath;
+  final String? imagePath;  // Nullable imagePath for image confirmation
+  final String? transcribedText; // Nullable transcribedText for audio confirmation
   final bool isFrontCamera;
   final String mood;
+  final bool isImage;
 
   const ConfirmationPopUp({
     Key? key,
-    required this.imagePath,
+    this.imagePath,          // Optional parameter for image confirmation
+    this.transcribedText,    // Optional parameter for audio confirmation
     required this.mood,
     this.isFrontCamera = false,
+    this.isImage = true,     // Determines whether to display image or text
   }) : super(key: key);
 
   @override
@@ -20,8 +26,6 @@ class ConfirmationPopUp extends StatefulWidget {
 }
 
 class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
-  bool _isImageView = true;
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -50,7 +54,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
             ),
             child: Column(
               children: [
-                if (_isImageView) ...[
+                if (widget.isImage && widget.imagePath != null) ...[
                   // Image container with padding
                   Padding(
                     padding: const EdgeInsets.all(5.0), // Slight padding around the image
@@ -61,7 +65,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                         height: screenHeight * 0.6382,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: FileImage(File(widget.imagePath)), // Load image from file
+                            image: FileImage(File(widget.imagePath!)), // Load image from file
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -70,14 +74,30 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                           alignment: Alignment.center,
                           transform: Matrix4.rotationY(3.14159), // Mirror the image
                           child: Image.file(
-                            File(widget.imagePath),
+                            File(widget.imagePath!),
                             fit: BoxFit.cover,
                           ),
                         )
                             : Image.file(
-                          File(widget.imagePath),
+                          File(widget.imagePath!),
                           fit: BoxFit.cover,
                         ),
+                      ),
+                    ),
+                  ),
+                ] else if (!widget.isImage && widget.transcribedText != null) ...[
+                  // Display transcribed text for audio confirmation
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        widget.transcribedText!,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
@@ -87,7 +107,8 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                     child: Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: PlaylistDetails(
-                        playlistName: 'yappa',
+                        playlistName: "MoodMix Playlist for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}",
+
                         songCount: 23,
                         playlistLink: 'kdsjfhlsdf',
                       ), // Display PlaylistDetails widget
@@ -98,7 +119,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
             ),
           ),
         ),
-        if (_isImageView)
+        if (widget.isImage || widget.transcribedText != null)
           Positioned(
             bottom: screenHeight * 0.15,
             left: screenWidth * 0.2,
@@ -111,9 +132,6 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                   backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   onPressed: () {
                     Navigator.of(context).pop(); // Closes the pop-up
-                    setState(() {
-                      _isImageView = true;
-                    });
                   },
                   child: Icon(
                     Icons.refresh,
@@ -130,7 +148,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PlaylistDetails(
-                          playlistName: 'yappa',
+                          playlistName: 'MoodMix Playlist for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}',
                           songCount: 23,
                           playlistLink: 'kdsjfhlsdf',
                         ),

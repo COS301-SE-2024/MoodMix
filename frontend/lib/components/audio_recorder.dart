@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/mood_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'confirm_pop_up.dart';
 
 class AudioRecorder extends StatefulWidget {
   final VoidCallback onPressed;
@@ -55,6 +58,8 @@ class _AudioRecorderState extends State<AudioRecorder> with SingleTickerProvider
         transcript = data['transcript'] ?? 'No transcript';
         mood = data['mood'] ?? 'No mood';
       });
+      _showConfirmAudio(transcript);
+      MoodService().setMood(mood);
     } else {
       setState(() {
         transcript = 'Error: ${response.body}';
@@ -77,6 +82,23 @@ class _AudioRecorderState extends State<AudioRecorder> with SingleTickerProvider
         isRecording = false;
         _controller.stop();
         _controller.value = 1.0;
+      });
+    });
+  }
+
+  void _showConfirmAudio(String transcribedText) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          transcribedText: transcribedText,
+          mood: 'Happy',
+          isImage: false, // Audio confirmation
+        );
+      },
+    ).then((_) {
+      setState(() {
+        // Reset any necessary variables
       });
     });
   }

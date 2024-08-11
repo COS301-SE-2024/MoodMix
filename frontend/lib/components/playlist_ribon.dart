@@ -49,10 +49,6 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
     });
   }
 
-
-
-
-
   Future<void> _fetchAndDisplayMood() async {
     try {
       // final fetchedMood = await SpotifyAuth.calculateAggregateMood(widget.playlistLink);
