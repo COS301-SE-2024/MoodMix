@@ -33,7 +33,7 @@ class _LogInState extends State<LogIn> {
 
     if (result == 'Success') {
       // Navigate to the home screen if login is successful
-      Navigator.pushNamed(context, '/userprofile');
+      Navigator.pushNamed(context, '/linkspotify');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful')),
       );
@@ -152,6 +152,7 @@ class _LogInState extends State<LogIn> {
                                   color: Theme.of(context).colorScheme.secondary,
                                 ),
                                 controller: _passwordController,
+                                obscureText: true,
                                 decoration: InputDecoration(
                                   hintText: 'Password',
                                   hintStyle: TextStyle(
