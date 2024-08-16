@@ -510,6 +510,9 @@ class SpotifyAuth {
       return {};
     }
 
+
+    print("test");
+
     final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
     final String topTracksEndpoint = 'https://api.spotify.com/v1/me/top/tracks';
 
