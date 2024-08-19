@@ -535,22 +535,19 @@ class SpotifyAuth {
         // Parse top artists
         final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
         print("Got top artist and tracks info");
+
         print(artistsData);
         for (var artist in artistsData['items']) {
           artistIds.add(artist['id']);
-          genres.add(artist['genres']);
+          genres.add(artist['genres'].toString());
         }
+        // print(genres);
 
         // Parse top tracks
         final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
         for (var track in tracksData['items']) {
           trackIds.add(track['id']);
         }
-
-
-
-
-
 
         print(artistIds);
         print(trackIds);
@@ -580,6 +577,7 @@ class SpotifyAuth {
     final List<String> seedArtists = topArtistsAndTracks['artists'] ?? [];
     final List<String> seedTracks = topArtistsAndTracks['tracks'] ?? [];
     final List<String> genres = topArtistsAndTracks['genres'] ?? [];
+
     seedArtists.shuffle();
     seedTracks.shuffle();
     genres.shuffle();
@@ -591,37 +589,22 @@ class SpotifyAuth {
     final List<String> seedArtistslimited = seedArtists.take(rando2).toList();
     final List<String> seedTrackslimited = seedTracks.take(numOfTracksToPick).toList();
 
-    //Trying to Fetch Genres based on the Artist so that more related songs can be generated
-    //Currently Randomly generating an Index to choose one genre to use
-    // Random rand = Random();
-    // int randIndex = 0;
-    // List<String> genres = [];
-    // for(String url in seedArtists){
-    //   var response = await http.get(
-    //     Uri.parse(url),
-    //     headers: {'Authorization': 'Bearer $_accessToken'},
-    //   );
-    //   if(response.statusCode == 200){
-    //     var artistData = jsonDecode(response.body);
-    //     genres = List<String>.from(artistData['genres']);
-    //
-    //   }
-    //   else{
-    //     print("Failed to fetch Artist Genres");
-    //   }
-    // }
-    // print(genres[randIndex]);
-
+    //Randomly Choosing the Genre
     Random rand = Random();
-    int randIndex = 0;
-    randIndex = rand.nextInt(genres.length);
+    int randIndex = rand.nextInt(genres.length);
+    print('GENRES RANDOM INDEX');
+    // print(genres[randIndex].);
+    print(genres[randIndex]);
+    String g = genres[randIndex].substring(1);
+    String singleGenre = g.split(',')[0];
+    print(singleGenre);
     
     // Construct the query parameters
     final Map<String,String> queryParams = {
       'limit' : '50',
       'seed_artists': seedArtistslimited.join(','),
       // 'seed_genres' : 'south african metal',
-      'seed_genres' : genres[randIndex],
+      'seed_genres' : singleGenre,
       'seed_tracks': seedTrackslimited.join(','),
       'target_valence': valence.toString(),
     };
