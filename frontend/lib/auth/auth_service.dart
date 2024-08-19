@@ -537,6 +537,7 @@ class SpotifyAuth {
         print(artistsData);
         for (var artist in artistsData['items']) {
           artistIds.add(artist['id']);
+          //Add Genres HEre
         }
 
         // Parse top tracks
@@ -581,12 +582,34 @@ class SpotifyAuth {
     final List<String> seedArtistslimited = seedArtists.take(rando2).toList();
     final List<String> seedTrackslimited = seedTracks.take(numOfTracksToPick).toList();
 
+    //Trying to Fetch Genres based on the Artist so that more related songs can be generated
+    //Currently Randomly generating an Index to choose one genre to use
+    Random rand = Random();
+    int randIndex = 0;
+    List<String> genres = [];
+    for(String url in seedArtists){
+      var response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': 'Bearer $_accessToken'},
+      );
+      if(response.statusCode == 200){
+        var artistData = jsonDecode(response.body);
+        genres = List<String>.from(artistData['genres']);
+        randIndex = rand.nextInt(genres.length);
+      }
+      else{
+        print("Failed to fetch Artist Genres");
+      }
+    }
+    print(genres[randIndex]);
 
+    
     // Construct the query parameters
     final Map<String,String> queryParams = {
       'limit' : '50',
       'seed_artists': seedArtistslimited.join(','),
-      'seed_genres' : 'south african metal',
+      // 'seed_genres' : 'south african metal',
+      'seed_genres' : genres[randIndex],
       'seed_tracks': seedTrackslimited.join(','),
       'target_valence': valence.toString(),
     };
