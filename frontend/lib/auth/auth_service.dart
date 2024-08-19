@@ -530,6 +530,7 @@ class SpotifyAuth {
       if (topArtistsResponse.statusCode == 200 && topTracksResponse.statusCode == 200) {
         final List<String> artistIds = [];
         final List<String> trackIds = [];
+        final List<String> genres = [];
 
         // Parse top artists
         final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
@@ -537,7 +538,7 @@ class SpotifyAuth {
         print(artistsData);
         for (var artist in artistsData['items']) {
           artistIds.add(artist['id']);
-          //Add Genres HEre
+          genres.add(artist['genres']);
         }
 
         // Parse top tracks
@@ -545,9 +546,15 @@ class SpotifyAuth {
         for (var track in tracksData['items']) {
           trackIds.add(track['id']);
         }
+
+
+
+
+
+
         print(artistIds);
         print(trackIds);
-        return {'artists': artistIds, 'tracks': trackIds};
+        return {'artists': artistIds, 'tracks': trackIds , 'genres':genres};
       } else {
         print('Failed to fetch top artists or tracks');
         return {};
@@ -572,8 +579,10 @@ class SpotifyAuth {
     // Prepare seed artists and tracks
     final List<String> seedArtists = topArtistsAndTracks['artists'] ?? [];
     final List<String> seedTracks = topArtistsAndTracks['tracks'] ?? [];
+    final List<String> genres = topArtistsAndTracks['genres'] ?? [];
     seedArtists.shuffle();
     seedTracks.shuffle();
+    genres.shuffle();
 
     final Random random = Random();
     int numOfTracksToPick = random.nextInt(5); // 0 to 4
@@ -584,25 +593,28 @@ class SpotifyAuth {
 
     //Trying to Fetch Genres based on the Artist so that more related songs can be generated
     //Currently Randomly generating an Index to choose one genre to use
+    // Random rand = Random();
+    // int randIndex = 0;
+    // List<String> genres = [];
+    // for(String url in seedArtists){
+    //   var response = await http.get(
+    //     Uri.parse(url),
+    //     headers: {'Authorization': 'Bearer $_accessToken'},
+    //   );
+    //   if(response.statusCode == 200){
+    //     var artistData = jsonDecode(response.body);
+    //     genres = List<String>.from(artistData['genres']);
+    //
+    //   }
+    //   else{
+    //     print("Failed to fetch Artist Genres");
+    //   }
+    // }
+    // print(genres[randIndex]);
+
     Random rand = Random();
     int randIndex = 0;
-    List<String> genres = [];
-    for(String url in seedArtists){
-      var response = await http.get(
-        Uri.parse(url),
-        headers: {'Authorization': 'Bearer $_accessToken'},
-      );
-      if(response.statusCode == 200){
-        var artistData = jsonDecode(response.body);
-        genres = List<String>.from(artistData['genres']);
-        randIndex = rand.nextInt(genres.length);
-      }
-      else{
-        print("Failed to fetch Artist Genres");
-      }
-    }
-    print(genres[randIndex]);
-
+    randIndex = rand.nextInt(genres.length);
     
     // Construct the query parameters
     final Map<String,String> queryParams = {
