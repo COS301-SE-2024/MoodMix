@@ -21,6 +21,7 @@ class CameraPage extends StatefulWidget {
   _CameraPageState createState() => _CameraPageState();
 }
 
+
 class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   XFile? pictureFile;
@@ -103,6 +104,8 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
+
+
   void _showConfirmImage() {
     showDialog(
       context: context,
@@ -129,6 +132,70 @@ class _CameraPageState extends State<CameraPage> {
       _showConfirmImage();
     }
   }
+
+
+
+
+  void _aggregateMoods(List<String> moods) {
+    // Example aggregation logic: finding the most frequent mood
+    if (moods.isEmpty) return;
+
+    Map<String, int> moodCount = {};
+    for (var mood in moods) {
+      moodCount[mood] = (moodCount[mood] ?? 0) + 1;
+    }
+
+    String aggregatedMood = moodCount.keys.reduce((a, b) => moodCount[a]! > moodCount[b]! ? a : b);
+
+    setState(() {
+      _mood = aggregatedMood;
+    });
+
+    _showConfirmImage();
+  }
+
+
+
+
+
+
+  Future<void> _captureMultiplePhotos() async {
+    List<String> moods = [];
+
+    for (int i = 0; i < 5; i++) {  // Take 5 photos in quick succession
+      try {
+        XFile? pictureFile = await controller?.takePicture();
+        if (pictureFile != null) {
+          String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+          if (mood != null) {
+            moods.add(mood);
+          }
+        }
+
+        // Update the UI after each picture is taken
+        setState(() {});
+
+        // Optionally, show confirmation after each photo, remove this if only needed once
+        if (pictureFile != null) {
+          _showConfirmImage();  // This shows the confirmation popup
+        }
+
+      } catch (e) {
+        print('Error taking picture: $e');
+        break;
+      }
+
+      await Future.delayed(Duration(milliseconds: 500));  // Small delay between photos
+    }
+
+    _aggregateMoods(moods);
+  }
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -182,12 +249,13 @@ class _CameraPageState extends State<CameraPage> {
                                           bottom: 0.0,
                                           child: IconButton(
                                             onPressed: () async {
-                                              pictureFile = await controller?.takePicture();
-                                              await _neuralNetMethodChannel.get_mood(pictureFile);
-                                              setState(() {});
-                                              if (pictureFile != null) {
-                                                _showConfirmImage(); // Show ConfirmImage after taking the picture
-                                              }
+                                              // pictureFile = await controller?.takePicture();
+                                              // await _neuralNetMethodChannel.get_mood(pictureFile);
+                                              // setState(() {});
+                                              // if (pictureFile != null) {
+                                              //   _showConfirmImage(); // Show ConfirmImage after taking the picture
+                                              //}
+                                              await _captureMultiplePhotos();
                                             },
                                             icon: Icon(
                                               Icons.camera_alt,
