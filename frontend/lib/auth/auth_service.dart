@@ -534,12 +534,23 @@ class SpotifyAuth {
 
         // Parse top artists
         final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
-        print("Got top artist and tracks info");
-        print(artistsData);
+        //print("Got top artist and tracks info");
+        //print(artistsData);
         for (var artist in artistsData['items']) {
           artistIds.add(artist['id']);
-          genres.add(artist['genres']);
+
+          for (var genre in artist['genres']) {
+            if (!genres.contains(genre)) {
+              genres.add(genre);
+            }
+          }
+
         }
+
+
+
+        print("Genres fetched is: ");
+        print(genres);
 
         // Parse top tracks
         final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
@@ -552,8 +563,8 @@ class SpotifyAuth {
 
 
 
-        print(artistIds);
-        print(trackIds);
+        //print(artistIds);
+        //print(trackIds);
         return {'artists': artistIds, 'tracks': trackIds , 'genres':genres};
       } else {
         print('Failed to fetch top artists or tracks');
@@ -583,6 +594,8 @@ class SpotifyAuth {
     seedArtists.shuffle();
     seedTracks.shuffle();
     genres.shuffle();
+
+    print(genres);
 
     final Random random = Random();
     int numOfTracksToPick = random.nextInt(5); // 0 to 4
