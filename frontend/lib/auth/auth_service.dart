@@ -511,7 +511,6 @@ class SpotifyAuth {
     }
 
     final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
-    final String topTracksEndpoint = 'https://api.spotify.com/v1/me/top/tracks';
 
     try {
       final topArtistsResponse = await http.get(
@@ -519,45 +518,63 @@ class SpotifyAuth {
         headers: {'Authorization': 'Bearer $_accessToken'},
       );
 
-      final topTracksResponse = await http.get(
-        Uri.parse(topTracksEndpoint),
-        headers: {'Authorization': 'Bearer $_accessToken'},
-      );
-
-      if (topArtistsResponse.statusCode == 200 && topTracksResponse.statusCode == 200) {
-        final List<String> artistIds = [];
-        final List<String> trackIds = [];
-
-        // Parse top artists
+      if (topArtistsResponse.statusCode == 200) {
+        // Parse the top artists
         final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
-        print("Got top artist and tracks info");
-        print(artistsData);
-        for (var artist in artistsData['items']) {
-          artistIds.add(artist['id']);
-        }
+        final List<dynamic> artists = artistsData['items'];
 
-        // Parse top tracks
-        final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
-        for (var track in tracksData['items']) {
-          trackIds.add(track['id']);
+        // Select a random artist
+        final Random random = Random();
+        final int randomIndex = random.nextInt(artists.length);
+        final Map<String, dynamic> randomArtist = artists[randomIndex];
+
+        // Extract the artist's genres
+        final List<String> genres = List<String>.from(randomArtist['genres']);
+
+        // Fetch the artist's top tracks
+        final String artistId = randomArtist['id'];
+        print("Artist we will be choosing:");
+        print(randomArtist['name']);
+        final String topTracksEndpoint = 'https://api.spotify.com/v1/artists/$artistId/top-tracks?market=US';
+
+        final topTracksResponse = await http.get(
+          Uri.parse(topTracksEndpoint),
+          headers: {'Authorization': 'Bearer $_accessToken'},
+        );
+
+        if (topTracksResponse.statusCode == 200) {
+          // Parse the top tracks
+          final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
+          final List<String> trackIds = [];
+          for (var track in tracksData['tracks']) {
+            trackIds.add(track['id']);
+          }
+
+          // Return the combined object
+          return {
+            'artistId': [artistId], // Wrapping artistId in a List to maintain consistency
+            'genres': genres,
+            'topTracks': trackIds,
+          };
+        } else {
+          print('Failed to fetch top tracks for artist');
+          return {};
         }
-        print(artistIds);
-        print(trackIds);
-        return {'artists': artistIds, 'tracks': trackIds};
       } else {
-        print('Failed to fetch top artists or tracks');
+        print('Failed to fetch top artists');
         return {};
       }
     } catch (e) {
-      print('Error: $e');
+      print('Error occurred: $e');
       return {};
     }
   }
 
   // Function to generate recommendations
-  static Future<List<String>> getSpotifyRecommendations(
-      {required Map<String, List<String>> topArtistsAndTracks,
-        required double valence}) async {
+  static Future<List<String>> getSpotifyRecommendations({
+    required Map<String, List<String>> topArtistsAndTracks,
+    required double valence,
+  }) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return [];
@@ -565,32 +582,36 @@ class SpotifyAuth {
 
     final String recommendationsEndpoint = 'https://api.spotify.com/v1/recommendations';
 
-    // Prepare seed artists and tracks
-    final List<String> seedArtists = topArtistsAndTracks['artists'] ?? [];
-    final List<String> seedTracks = topArtistsAndTracks['tracks'] ?? [];
-    seedArtists.shuffle();
+    // Prepare seed artists, tracks, and genres
+    final List<String> seedArtists = topArtistsAndTracks['artistId'] ?? [];
+    final List<String> seedTracks = topArtistsAndTracks['topTracks'] ?? [];
+    final List<String> genres = topArtistsAndTracks['genres'] ?? [];
+
+    if (seedArtists.isEmpty || genres.isEmpty || seedTracks.isEmpty) {
+      print('Insufficient data to fetch recommendations');
+      return [];
+    }
+
+    // Shuffle and select necessary items
+    genres.shuffle();
     seedTracks.shuffle();
 
-    final Random random = Random();
-    int numOfTracksToPick = random.nextInt(5); // 0 to 4
-    int rando2 = 4-numOfTracksToPick;
-
-    final List<String> seedArtistslimited = seedArtists.take(rando2).toList();
-    final List<String> seedTrackslimited = seedTracks.take(numOfTracksToPick).toList();
-
+    // Take only 1 artist, 2 genres, and 2 tracks
+    final List<String> seedArtistsLimited = seedArtists.take(1).toList();
+    final List<String> seedGenresLimited = genres.take(2).toList();
+    final List<String> seedTracksLimited = seedTracks.take(2).toList();
 
     // Construct the query parameters
-    final Map<String,String> queryParams = {
-      'limit' : '50',
-      'seed_artists': seedArtistslimited.join(','),
-      'seed_genres' : 'south african metal',
-      'seed_tracks': seedTrackslimited.join(','),
+    final Map<String, String> queryParams = {
+      'limit': '100',
+      'seed_artists': seedArtistsLimited.first,  // We only have one artist
+      'seed_genres': seedGenresLimited.join(','),
+      'seed_tracks': seedTracksLimited.join(','),
       'target_valence': valence.toString(),
     };
 
-    print("query params for fetching recommendations");
-    print(seedTrackslimited);
-    print(seedArtistslimited);
+    print("Query parameters for fetching recommendations:");
+    print(queryParams);
 
     final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
 
@@ -619,6 +640,7 @@ class SpotifyAuth {
       return [];
     }
   }
+
 
   // Convert mood to a valence value
   static double moodToValence(String mood) {
@@ -665,8 +687,7 @@ class SpotifyAuth {
       valence: valenceInput,
     );
 
-    print("Track IDS for recommended tracks gotten and it should work?");
-    print(recommendedTracks);
+
     // Create and populate the playlist
     await createAndPopulatePlaylist(playlistName, mood, recommendedTracks);
   }
@@ -711,8 +732,8 @@ class SpotifyAuth {
         final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
         final String playlistId = playlistDetails['id'];
 
-        print('Playlist ID: $playlistId');
-        print('Playlist details: $playlistDetails');
+        // print('Playlist ID: $playlistId');
+        // print('Playlist details: $playlistDetails');
 
         // Add tracks to the playlist
         await addTracksToPlaylist(playlistId, trackUris);
