@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:frontend/components/playlist_details.dart';
+import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/pages/account_help_page.dart';
 import 'package:frontend/pages/camera_voice_help_page.dart';
 import 'package:frontend/pages/help_page.dart';
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/linkspotify',
+      initialRoute: '/userplaylist',
       routes: {
         '/': (context) => const Welcome(),
         '/signup': (context) => const SignUp(),
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
         '/camerahelp': (context) => CameraVoiceHelpPage(),
         '/settings': (context) => SettingsPage(),
         '/audio': (context) => AudioPlayerPage(),
+        '/playlistribbon': (context) => PlaylistRibbon()
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );

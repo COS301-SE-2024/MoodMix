@@ -91,19 +91,13 @@ class _PlaylistPageState extends State<PlaylistPage> {
                           textAlign: TextAlign.left,
                         ),
                       ),
-                      ...playlists.map((playlist) {
-                        return Padding(
+                      // ...playlists.map((playlist) {
+                        Padding(
                           padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                           child: PlaylistRibbon(
-                            onTap: (playlistIcon) {
-                              print('Tapped on playlist: ${playlist['name']}');
-                            },
-                            songCount: playlist['tracks']['total'],
-                            playlistLink: playlist['id'],
-                            playlistName: playlist['name'],
                           ),
-                        );
-                      }).toList(),
+                        ),
+
                     ],
                   ),
                 ),
