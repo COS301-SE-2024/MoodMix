@@ -457,7 +457,7 @@ class SpotifyAuth {
                   avgEnergy < (highThreshold + 0.00005)) &&
               (avgDanceability > (lowThreshold - 0.00005) &&
                   avgDanceability < (highThreshold + 0.00005)) &&
-              (avgAcousticness > (veryLowThreshold - 0.00005) &&
+              (avgAcousticness > (veryLowThreshold - 0.00005) && 
                   avgAcousticness < (highThreshold + 0.00005));
 
 
@@ -470,6 +470,8 @@ class SpotifyAuth {
       }
     }
   }
+
+  //For Sad Valence less then 0.3 && loudness less than -9
 
 // Helper function to classify based on closest mood
   static String _classifyMood(double valence, double energy, double danceability,
