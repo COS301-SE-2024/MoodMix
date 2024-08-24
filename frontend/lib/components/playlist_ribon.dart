@@ -34,9 +34,13 @@ class RoundedTrianglePainter extends CustomPainter {
 
 class PlaylistRibbon extends StatefulWidget {
   final String imageUrl; // Add this parameter
+  final String playlistName;
+  final String mood;
 
   const PlaylistRibbon({
     super.key,
+    required this.playlistName,
+    required this.mood,
     required this.imageUrl, // Make this parameter required
   });
 
@@ -97,6 +101,33 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                 height: screenHeight * 0.1, // Adjust height
               ),
             ),
+          ),
+          Positioned(
+            left: screenHeight * 0.13,
+            top: screenHeight * 0.013,
+            child: Column(
+              crossAxisAlignment:  CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.playlistName,
+                  style: TextStyle(
+                    fontSize: screenHeight * 0.03,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                Text(
+                  widget.mood,
+                  style: TextStyle(
+                    fontSize: screenHeight * 0.02,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            )
           ),
         ],
       ),

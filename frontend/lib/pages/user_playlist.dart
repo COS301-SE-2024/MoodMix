@@ -59,72 +59,71 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme
-          .primary,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
         child: Stack(
           children: [
             Visibility(
               visible: !isLoading,
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  width: screenWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                        child: Text(
-                          "My Playlists",
-                          style: TextStyle(
-                            fontSize: 40,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .secondary,
+              child: Center(
+                child: playlists.isEmpty
+                    ? Text(
+                  'No playlists available.',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w400,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                )
+                    : SingleChildScrollView(
+                  child: SizedBox(
+                    width: screenWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+                          child: Text(
+                            "My Playlists",
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            textAlign: TextAlign.left,
                           ),
-                          textAlign: TextAlign.left,
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                        child: Text(
-                          "Recently Generated",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .secondary,
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                          child: Text(
+                            "Recently Generated",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            textAlign: TextAlign.left,
                           ),
-                          textAlign: TextAlign.left,
                         ),
-                      ),
-                      ...playlists.map((playlist) {
-                        return Padding(
-                          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          child: PlaylistRibbon(
-                            imageUrl: playlist['image'], // Pass the first image URL
-                          ),
-                        );
-                      }).toList(),
-                    ],
+                        ...playlists.map((playlist) {
+                          return Padding(
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            child: PlaylistRibbon(
+                              playlistName: playlist['name'],
+                              mood: "happy",
+                              imageUrl: playlist['image'], // Pass the first image URL
+                            ),
+                          );
+                        }).toList(),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -134,10 +133,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
               duration: Duration(milliseconds: 300),
               child: Center(
                 child: CircularProgressIndicator(
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .secondary,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
