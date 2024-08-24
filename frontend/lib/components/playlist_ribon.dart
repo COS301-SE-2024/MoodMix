@@ -33,7 +33,12 @@ class RoundedTrianglePainter extends CustomPainter {
 }
 
 class PlaylistRibbon extends StatefulWidget {
-  const PlaylistRibbon({super.key});
+  final String imageUrl; // Add this parameter
+
+  const PlaylistRibbon({
+    super.key,
+    required this.imageUrl, // Make this parameter required
+  });
 
   @override
   _PlaylistRibbonState createState() => _PlaylistRibbonState();
@@ -62,7 +67,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
                 color: Theme.of(context).colorScheme.tertiary,
               ),
               color: Theme.of(context).colorScheme.tertiary,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
           Positioned(
@@ -70,10 +75,26 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
             right: 0,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(10),
+                bottomRight: Radius.circular(20),
               ),
               child: CustomPaint(
                 size: Size(screenHeight * 0.055, screenHeight * 0.055),
+                painter: RoundedTrianglePainter(),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                topLeft: Radius.circular(10),
+              ),
+              child: Image.network(
+                widget.imageUrl, // Use the image URL parameter
+                fit: BoxFit.cover,
+                width: screenHeight * 0.1, // Adjust width
+                height: screenHeight * 0.1, // Adjust height
               ),
             ),
           ),

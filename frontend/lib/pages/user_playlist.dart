@@ -26,7 +26,17 @@ class _PlaylistPageState extends State<PlaylistPage> {
       final playlistData = await SpotifyAuth.fetchUserPlaylists();
       if (playlistData != null) {
         setState(() {
-          playlists = playlistData;
+          playlists = playlistData.map((playlist) {
+            // Extract the first image URL
+            final firstImageUrl = playlist['images'].isNotEmpty
+                ? playlist['images'][0]['url']
+                : ''; // Default to an empty string if no images are available
+            return {
+              'name': playlist['name'],
+              'image': firstImageUrl, // Store the first image URL
+              'url': playlist['external_urls']['spotify'],
+            };
+          }).toList();
         });
       } else {
         setState(() {
@@ -49,11 +59,20 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .primary,
       body: SafeArea(
         child: Stack(
           children: [
@@ -73,7 +92,10 @@ class _PlaylistPageState extends State<PlaylistPage> {
                             fontSize: 40,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .secondary,
                           ),
                           textAlign: TextAlign.left,
                         ),
@@ -86,30 +108,36 @@ class _PlaylistPageState extends State<PlaylistPage> {
                             fontSize: 20,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.secondary,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .secondary,
                           ),
                           textAlign: TextAlign.left,
                         ),
                       ),
-                      // ...playlists.map((playlist) {
-                        Padding(
+                      ...playlists.map((playlist) {
+                        return Padding(
                           padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                           child: PlaylistRibbon(
+                            imageUrl: playlist['image'], // Pass the first image URL
                           ),
-                        ),
-
+                        );
+                      }).toList(),
                     ],
                   ),
                 ),
               ),
             ),
-            // Loading indicator
             AnimatedOpacity(
               opacity: isLoading ? 1.0 : isFadeOut ? 0.0 : 1.0,
               duration: Duration(milliseconds: 300),
               child: Center(
                 child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .secondary,
                 ),
               ),
             ),

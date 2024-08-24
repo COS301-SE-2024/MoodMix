@@ -23,12 +23,12 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SafeArea(
-        child: PlaylistRibbon(
-
-        ),
-      ),
+      // backgroundColor: Theme.of(context).colorScheme.primary,
+      // body: SafeArea(
+      //
+      //
+      //   ),
+      // ),
     );
   }
 }

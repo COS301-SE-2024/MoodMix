@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/userplaylist',
+      initialRoute: '/linkspotify',
       routes: {
         '/': (context) => const Welcome(),
         '/signup': (context) => const SignUp(),
@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
         '/camerahelp': (context) => CameraVoiceHelpPage(),
         '/settings': (context) => SettingsPage(),
         '/audio': (context) => AudioPlayerPage(),
-        '/playlistribbon': (context) => PlaylistRibbon()
+        // '/playlistribbon': (context) => PlaylistRibbon()
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
