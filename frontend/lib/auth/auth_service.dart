@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/pages/link_spotify.dart';
 import 'dart:math';
+import '/database/database.dart';
 
 
 class AuthService {
@@ -276,6 +277,19 @@ class SpotifyAuth {
     return _accessToken;
   }
 
+  static String? getUserId(){
+
+    if (currentUser == null) {
+      return "User not found";
+    }else{
+      return currentUser?.id;
+    }
+
+
+
+
+  }
+
   static Future<Map<String, dynamic>?> fetchUserDetails() async {
     if (_accessToken == null) {
       print('Access token is not available');
@@ -324,7 +338,7 @@ class SpotifyAuth {
       );
       if (response.statusCode == 200) {
         final playlistDetails = jsonDecode(response.body);
-        print('User playlists fetched and stored:');
+       // print('User playlists fetched and stored:');
        // print(playlistDetails); // Debug print the entire response
         return playlistDetails['items'];
       } else {
@@ -671,12 +685,12 @@ class SpotifyAuth {
     }
 
     // Fetch top artists and tracks for seeds
-    final seeds = await fetchUserTopArtistsAndTracks();
+    //final seeds = await fetchUserTopArtistsAndTracks();
 
-    if (seeds.isEmpty) {
-      print('No seeds available for recommendations');
-      return;
-    }
+    // if (seeds.isEmpty) {
+    //   print('No seeds available for recommendations');
+    //   return;
+    // }
 
     // Generate recommendations based on mood
     Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
@@ -732,10 +746,16 @@ class SpotifyAuth {
         final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
         final String playlistId = playlistDetails['id'];
 
-        // print('Playlist ID: $playlistId');
-        // print('Playlist details: $playlistDetails');
+        Map<String, dynamic> playlistData = {
+          'playlistId': playlistId,
+          'mood': mood,
+          'userId': userId,
+        };
+        await instance.insertPlaylist(playlistData);
 
-        // Add tracks to the playlist
+
+
+
         await addTracksToPlaylist(playlistId, trackUris);
       } else {
         print('Failed to create playlist: ${createPlaylistResponse.statusCode}');

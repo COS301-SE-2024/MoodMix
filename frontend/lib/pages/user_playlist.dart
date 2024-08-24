@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart';
 import '../auth/auth_service.dart';
+import '/database/database.dart';
 
 class PlaylistPage extends StatefulWidget {
   const PlaylistPage({Key? key}) : super(key: key);
@@ -22,6 +23,15 @@ class _PlaylistPageState extends State<PlaylistPage> {
   }
 
   Future<void> _fetchSpotifyPlaylists() async {
+    //get the spotify userID
+    String? userId = SpotifyAuth.getUserId();
+    List<Map<String, dynamic>> playlistsTest = await DatabaseHelper.getPlaylistsByUserId(userId);
+    print("Checking if pulling playlists work");
+    print(playlistsTest);
+
+
+
+
     try {
       final playlistData = await SpotifyAuth.fetchUserPlaylists();
       if (playlistData != null) {
