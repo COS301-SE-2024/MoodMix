@@ -4,13 +4,33 @@ import 'dart:math';
 
 class RoundedTrianglePainter extends CustomPainter {
   final double borderRadius;
+  final String mood; // Add mood parameter
 
-  RoundedTrianglePainter({this.borderRadius = 10.0});
+  RoundedTrianglePainter({this.borderRadius = 10.0, required this.mood});
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Set the color based on the mood
+    Color triangleColor;
+    switch (mood.toLowerCase()) {
+      case 'happy':
+        triangleColor = Colors.yellow;
+        break;
+      case 'sad':
+        triangleColor = Colors.blue;
+        break;
+      case 'angry':
+        triangleColor = Colors.red;
+        break;
+      case 'surprised':
+        triangleColor = Colors.orange;
+        break;
+      default:
+        triangleColor = Colors.grey; // Default color if mood doesn't match
+    }
+
     final Paint paint = Paint()
-      ..color = Colors.blue // Change the color as needed
+      ..color = triangleColor // Use the dynamic color
       ..style = PaintingStyle.fill;
 
     final Path path = Path();
@@ -28,7 +48,7 @@ class RoundedTrianglePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true; // Return true so it repaints when mood changes
   }
 }
 
@@ -83,7 +103,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
               ),
               child: CustomPaint(
                 size: Size(screenHeight * 0.055, screenHeight * 0.055),
-                painter: RoundedTrianglePainter(),
+                painter: RoundedTrianglePainter(mood: widget.mood), // Pass the mood
               ),
             ),
           ),
@@ -103,31 +123,31 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
             ),
           ),
           Positioned(
-            left: screenHeight * 0.13,
-            top: screenHeight * 0.013,
-            child: Column(
-              crossAxisAlignment:  CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.playlistName,
-                  style: TextStyle(
-                    fontSize: screenHeight * 0.03,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.secondary,
+              left: screenHeight * 0.13,
+              top: screenHeight * 0.013,
+              child: Column(
+                crossAxisAlignment:  CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.playlistName,
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.03,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                   ),
-                ),
-                Text(
-                  widget.mood,
-                  style: TextStyle(
-                    fontSize: screenHeight * 0.02,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.secondary,
+                  Text(
+                    widget.mood,
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.02,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
           ),
         ],
       ),

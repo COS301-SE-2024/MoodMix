@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart';
+import 'package:frontend/mood_service.dart';
 import '../auth/auth_service.dart';
 import '/database/database.dart';
 
@@ -26,10 +27,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
     //get the spotify userID
     String? userId = SpotifyAuth.getUserId();
 
-
-
-
-
     try {
       final playlistData = await SpotifyAuth.fetchUserPlaylists(userId);
       print("Playlist Data being returned is as follows:");
@@ -45,6 +42,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
               'name': playlist['name'],
               'image': firstImageUrl, // Store the first image URL
               'url': playlist['external_urls']['spotify'],
+              'mood': playlist['mood'],
             };
           }).toList();
         });
@@ -79,9 +77,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
           children: [
             Visibility(
               visible: !isLoading,
-              child: Center(
-                child: playlists.isEmpty
-                    ? Text(
+              child: playlists.isEmpty
+                  ? Center( // Center the content if no playlists
+                child: Text(
                   'No playlists available.',
                   style: TextStyle(
                     fontSize: 24,
@@ -89,51 +87,36 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     fontWeight: FontWeight.w400,
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                )
-                    : SingleChildScrollView(
-                  child: SizedBox(
-                    width: screenWidth,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                          child: Text(
-                            "My Playlists",
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
+                ),
+              )
+                  : SingleChildScrollView( // Align to top left if playlists are available
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 20), // Add some top padding
+                      Text(
+                        "My Playlists",
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                          child: Text(
-                            "Recently Generated",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                            textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 10),
+                      ...playlists.map((playlist) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: PlaylistRibbon(
+                            playlistName: playlist['name'],
+                            mood: playlist['mood'],
+                            imageUrl: playlist['image'], // Pass the first image URL
                           ),
-                        ),
-                        ...playlists.map((playlist) {
-                          return Padding(
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: PlaylistRibbon(
-                              playlistName: playlist['name'],
-                              mood: "happy",
-                              imageUrl: playlist['image'], // Pass the first image URL
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    ),
+                        );
+                      }).toList(),
+                    ],
                   ),
                 ),
               ),
