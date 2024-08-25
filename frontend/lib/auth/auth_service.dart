@@ -324,11 +324,15 @@ class SpotifyAuth {
     }
   }
 
-  static Future<List<dynamic>?> fetchUserPlaylists() async {
+  static Future<List<Map<String, dynamic>>?> fetchUserPlaylists(String? userId) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return null;
     }
+
+    // Fetch playlists from the local database
+    List<Map<String, dynamic>> localPlaylists = await DatabaseHelper.getPlaylistsByUserId(userId);
+    final List<String> localPlaylistIds = localPlaylists.map((playlist) => playlist['playlistId'] as String).toList();
 
     final String endpoint = 'https://api.spotify.com/v1/me/playlists';
     try {
@@ -336,11 +340,30 @@ class SpotifyAuth {
         Uri.parse(endpoint),
         headers: {'Authorization': 'Bearer $_accessToken'},
       );
+
       if (response.statusCode == 200) {
         final playlistDetails = jsonDecode(response.body);
-       // print('User playlists fetched and stored:');
-       // print(playlistDetails); // Debug print the entire response
-        return playlistDetails['items'];
+        final List<dynamic> fetchedPlaylists = playlistDetails['items'];
+        final List<Map<String, dynamic>> matchingPlaylists = [];
+
+        // Loop through fetched playlists and compare with local database
+        for (var playlist in fetchedPlaylists) {
+          final String playlistId = playlist['id'];
+
+          // Check if the fetched playlist ID matches any in the local database
+          if (localPlaylistIds.contains(playlistId)) {
+            // Find the corresponding local playlist entry
+            final matchingLocalPlaylist = localPlaylists.firstWhere(
+                  (localPlaylist) => localPlaylist['playlistId'] == playlistId,
+            );
+
+            // Add the mood from the local database to the playlist object
+            playlist['mood'] = matchingLocalPlaylist['mood'];
+            matchingPlaylists.add(playlist);
+          }
+        }
+
+        return matchingPlaylists;
       } else {
         print('Failed to fetch user playlists: ${response.statusCode}');
         print('Response body: ${response.body}');

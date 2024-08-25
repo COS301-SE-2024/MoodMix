@@ -25,15 +25,15 @@ class _PlaylistPageState extends State<PlaylistPage> {
   Future<void> _fetchSpotifyPlaylists() async {
     //get the spotify userID
     String? userId = SpotifyAuth.getUserId();
-    List<Map<String, dynamic>> playlistsTest = await DatabaseHelper.getPlaylistsByUserId(userId);
-    print("Checking if pulling playlists work");
-    print(playlistsTest);
+
 
 
 
 
     try {
-      final playlistData = await SpotifyAuth.fetchUserPlaylists();
+      final playlistData = await SpotifyAuth.fetchUserPlaylists(userId);
+      print("Playlist Data being returned is as follows:");
+      print(playlistData);
       if (playlistData != null) {
         setState(() {
           playlists = playlistData.map((playlist) {
