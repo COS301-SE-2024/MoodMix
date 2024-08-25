@@ -23,19 +23,12 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SafeArea(
-        child: PlaylistRibbon(
-          onTap: (playlistIcon) {
-            // Handle onTap action if needed
-            print('Tapped on playlist: ${widget.playlistName}');
-          },
-          songCount: widget.songCount,
-          playlistLink: widget.playlistLink,
-          playlistName: widget.playlistName,
-          isFullSize: true,
-        ),
-      ),
+      // backgroundColor: Theme.of(context).colorScheme.primary,
+      // body: SafeArea(
+      //
+      //
+      //   ),
+      // ),
     );
   }
 }
