@@ -30,6 +30,10 @@ class _CameraPageState extends State<CameraPage> {
   static String playlistMood = "";
   final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
 
+  List<String>? genres = [];
+  List<String> selectedGenres = [];
+  List<bool> checkBoxSelected = [];
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +48,7 @@ class _CameraPageState extends State<CameraPage> {
     }
     _initializeMethodChannel();
     SpotifyAuth.fetchUserDetails();
+    _fetchGenres();
   }
 
 
@@ -127,6 +132,16 @@ class _CameraPageState extends State<CameraPage> {
         _mood = mood;
       });
       _showConfirmImage();
+    }
+  }
+
+  //Might have to use a Different Genre fetching method because this pulls similar genres
+  void _fetchGenres() async{
+    final genresFetched = await SpotifyAuth.fetchUserTopArtistsAndTracks();
+    if(genresFetched != null){
+      setState(() {
+        genres = genresFetched['genres'];
+      });
     }
   }
 
@@ -286,21 +301,22 @@ class _CameraPageState extends State<CameraPage> {
                 ),
               ),
             ),
-            CheckboxListTile(
-              title: Text("Rock"),
-              value: false,
-              onChanged: (bool? value){},
-            ),
-            CheckboxListTile(
-              title: Text("Hip-Hop"),
-              value: false,
-              onChanged: (bool? value){},
-            ),
-            CheckboxListTile(
-              title: Text("Classical"),
-              value: false,
-              onChanged: (bool? value){},
-            ),
+          ...genres!.map((g) {
+            return CheckboxListTile(
+                title: Text(g),
+                value: selectedGenres.contains(g),
+                onChanged: (bool? newValue){
+                  setState(() {
+                    if(newValue == true){
+                      selectedGenres.add(g);
+                    }
+                    else{
+                      selectedGenres.remove(g);
+                    }
+                  });
+                }
+            );
+          }).toList(),
           ],
         ),
       ),
