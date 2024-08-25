@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/auth/auth_service.dart';
 import 'package:frontend/mood_service.dart';
 import 'playlist_details.dart';
+import '../mood_service.dart';
 
 class ConfirmationPopUp extends StatefulWidget {
   final String? imagePath;
@@ -137,7 +138,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                   backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   onPressed: () {
                     Navigator.of(context).pop(); // Closes the pop-up
-                    SpotifyAuth.createAndPopulatePlaylistWithRecommendations("MoodMix", "tempMood");
+                    SpotifyAuth.createAndPopulatePlaylistWithRecommendations("MoodMix", MoodService().mood);
                     Navigator.pushReplacementNamed(context, '/userplaylist');
                   },
                   child: Icon(
