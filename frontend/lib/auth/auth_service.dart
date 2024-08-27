@@ -650,17 +650,17 @@ class SpotifyAuth {
       double minV = valence - 0.1;
       double maxV = valence + 0.1;
 
-      double minD = valence - 0.1;
-      double maxD = valence + 0.1;
+      double minD = danceability - 0.1;
+      double maxD = danceability + 0.1;
 
-      double minE = valence - 0.1;
-      double maxE = valence + 0.1;
+      double minE = energy - 0.1;
+      double maxE = energy + 0.1;
 
-      double minL = valence - 0.1;
-      double maxL = valence + 0.1;
+      double minL = loudness - 1;
+      double maxL = loudness + 1;
 
-      double minT = valence - 0.1;
-      double maxT = valence + 0.1;
+      double minT = valence - 10;
+      double maxT = valence + 10;
 
       Map<String, String> queryParamsNeutral  = {
 
