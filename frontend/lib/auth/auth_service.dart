@@ -574,6 +574,11 @@ class SpotifyAuth {
   static Future<List<String>> getSpotifyRecommendations({
     required Map<String, List<String>> topArtistsAndTracks,
     required double valence,
+    required double danceability,
+    required double energy,
+    required double loudness,
+    required double tempo,
+    required String mood,
   }) async {
     if (_accessToken == null) {
       print('Access token is not available');
@@ -607,8 +612,72 @@ class SpotifyAuth {
       'seed_artists': seedArtistsLimited.first,  // We only have one artist
       'seed_genres': seedGenresLimited.join(','),
       'seed_tracks': seedTracksLimited.join(','),
-      'target_valence': valence.toString(),
+      // 'target_valence': valence.toString(),
     };
+
+    //Setting Min/Max for Moods
+    if(mood.toLowerCase() == "happy"){
+      Map<String, String> queryParamsHappy = {
+          'min_valence':valence.toString(),
+          'min_danceability':danceability.toString(),
+          'min_energy':energy.toString(),
+          'min_loudness':loudness.toString(),
+          'min_tempo':tempo.toString(),
+        };
+      queryParams.addAll(queryParamsHappy);
+    }
+    if(mood.toLowerCase() == "sad"){
+      Map<String, String> queryParamsSad  = {
+        'max_valence': valence.toString(),
+        'max_danceability': danceability.toString(),
+        'max_energy':energy.toString(),
+        'max_loudness': loudness.toString(),
+        'max_tempo':tempo.toString(),
+      };
+      queryParams.addAll(queryParamsSad);
+    }
+    if(mood.toLowerCase() == "angry"){
+      Map<String, String> queryParamsAngry = {
+        'min_valence':valence.toString(),
+        'min_danceability':danceability.toString(),
+        'min_energy':energy.toString(),
+        'min_loudness':loudness.toString(),
+        'min_tempo':tempo.toString(),
+      };
+      queryParams.addAll(queryParamsAngry);
+    }
+    if(mood.toLowerCase() == "neutral"){
+      double minV = valence - 0.1;
+      double maxV = valence + 0.1;
+
+      double minD = valence - 0.1;
+      double maxD = valence + 0.1;
+
+      double minE = valence - 0.1;
+      double maxE = valence + 0.1;
+
+      double minL = valence - 0.1;
+      double maxL = valence + 0.1;
+
+      double minT = valence - 0.1;
+      double maxT = valence + 0.1;
+
+      Map<String, String> queryParamsNeutral  = {
+
+        'min_valence':minV.toString(),
+        'min_danceability':minD.toString(),
+        'min_energy':minE.toString(),
+        'min_loudness':minL.toString(),
+        'min_tempo':minT.toString(),
+
+        'max_valence': maxV.toString(),
+        'max_danceability': maxD.toString(),
+        'max_energy':maxE.toString(),
+        'max_loudness': maxL.toString(),
+        'max_tempo':maxT.toString(),
+      };
+      queryParams.addAll(queryParamsNeutral);
+    }
 
     print("Query parameters for fetching recommendations:");
     print(queryParams);
@@ -660,6 +729,52 @@ class SpotifyAuth {
     }
   }
 
+  static Map<String, double> songParameters(String mood/*, String genres*/){
+    double valence = 0.5;
+    double danceability = 0.5;
+    double energy = 0.5;
+    double loudness = -6;
+    double tempo = 100;
+
+    if(mood.toLowerCase() == "happy"){
+      valence = 0.8;
+      danceability = 0.9;
+      energy = 0.8;
+      loudness = -6;
+      tempo = 120;
+    }
+    if(mood.toLowerCase() == "sad"){
+      valence = 0.35;
+      danceability = 0.4;
+      energy = 0.5;
+      loudness = -9;
+      tempo = 100;
+    }
+    if(mood.toLowerCase() == "angry"){
+      valence = 0.3;
+      danceability = 0.5;
+      energy = 0.9;
+      loudness = -3;
+      tempo = 106;
+    }
+    if(mood.toLowerCase() == "Neutral"){
+      valence = 0.5;
+      danceability = 0.5;
+      energy = 0.5;
+      loudness = -6;
+      tempo = 100;
+    }
+
+    return {
+      'valence': valence,
+      'danceability': danceability,
+      'energy': energy,
+      'loudness':loudness,
+      'tempo':tempo
+    };
+
+  }
+
   // Function to create and populate playlist with recommendations
   static Future<void> createAndPopulatePlaylistWithRecommendations(
       String playlistName,
@@ -680,11 +795,23 @@ class SpotifyAuth {
 
     // Generate recommendations based on mood
     Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
-    double valenceInput = moodToValence(mood);
+    // double valenceInput = moodToValence(mood);
+
+    Map<String, double> params = songParameters(mood);
+    double? valence = params['valence'];
+    double? danceability = params['danceability'];
+    double? energy = params['energy'];
+    double? loudness = params['loudness'];
+    double? tempo = params['tempo'];
 
     List<String> recommendedTracks = await getSpotifyRecommendations(
       topArtistsAndTracks: topArtistsAndTracks,
-      valence: valenceInput,
+      valence: valence!,
+      danceability: danceability!,
+      energy: energy!,
+      loudness: loudness!,
+      tempo: tempo!,
+      mood: mood,
     );
 
 
