@@ -3,7 +3,9 @@ import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/mood_service.dart';
 import '../auth/auth_service.dart';
+import '../components/custom_scrollbar.dart';
 import '/database/database.dart';
+import '../components/custom_scrollbar.dart';
 
 class PlaylistPage extends StatefulWidget {
   const PlaylistPage({Key? key}) : super(key: key);
@@ -24,7 +26,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
   }
 
   Future<void> _fetchSpotifyPlaylists() async {
-    //get the spotify userID
     String? userId = SpotifyAuth.getUserId();
 
     try {
@@ -34,13 +35,12 @@ class _PlaylistPageState extends State<PlaylistPage> {
       if (playlistData != null) {
         setState(() {
           playlists = playlistData.map((playlist) {
-            // Extract the first image URL
             final firstImageUrl = playlist['images'].isNotEmpty
                 ? playlist['images'][0]['url']
-                : ''; // Default to an empty string if no images are available
+                : '';
             return {
               'name': playlist['name'],
-              'image': firstImageUrl, // Store the first image URL
+              'image': firstImageUrl,
               'url': playlist['external_urls']['spotify'],
               'mood': playlist['mood'],
             };
@@ -67,9 +67,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
@@ -78,7 +75,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
             Visibility(
               visible: !isLoading,
               child: playlists.isEmpty
-                  ? Center( // Center the content if no playlists
+                  ? Center(
                 child: Text(
                   'No playlists available.',
                   style: TextStyle(
@@ -89,13 +86,13 @@ class _PlaylistPageState extends State<PlaylistPage> {
                   ),
                 ),
               )
-                  : SingleChildScrollView( // Align to top left if playlists are available
+                  : FlashingScrollbarWidget(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      SizedBox(height: 20), // Add some top padding
+                      SizedBox(height: 20),
                       Text(
                         "My Playlists",
                         style: TextStyle(
@@ -112,7 +109,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                           child: PlaylistRibbon(
                             playlistName: playlist['name'],
                             mood: playlist['mood'],
-                            imageUrl: playlist['image'], // Pass the first image URL
+                            imageUrl: playlist['image'],
                           ),
                         );
                       }).toList(),
