@@ -110,6 +110,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                             playlistName: playlist['name'],
                             mood: playlist['mood'],
                             imageUrl: playlist['image'],
+                            playlistLink: playlist['url'],
                           ),
                         );
                       }).toList(),

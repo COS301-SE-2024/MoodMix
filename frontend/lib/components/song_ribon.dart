@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-
-
-
 
 class SongRibbon extends StatelessWidget {
-  const SongRibbon({Key? key}) : super(key: key);
+  final String songName;
+  final String artistName;
+  final String imageUrl;
+
+  const SongRibbon({
+    Key? key,
+    required this.songName,
+    required this.artistName,
+    required this.imageUrl,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class SongRibbon extends StatelessWidget {
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.tertiary,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -32,32 +36,38 @@ class SongRibbon extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Image.network(
-              'https://via.placeholder.com/50', // Replace with your image URL
+              imageUrl,
               width: 50,
               height: 50,
               fit: BoxFit.cover,
             ),
           ),
           SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Song Title', // Replace with your song title
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
+          Expanded( // Added Expanded to allow for flexible space usage
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  songName,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  overflow: TextOverflow.ellipsis, // Truncate text with ellipsis
+                  maxLines: 1, // Ensure text doesn't overflow more than one line
                 ),
-              ),
-              Text(
-                'Artist Name', // Replace with your artist name
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                Text(
+                  artistName,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                  ),
+                  overflow: TextOverflow.ellipsis, // Optional: handle artist name overflow similarly
+                  maxLines: 1,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
