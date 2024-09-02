@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/components/song_ribon.dart';
+import 'package:url_launcher/url_launcher.dart'; // Add this import for opening URLs
 
 import '../auth/auth_service.dart';
 
@@ -31,9 +32,9 @@ class _ExpandedPlaylistState extends State<ExpandedPlaylist> {
     super.initState();
     _loadPlaylistTracks();
   }
+
   String extractPlaylistId(String playlistLink) {
     final uri = Uri.parse(playlistLink);
-    // Extract the path segments and get the last one
     final pathSegments = uri.pathSegments;
     if (pathSegments.isNotEmpty) {
       return pathSegments.last;
@@ -91,8 +92,9 @@ class _ExpandedPlaylistState extends State<ExpandedPlaylist> {
               final track = tracks![index]['track'];
               return SongRibbon(
                 songName: track['name'],
-                artistName: track['artists'][0]['name'], // Assuming the first artist
-                imageUrl: track['album']['images'][0]['url'], // Album cover image
+                artistName: track['artists'][0]['name'],
+                imageUrl: track['album']['images'][0]['url'],
+                trackUrl: track['external_urls']['spotify'],
               );
             },
           ),
