@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
@@ -9,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/pages/link_spotify.dart';
 import 'dart:math';
 import '/database/database.dart';
+import 'package:intl/intl.dart';
+
 
 
 class AuthService {
@@ -359,10 +362,12 @@ class SpotifyAuth {
 
             // Add the mood from the local database to the playlist object
             playlist['mood'] = matchingLocalPlaylist['mood'];
+            playlist['dateCreated'] = matchingLocalPlaylist['dateCreated'];
             matchingPlaylists.add(playlist);
           }
         }
-
+        print("matching playlists are as follows:");
+        print(matchingPlaylists);
         return matchingPlaylists;
       } else {
         print('Failed to fetch user playlists: ${response.statusCode}');
@@ -769,10 +774,15 @@ class SpotifyAuth {
         final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
         final String playlistId = playlistDetails['id'];
 
+        String now() {
+          return DateFormat('yyyy-MM-dd').format(DateTime.now());
+        }
+
         Map<String, dynamic> playlistData = {
           'playlistId': playlistId,
           'mood': mood,
           'userId': userId,
+          'dateCreated': now(),
         };
         await instance.insertPlaylist(playlistData);
 

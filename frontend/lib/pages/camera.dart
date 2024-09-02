@@ -28,12 +28,17 @@ class _CameraPageState extends State<CameraPage> {
   static String playlistMood = "";
   final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
 
+  List<String>? genres = [];
+  List<String> selectedGenres = [];
+  List<bool> checkBoxSelected = [];
+
   @override
   void initState() {
     super.initState();
     _initializeCamera();
     _initializeMethodChannel();
-    SpotifyAuth.fetchUserDetails(); // Fetch Spotify details
+    SpotifyAuth.fetchUserDetails();
+    _fetchGenres();
   }
 
   Future<void> _initializeCamera() async {
@@ -126,6 +131,16 @@ class _CameraPageState extends State<CameraPage> {
     super.dispose();
   }
 
+  //Might have to use a Different Genre fetching method because this pulls similar genres
+  void _fetchGenres() async{
+    final genresFetched = await SpotifyAuth.fetchUserTopArtistsAndTracks();
+    if(genresFetched != null){
+      setState(() {
+        genres = genresFetched['genres'];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (controller == null || !controller!.value.isInitialized) {
@@ -138,6 +153,18 @@ class _CameraPageState extends State<CameraPage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
         child: FlashingScrollbarWidget(
@@ -278,6 +305,38 @@ class _CameraPageState extends State<CameraPage> {
               break;
           }
         },
+      ),
+      drawer: Drawer(
+        child:ListView(
+          // padding: EdgeInsets.zero,
+          children:<Widget>[
+            DrawerHeader(
+              child: Text(
+                'Select your Music Preferences',
+                style: TextStyle(
+                  // color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                  fontSize:24,
+                ),
+              ),
+            ),
+          ...genres!.map((g) {
+            return CheckboxListTile(
+                title: Text(g),
+                value: selectedGenres.contains(g),
+                onChanged: (bool? newValue){
+                  setState(() {
+                    if(newValue == true){
+                      selectedGenres.add(g);
+                    }
+                    else{
+                      selectedGenres.remove(g);
+                    }
+                  });
+                }
+            );
+          }).toList(),
+          ],
+        ),
       ),
     );
   }

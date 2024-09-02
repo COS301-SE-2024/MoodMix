@@ -53,6 +53,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   network_info_plus: ^5.0.3 # Check for the latest version
   sqflite: any
+  intl: any
 
 
 
