@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart';
+import 'package:frontend/mood_service.dart';
 import '../auth/auth_service.dart';
+import '../components/custom_scrollbar.dart';
 import '/database/database.dart';
+import '../components/custom_scrollbar.dart';
 
 class PlaylistPage extends StatefulWidget {
   const PlaylistPage({Key? key}) : super(key: key);
@@ -23,12 +26,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
   }
 
   Future<void> _fetchSpotifyPlaylists() async {
-    //get the spotify userID
     String? userId = SpotifyAuth.getUserId();
-
-
-
-
 
     try {
       final playlistData = await SpotifyAuth.fetchUserPlaylists(userId);
@@ -37,14 +35,14 @@ class _PlaylistPageState extends State<PlaylistPage> {
       if (playlistData != null) {
         setState(() {
           playlists = playlistData.map((playlist) {
-            // Extract the first image URL
             final firstImageUrl = playlist['images'].isNotEmpty
                 ? playlist['images'][0]['url']
-                : ''; // Default to an empty string if no images are available
+                : '';
             return {
               'name': playlist['name'],
-              'image': firstImageUrl, // Store the first image URL
+              'image': firstImageUrl,
               'url': playlist['external_urls']['spotify'],
+              'mood': playlist['mood'],
             };
           }).toList();
         });
@@ -69,9 +67,6 @@ class _PlaylistPageState extends State<PlaylistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
@@ -79,9 +74,9 @@ class _PlaylistPageState extends State<PlaylistPage> {
           children: [
             Visibility(
               visible: !isLoading,
-              child: Center(
-                child: playlists.isEmpty
-                    ? Text(
+              child: playlists.isEmpty
+                  ? Center(
+                child: Text(
                   'No playlists available.',
                   style: TextStyle(
                     fontSize: 24,
@@ -89,51 +84,37 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     fontWeight: FontWeight.w400,
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                )
-                    : SingleChildScrollView(
-                  child: SizedBox(
-                    width: screenWidth,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                          child: Text(
-                            "My Playlists",
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
+                ),
+              )
+                  : FlashingScrollbarWidget(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 20),
+                      Text(
+                        "My Playlists",
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                          child: Text(
-                            "Recently Generated",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                            textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 10),
+                      ...playlists.map((playlist) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: PlaylistRibbon(
+                            playlistName: playlist['name'],
+                            mood: playlist['mood'],
+                            imageUrl: playlist['image'],
+                            playlistLink: playlist['url'],
                           ),
-                        ),
-                        ...playlists.map((playlist) {
-                          return Padding(
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: PlaylistRibbon(
-                              playlistName: playlist['name'],
-                              mood: "happy",
-                              imageUrl: playlist['image'], // Pass the first image URL
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    ),
+                        );
+                      }).toList(),
+                    ],
                   ),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:frontend/components/expanded_playlist.dart';
 import 'package:frontend/components/playlist_details.dart';
 import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/pages/account_help_page.dart';
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => SettingsPage(),
         '/audio': (context) => AudioPlayerPage(),
         // '/playlistribbon': (context) => PlaylistRibbon()
+        // '/explaylist': (context) => ExpandedPlaylist(),
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
