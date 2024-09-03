@@ -44,7 +44,7 @@ class _AudioRecorderState extends State<AudioRecorder> with SingleTickerProvider
     });
 
     final response = await http.post(
-      Uri.parse('https://alexpret85.pythonanywhere.com//record'),
+      Uri.parse('https://alexpret85.pythonanywhere.com/record'),
     );
 
     setState(() {
