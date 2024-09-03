@@ -18,6 +18,8 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
+    print('database path:');
+    print(getDatabasesPath());
     String path = join(await getDatabasesPath(), 'playlists.db');
     return await openDatabase(
       path,
@@ -27,12 +29,14 @@ class DatabaseHelper {
   }
 
   Future<void> _onCreate(Database db, int version) async {
+    await db.execute('DROP TABLE IF EXISTS playlists');
     await db.execute('''
       CREATE TABLE playlists(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         playlistId TEXT,
         mood TEXT,
-        userId TEXT
+        userId TEXT,
+        dateCreated TEXT
       )
     ''');
   }
