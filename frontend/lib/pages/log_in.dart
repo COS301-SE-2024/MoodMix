@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../auth/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -11,9 +13,24 @@ class LogIn extends StatefulWidget {
 
 class _LogInState extends State<LogIn> {
   final AuthService _authService = AuthService();
-  final TextEditingController _usernameOrEmailController =
-      TextEditingController();
+  final TextEditingController _usernameOrEmailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCredentials();
+  }
+
+  void _loadCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _usernameOrEmailController.text = prefs.getString('email') ?? '';
+      _passwordController.text = prefs.getString('password') ?? '';
+    });
+    _login();
+  }
+
 
   @override
   void dispose() {
@@ -33,6 +50,9 @@ class _LogInState extends State<LogIn> {
 
     if (result == 'Success') {
       // Navigate to the home screen if login is successful
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('email', email);
+      await prefs.setString('password', password);
       Navigator.pushNamed(context, '/linkspotify');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful')),

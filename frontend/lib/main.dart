@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/linkspotify',
+      initialRoute: '/',
       routes: {
         '/': (context) => const Welcome(),
         '/signup': (context) => const SignUp(),

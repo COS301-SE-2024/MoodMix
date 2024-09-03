@@ -277,6 +277,10 @@ class SpotifyAuth {
     return _accessToken;
   }
 
+  static void setAccessToken(String a) {
+    _accessToken = a;
+  }
+
   static String? getUserId(){
 
     if (currentUser == null) {
@@ -284,10 +288,6 @@ class SpotifyAuth {
     }else{
       return currentUser?.id;
     }
-
-
-
-
   }
 
   static Future<Map<String, dynamic>?> fetchUserDetails() async {

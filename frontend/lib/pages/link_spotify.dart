@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:frontend/auth/auth_service.dart';
 
 class LinkSpotify extends StatefulWidget {
   const LinkSpotify({Key? key}) : super(key: key);
-
 
   @override
   State<LinkSpotify> createState() => _LinkSpotifyState();
@@ -19,9 +19,38 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   void initState() {
     super.initState();
     _initializeBackendUrl();
+    _checkCachedToken();
     SpotifyAuth.initialize(_onLoginSuccess);
-
   }
+
+  Future<void> _checkCachedToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('spotify_access_token');
+    final int? storedTimestamp = prefs.getInt('token_timestamp');
+
+    if (token != null && storedTimestamp != null) {
+      final int currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
+      final int tokenLifetimeMillis = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+      if (currentTimeMillis - storedTimestamp <= tokenLifetimeMillis) {
+        // Token is still valid
+        SpotifyAuth.setAccessToken(token);
+        Navigator.pushReplacementNamed(context, '/camera');
+      } else {
+        print('Token expired');
+        await _clearCache(); // Optionally clear expired token
+      }
+    } else {
+      print('No cached token found or timestamp missing');
+    }
+  }
+
+  Future<void> _clearCache() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('spotify_access_token');
+    await prefs.remove('token_timestamp');
+  }
+
 
   Future<void> _initializeBackendUrl() async {
     final NetworkInfo networkInfo = NetworkInfo();
@@ -37,17 +66,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
 
   Future<void> _linkSpotify() async {
     try {
-
-      final accessToken = await SpotifyAuth.authenticate(); // Retrieves access token
-      if (accessToken != null) {
-        // Navigate to camera page on successful authentication
-        Navigator.pushReplacementNamed(context, '/camera');
-      } else {
-        // Handle authentication failure
-        print(accessToken);
-        print('Authentication failed');
-        //Navigator.pushReplacementNamed(context, '/camera');
-      }
+      await SpotifyAuth.authenticate(); // Retrieves access token
     } catch (e) {
       print('Error: $e');
     }
@@ -74,13 +93,20 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     }
   }
 
+  Future<void> _onLoginSuccess(String accessToken) async {
+    if (accessToken != null) {
+      // Store the token and timestamp
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final int currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
 
+      await prefs.setString('spotify_access_token', accessToken);
+      await prefs.setInt('token_timestamp', currentTimeMillis);
 
-  void _onLoginSuccess(String accessToken){ //if the user sccesfully logs in then we can redirect them
-
-    Navigator.pushReplacementNamed(context, '/camera');
-
-
+      Navigator.pushReplacementNamed(context, '/camera');
+    } else {
+      print(accessToken);
+      print('Authentication failed');
+    }
   }
 
   @override
