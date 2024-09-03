@@ -20,6 +20,6 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: stable
-      - run: flutter build web
+      - run: flutter build apk
         working-directory: ./frontend
  
