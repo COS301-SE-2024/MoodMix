@@ -14,6 +14,7 @@ import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+import java.util.*;
 
 
 
@@ -105,8 +106,11 @@ public class MainActivity extends FlutterActivity {
                 case TOKEN:
                     // Handle successful response
                     String accessToken = response.getAccessToken();
-                    sendResultToFlutter(accessToken); // Sending access token to Flutter
+                    String refreshToken = response.getCode();
+                    sendResultToFlutter(accessToken,refreshToken); // Sending access token to Flutter
                     System.out.println(accessToken);
+                    System.out.println(refreshToken);
+
                     System.out.println("-----------------------------------------------------------");
                     break;
                 case ERROR:
@@ -128,8 +132,11 @@ public class MainActivity extends FlutterActivity {
                 case TOKEN:
                     // Handle successful response
                     String accessToken = response.getAccessToken();
-                    sendResultToFlutter(accessToken); // Sending access token to Flutter
+                    String refreshToken = response.getCode();
+                    sendResultToFlutter(accessToken , refreshToken ); // Sending access token to Flutter
                     System.out.println(accessToken);
+                    System.out.println("Refresh Token????? :");
+                    System.out.println(refreshToken);
                     System.out.println("-----------------------------------------------------------");
                     break;
                 case ERROR:
@@ -144,10 +151,13 @@ public class MainActivity extends FlutterActivity {
         }
     }
 
-    private void sendResultToFlutter(String accessToken) {
+    private void sendResultToFlutter(String accessToken, String refreshToken) {
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
 
         new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), CHANNEL)
-                .invokeMethod("onSuccess", accessToken); // Method to send access token to Flutter
+                .invokeMethod("onSuccess", tokens); // Method to send access token to Flutter
     }
 
 

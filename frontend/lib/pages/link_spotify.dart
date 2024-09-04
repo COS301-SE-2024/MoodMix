@@ -41,6 +41,8 @@ class _LinkSpotifyState extends State<LinkSpotify> {
         Navigator.pushReplacementNamed(context, '/camera');
         return;
       } else {
+
+
         await _clearCache(); // Optionally clear expired token
       }
     }
@@ -103,13 +105,14 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     }
   }
 
-  Future<void> _onLoginSuccess(String accessToken) async {
-    if (accessToken != null) {
+  Future<void> _onLoginSuccess(String? accessToken , String? refreshToken) async {
+    if (accessToken != null && refreshToken != null) {
       // Store the token and timestamp
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final int currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
 
       await prefs.setString('spotify_access_token', accessToken);
+      await prefs.setString('spotify_refresh_token',refreshToken);
       await prefs.setInt('token_timestamp', currentTimeMillis);
 
       Navigator.pushReplacementNamed(context, '/camera');

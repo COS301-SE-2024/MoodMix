@@ -223,7 +223,8 @@ class SpotifyUser {
 class SpotifyAuth {
   static const MethodChannel _channel = MethodChannel('spotify_auth');
   static String? _accessToken; // Static variable to hold the access token
-  static Function(String)? _onSuccessCallback; // Callback function
+  static String? _refereshToken;
+  static Function(String?,String?)? _onSuccessCallback; // Callback function
   static SpotifyUser? currentUser;
 
 
@@ -239,7 +240,7 @@ class SpotifyAuth {
   }
 
   // Initialize the service and set the method call handler
-  static void initialize(Function(String) onSuccessCallback) {
+  static void initialize(Function(String?,String?) onSuccessCallback) {
     _onSuccessCallback = onSuccessCallback;
     _channel.setMethodCallHandler(_handleMethodCall);
   }
@@ -248,8 +249,10 @@ class SpotifyAuth {
   static Future<void> _handleMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onSuccess':
-        String accessToken = call.arguments;
-        _handleSuccess(accessToken);
+        Map<String, String> tokens = Map<String, String>.from(call.arguments);
+        String? accessToken = tokens['accessToken'];
+        String? refreshToken = tokens['refreshToken'];
+        _handleSuccess(accessToken,refreshToken);
         break;
       case 'onError':
         String error = call.arguments;
@@ -260,14 +263,15 @@ class SpotifyAuth {
     }
   }
 
-  static void _handleSuccess(String accessToken) {
+  static void _handleSuccess(String? accessToken, String? refreshToken) {
     // Handle the access token (e.g., save it, use it for API calls, etc.)
     print('Login was a success and flutter has the recieved the token:');
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
     print('Access Token: $accessToken');
     _accessToken = accessToken;
+    _refereshToken = refreshToken;
     if (_onSuccessCallback != null) {
-      _onSuccessCallback!(accessToken); // Call the success callback
+      _onSuccessCallback!(accessToken,refreshToken); // Call the success callback
     }
   }
 
