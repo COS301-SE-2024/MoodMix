@@ -5,6 +5,7 @@ import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/components/navbar.dart';
 import '../auth/auth_service.dart';
+import '/database/database.dart'; // Import the database helper
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _UserProfileState extends State<UserProfile> {
   String? _displayName = '';
   String? _spotifyUsername = '';
   String? _spotifyProfileImage = '';
-  List<String> _playlistNames = [];
+  List<Map<String, dynamic>> _playlists = []; // Changed to hold map data
   bool isLoading = true;
   bool isFadeOut = false;
 
@@ -26,6 +27,7 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     _loadUserData();
     _fetchSpotifyUserDetails();
+    _fetchSpotifyPlaylists(); // Fetch playlists from database
   }
 
   Future<void> _loadUserData() async {
@@ -45,27 +47,51 @@ class _UserProfileState extends State<UserProfile> {
         _spotifyProfileImage = spotifyUserDetails['images'] != null && spotifyUserDetails['images'].isNotEmpty
             ? spotifyUserDetails['images'][1]['url']
             : '';
-        _playlistNames = spotifyUserDetails['playlists'] != null
-            ? List<String>.from(spotifyUserDetails['playlists'].map((playlist) => playlist['name']))
-            : [];
       });
     }
-    Future.delayed(Duration(milliseconds: 300), () {
-      setState(() {
-        isFadeOut = true;
-      });
-      Future.delayed(Duration(milliseconds: 500), () {
-        setState(() {
-          isLoading = false;
-        });
-      });
-    });
   }
 
-  void _onOptionsPressed() {
-    // Implement options button functionality here
-    print('Options button pressed');
+  Future<void> _fetchSpotifyPlaylists() async {
+    String? userId = SpotifyAuth.getUserId();
+
+    try {
+      final playlistData = await SpotifyAuth.fetchUserPlaylists(userId);
+      print("Playlist Data being returned is as follows:");
+      print(playlistData);
+      if (playlistData != null) {
+        setState(() {
+          _playlists = playlistData.map((playlist) {
+            final firstImageUrl = playlist['images'].isNotEmpty
+                ? playlist['images'][0]['url']
+                : '';
+            return {
+              'name': playlist['name'],
+              'image': firstImageUrl,
+              'url': playlist['external_urls']['spotify'],
+              'mood': playlist['mood'],
+              'date': playlist['dateCreated'],
+            };
+          }).toList();
+        });
+      } else {
+        setState(() {
+          _playlists = [];
+        });
+      }
+    } finally {
+      Future.delayed(Duration(milliseconds: 300), () {
+        setState(() {
+          isFadeOut = true;
+        });
+        Future.delayed(Duration(milliseconds: 500), () {
+          setState(() {
+            isLoading = false;
+          });
+        });
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -144,49 +170,31 @@ class _UserProfileState extends State<UserProfile> {
                                             color: Theme.of(context).colorScheme.secondary,
                                           ),
                                         ),
-                                        Text(
-                                          '$_spotifyUsername',
-                                          style: TextStyle(
-                                            fontSize: parentWidth * 0.07,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
-                                        ),
+                                        // Text(
+                                        //   '$_spotifyUsername',
+                                        //   style: TextStyle(
+                                        //     fontSize: parentWidth * 0.07,
+                                        //     fontFamily: 'Roboto',
+                                        //     fontWeight: FontWeight.w400,
+                                        //     color: Theme.of(context).colorScheme.secondary,
+                                        //   ),
+                                        // ),
                                       ],
                                     ),
                                   )
                               ),
                             ],
                           ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist One",
-                            mood: "Happy",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist Two",
-                            mood: "Sad",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist Three",
-                            mood: "Angry",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist Three",
-                            mood: "Angry",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
+                          // Dynamically generated ProfileTimelineNodes
+                          ..._playlists.map((playlist) {
+                            return ProfileTimelineNode(
+                              title: playlist['name'], // Replace with your actual data
+                              mood: playlist['mood'] ?? "Unknown", // Use a default value if mood is null
+                              date: playlist['date'] ?? "Unknown", // Use a default value if dateCreated is null
+                              alignOffset: avatarCenterX,
+                              scale: parentWidth * 0.004,
+                            );
+                          }).toList(),
                         ],
                       ),
                     ),
