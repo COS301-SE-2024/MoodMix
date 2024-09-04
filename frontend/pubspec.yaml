@@ -54,7 +54,7 @@ dependencies:
   network_info_plus: ^5.0.3 # Check for the latest version
   sqflite: any
   intl: any
-
+  shared_preferences: ^2.3.2
 
 
 dev_dependencies:

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/theme/theme_provider.dart'; // Adjust the import based on your file structure
+import 'package:frontend/theme/theme_provider.dart';
 import 'package:frontend/pages/user_profile.dart';
-
 import '../theme/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -57,6 +57,22 @@ class SettingsPage extends StatelessWidget {
               title: Text('Profile Changes'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/userprofile');
+              },
+            ),
+            Divider(),
+
+            // Logout Button
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Log Out'),
+              onTap: () async {
+                // Handle logout logic
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('email'); // Remove email
+                await prefs.remove('password'); // Remove password
+                await prefs.remove('spotify_access_token');
+                await prefs.remove('token_timestamp');
+                Navigator.pushReplacementNamed(context, '/');
               },
             ),
           ],

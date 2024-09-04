@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../auth/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -11,29 +12,20 @@ class LogIn extends StatefulWidget {
 
 class _LogInState extends State<LogIn> {
   final AuthService _authService = AuthService();
-  final TextEditingController _usernameOrEmailController =
-      TextEditingController();
+  final TextEditingController _usernameOrEmailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    _usernameOrEmailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _login() async {
+  Future<void> _handleLogin() async {
     final email = _usernameOrEmailController.text.trim();
     final password = _passwordController.text.trim();
 
-    final result = await _authService.login(
-      email: email,
-      password: password,
-    );
+    final result = await _authService.login(email: email, password: password);
 
     if (result == 'Success') {
-      // Navigate to the home screen if login is successful
-      Navigator.pushNamed(context, '/linkspotify');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('email', email);
+      await prefs.setString('password', password);
+      Navigator.pushReplacementNamed(context, '/linkspotify');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful')),
       );
@@ -44,6 +36,25 @@ class _LogInState extends State<LogIn> {
     }
   }
 
+  Future<bool> _checkCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email') ?? '';
+    final password = prefs.getString('password') ?? '';
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      await _authService.login(email: email, password: password);
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  void dispose() {
+    _usernameOrEmailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -51,11 +62,27 @@ class _LogInState extends State<LogIn> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
+        child: FutureBuilder<bool>(
+          future: _checkCredentials(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.secondary),
+                ),
+              );
+            }
+
+            if (snapshot.hasData && snapshot.data == true) {
+              WidgetsBinding.instance?.addPostFrameCallback((_) {
+                Navigator.pushReplacementNamed(context, '/linkspotify');
+              });
+              return Container(); // Return an empty container while redirecting
+            }
+
             return SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
                 child: IntrinsicHeight(
                   child: Column(
                     children: <Widget>[
@@ -69,7 +96,7 @@ class _LogInState extends State<LogIn> {
                               child: IconButton(
                                 iconSize: 35,
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/welcome');
+                                  Navigator.pushNamed(context, '/');
                                   dispose();
                                 },
                                 icon: Icon(
@@ -88,7 +115,7 @@ class _LogInState extends State<LogIn> {
                           ],
                         ),
                       ),
-                      SizedBox(height: constraints.maxHeight * 0.2),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.2),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -200,8 +227,8 @@ class _LogInState extends State<LogIn> {
                                     child: Container(
                                       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15),
                                       child: Column(
-                                        mainAxisAlignment:MainAxisAlignment.center,
-                                        crossAxisAlignment:CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "Forgot your password?",
@@ -236,9 +263,9 @@ class _LogInState extends State<LogIn> {
                                       child: FloatingActionButton.extended(
                                         backgroundColor: Theme.of(context).colorScheme.secondary,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50)
+                                          borderRadius: BorderRadius.circular(50),
                                         ),
-                                        onPressed: _login,
+                                        onPressed: _handleLogin,
                                         label: Text(
                                           'Log In',
                                           style: TextStyle(
