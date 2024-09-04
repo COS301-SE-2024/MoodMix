@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/auth/auth_service.dart';
 
 class Welcome extends StatefulWidget {
@@ -10,9 +11,59 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkCachedData();
+  }
+
+  Future<void> _checkCachedData() async {
+    // Simulate a loading delay (e.g., to fetch user data)
+    await Future.delayed(Duration(seconds: 2));
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email');
+    final password = prefs.getString('password');
+
+    if (email != null && password != null) {
+      // Try to authenticate using cached credentials
+      final authResult = await AuthService().login(email: email, password: password);
+      if (authResult == 'Success') {
+        // Navigate to login or home screen after successful login
+        Navigator.pushReplacementNamed(context, '/linkspotify');
+      } else {
+        // Continue to show Welcome screen if login fails
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } else {
+      // No cached credentials, show Welcome screen
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // Show loading screen if still checking cached data
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        body: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Theme.of(context).colorScheme.secondary,
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -63,21 +114,19 @@ class _WelcomeState extends State<Welcome> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                                 onPressed: () async {
                                   String? signInResult =
-                                      await AuthService().signInWithGoogle();
+                                  await AuthService().signInWithGoogle();
                                   if (signInResult == 'Success') {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Sign-in successful!'),
-                                          duration: Duration(seconds: 2), // Optional: Set the duration for the SnackBar
-                                        ),
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Sign-in successful!'),
+                                        duration: Duration(seconds: 2),
+                                      ),
                                     );
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Sign-in failed: $signInResult'),
-                                        duration: Duration(
-                                          seconds: 3,
-                                        ), // Optional: Set the duration for the SnackBar
+                                        duration: Duration(seconds: 3),
                                       ),
                                     );
                                   }
