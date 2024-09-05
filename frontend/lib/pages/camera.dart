@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
@@ -24,6 +26,9 @@ class _CameraPageState extends State<CameraPage> {
   XFile? pictureFile;
   int selectedCameraIndex = 0;
   String? _mood;
+  bool isRecording = false;
+  Timer? captureTimer;
+  List<String> returnedMoods = [];
 
   static String playlistMood = "";
   final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
@@ -115,7 +120,7 @@ class _CameraPageState extends State<CameraPage> {
           imagePath: pictureFile!.path,
           isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
               CameraLensDirection.front,
-          mood: MoodService().mood,
+          moods: [MoodService().mood],
         );
       },
     ).then((_) {
@@ -140,6 +145,72 @@ class _CameraPageState extends State<CameraPage> {
       });
     }
   }
+
+  void _recordRealTime() {
+    if (controller == null || !controller!.value.isInitialized) {
+      print("Camera is not initialized.");
+      return;
+    }
+
+    if (isRecording) {
+      // Stop recording
+      setState(() {
+        isRecording = false; // Stop recording
+        captureTimer?.cancel(); // Stop the timer
+        print("Recording stopped. Moods: $returnedMoods");
+        _navigateToConfirmationPage();
+      });
+    } else {
+      // Start recording
+      setState(() {
+        isRecording = true; // Start recording
+      });
+
+      // Start capturing photos at intervals
+      captureTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
+        try {
+          pictureFile = await controller?.takePicture();
+          if (pictureFile != null) {
+            // Send photo to method channel and get the mood
+            String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+            if (mood != null) {
+              setState(() {
+                returnedMoods.add(mood); // Store the mood
+              });
+              print("Captured mood: $mood");
+            }
+          }
+        } catch (e) {
+          print("Error during intermittent capture: $e");
+          timer.cancel(); // Stop the timer in case of an error
+        }
+      });
+    }
+  }
+
+  void _navigateToConfirmationPage() {
+    String transcribedText = returnedMoods.join(", ");
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConfirmationPopUp(
+          imagePath: pictureFile?.path,
+          transcribedText: transcribedText,
+          moods: returnedMoods ?? [],
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
+              CameraLensDirection.front,
+          isImage: false,
+        ),
+      ),
+    ).then((_) {
+      setState(() {
+        pictureFile = null;
+        returnedMoods.clear();
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -237,6 +308,18 @@ class _CameraPageState extends State<CameraPage> {
                                         onPressed: _switchCamera,
                                         icon: Icon(
                                           Icons.swap_horiz,
+                                          color: Color.fromARGB(255, 200, 200, 200),
+                                          size: 30.0,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0.0,
+                                      left: 16.0,
+                                      child: IconButton(
+                                        onPressed: _recordRealTime,
+                                        icon: Icon(
+                                          isRecording ? Icons.stop : Icons.videocam,
                                           color: Color.fromARGB(255, 200, 200, 200),
                                           size: 30.0,
                                         ),

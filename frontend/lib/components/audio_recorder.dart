@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:frontend/mood_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -92,7 +91,7 @@ class _AudioRecorderState extends State<AudioRecorder> with SingleTickerProvider
       builder: (BuildContext context) {
         return ConfirmationPopUp(
           transcribedText: transcribedText,
-          mood: 'Happy',
+          moods: ['happy'],
           isImage: false, // Audio confirmation
         );
       },
