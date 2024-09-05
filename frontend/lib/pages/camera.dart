@@ -33,6 +33,7 @@ class _CameraPageState extends State<CameraPage> {
   List<String>? genres = [];
   List<String> selectedGenres = [];
   List<bool> checkBoxSelected = [];
+  List<bool> isChecked = [false, false, false, false, false, false, false, false, false];
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ class _CameraPageState extends State<CameraPage> {
     }
     _initializeMethodChannel();
     SpotifyAuth.fetchUserDetails();
-    _fetchGenres();
+    // _fetchGenres();
   }
 
 
@@ -136,14 +137,19 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   //Might have to use a Different Genre fetching method because this pulls similar genres
-  void _fetchGenres() async{
-    final genresFetched = await SpotifyAuth.fetchUserTopArtistsAndTracks();
-    if(genresFetched != null){
-      setState(() {
-        genres = genresFetched['genres'];
-      });
-    }
+  // void _fetchGenres() async{
+  //   final genresFetched = await SpotifyAuth.fetchUserTopArtistsAndTracks();
+  //   if(genresFetched != null){
+  //     setState(() {
+  //       genres = genresFetched['genres'];
+  //     });
+  //   }
+  // }
+
+  void _setGenres() {
+    SpotifyAuth().setSelectedGenres(selectedGenres);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +296,7 @@ class _CameraPageState extends State<CameraPage> {
       ),
       drawer: Drawer(
         child:ListView(
+
           // padding: EdgeInsets.zero,
           children:<Widget>[
             DrawerHeader(
@@ -301,25 +308,233 @@ class _CameraPageState extends State<CameraPage> {
                 ),
               ),
             ),
-          ...genres!.map((g) {
-            return CheckboxListTile(
-                title: Text(g),
-                value: selectedGenres.contains(g),
-                onChanged: (bool? newValue){
-                  setState(() {
-                    if(newValue == true){
-                      selectedGenres.add(g);
+            CheckboxListTile(
+              title: Text('Classical'),
+              value: isChecked[0],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
                     }
-                    else{
-                      selectedGenres.remove(g);
+                    selectedGenres.clear();
+                    selectedGenres.add('Classical');
+                    isChecked[0] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Classical');
+                  //   isChecked[0] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Country'),
+              value: isChecked[1],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
                     }
-                  });
-                }
-            );
-          }).toList(),
+                    selectedGenres.clear();
+                    selectedGenres.add('Country');
+                    isChecked[1] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Country');
+                  //   isChecked[1] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Hip Hop'),
+              value: isChecked[2],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('Hip Hop');
+                    isChecked[2] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Hip Hop');
+                  //   isChecked[2] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Jazz'),
+              value: isChecked[3],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('Jazz');
+                    isChecked[3] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Jazz');
+                  //   isChecked[3] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Latin'),
+              value: isChecked[4],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('Latin');
+                    isChecked[4] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Latin');
+                  //   isChecked[4] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Pop'),
+              value: isChecked[5],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('Pop');
+                    isChecked[5] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Pop');
+                  //   isChecked[5] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('R&B'),
+              value: isChecked[6],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('R&B');
+                    isChecked[6] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('R&B');
+                  //   isChecked[6] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Reggae'),
+              value: isChecked[7],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('Reggae');
+                    isChecked[7] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Reggae');
+                  //   isChecked[7] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Rock'),
+              value: isChecked[8],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('Rock');
+                    isChecked[8] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Rock');
+                  //   isChecked[8] = false;
+                  // }
+                });
+              },
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+// ...genres!.map((g) {
+// return CheckboxListTile(
+// title: Text(g),
+// value: selectedGenres.contains(g),
+// onChanged: (bool? newValue){
+// setState(() {
+// if(newValue == true){
+// selectedGenres.add(g);
+// }
+// else{
+// selectedGenres.remove(g);
+// }
+// });
+// }
+// );
+// }).toList(),
