@@ -14,13 +14,17 @@
 
 
 
-![Static Badge](https://img.shields.io/badge/Flutter-%20?style=for-the-badge&logo=flutter&logoColor=black&logoSize=auto&color=%230175C2)
-![Static Badge](https://img.shields.io/badge/Dart-%20?style=for-the-badge&logo=dart&logoColor=black&logoSize=auto&color=%230175C2)
-![Static Badge](https://img.shields.io/badge/Firebase-%20?style=for-the-badge&logo=firebase&logoColor=black&logoSize=auto&color=%23FFCA28)
-![Static Badge](https://img.shields.io/badge/PostgreSQL-%20?style=for-the-badge&logo=postgresql&logoColor=black&labelColor=%234169E1&color=%234169E1)
-![Static Badge](https://img.shields.io/badge/OpenCV-%20?style=for-the-badge&logo=opencv&logoColor=black&labelColor=%235C3EE8&color=%235C3EE8)
-![Static Badge](https://img.shields.io/badge/Springboot-%20?style=for-the-badge&logo=springboot&logoColor=black&labelColor=%236DB33F&color=%236DB33F)
-![Static Badge](https://img.shields.io/badge/Spotify%20API-%20?style=for-the-badge&logo=spotify&logoColor=black&labelColor=%231DB954&color=%231DB954)
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=Dart&logoColor=white)
+![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?style=for-the-badge&logo=Java&logoColor=white)
+![DeepLearning4j](https://img.shields.io/badge/DeepLearning4j-%23FF4088.svg?style=for-the-badge&logo=deeplearning4j&logoColor=white)
+![Machine Learning](https://img.shields.io/badge/Machine%20Learning-%23202C45.svg?style=for-the-badge&logo=machine-learning&logoColor=white)
+![Spotify API](https://img.shields.io/badge/Spotify%20API-%231DB954.svg?style=for-the-badge&logo=spotify&logoColor=white)
+![Android](https://img.shields.io/badge/Android-%233DDC84.svg?style=for-the-badge&logo=Android&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-%23FFCA28.svg?style=for-the-badge&logo=firebase&logoColor=white)
+![NoSQL](https://img.shields.io/badge/NoSQL-%23000000.svg?style=for-the-badge&logo=NoSQL&logoColor=white)
+
+
 
 
 
@@ -154,9 +158,10 @@ everywhere. MoodMix allows us to do just that.
 ### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
 ### [Architecure Specification](https://docs.google.com/document/d/1Hi7V8hVkYe0L3wJGn5eS4Etq8IF3EUGZHm_d-UjCNpI/edit#heading=h.128bbm5i2zl8)
-### [Architecture Diagram](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/8ba6b754-d660-4ffe-9366-50bbee23cef9)
+### [Architecture Diagram](https://github.com/user-attachments/assets/e569e046-2967-4aff-b6ff-ef2367074c0f)
 
-### [User Manual]()
+
+### [User Manual](https://docs.google.com/document/d/1PkPDF9-MBdbb2HuwG-MHBuKvUYR4KeZKHMFj8wQJOh4/edit?usp=sharing)
 ### [Coding Standards](https://docs.google.com/document/d/1IbX4rgB84IaW2q_jtdrftmaUzSJtHxRVy9X0AykNLLo/edit?usp=sharing)
 ### [List of Contributions](https://docs.google.com/document/d/1QJBmAijUjG0CW4sEqz5YA2BgVcqFmoG37d2O7HAGUks/edit?usp=sharing)
 
@@ -236,5 +241,11 @@ We follow the **Gitflow branching model**, which helps manage the project's deve
 
 ## Stakeholder 
 ![image](https://github.com/COS301-SE-2024/MoodMix/assets/94914587/12ac682e-bdfe-4f47-b958-3de6e91bf48f)
+
+
+
+
+
+
 
 

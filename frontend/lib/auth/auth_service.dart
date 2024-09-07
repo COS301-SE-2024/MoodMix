@@ -1,14 +1,20 @@
 
 import 'dart:convert';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/pages/link_spotify.dart';
 import 'dart:math';
+
 import '/pages/camera.dart';
+
+import '/database/database.dart';
+import 'package:intl/intl.dart';
+
+
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -110,8 +116,6 @@ class AuthService {
           idToken: googleSignInAuthentication.idToken,
         );
 
-        final UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
         return 'Success';
       } else {
         // User cancelled Google sign-in
@@ -276,6 +280,19 @@ class SpotifyAuth {
     return _accessToken;
   }
 
+  static void setAccessToken(String a) {
+    _accessToken = a;
+  }
+
+  static String? getUserId(){
+
+    if (currentUser == null) {
+      return "User not found";
+    }else{
+      return currentUser?.id;
+    }
+  }
+
   static Future<Map<String, dynamic>?> fetchUserDetails() async {
     if (_accessToken == null) {
       print('Access token is not available');
@@ -310,11 +327,15 @@ class SpotifyAuth {
     }
   }
 
-  static Future<List<dynamic>?> fetchUserPlaylists() async {
+  static Future<List<Map<String, dynamic>>?> fetchUserPlaylists(String? userId) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return null;
     }
+
+    // Fetch playlists from the local database
+    List<Map<String, dynamic>> localPlaylists = await DatabaseHelper.getPlaylistsByUserId(userId);
+    final List<String> localPlaylistIds = localPlaylists.map((playlist) => playlist['playlistId'] as String).toList();
 
     final String endpoint = 'https://api.spotify.com/v1/me/playlists';
     try {
@@ -322,11 +343,32 @@ class SpotifyAuth {
         Uri.parse(endpoint),
         headers: {'Authorization': 'Bearer $_accessToken'},
       );
+
       if (response.statusCode == 200) {
         final playlistDetails = jsonDecode(response.body);
-        print('User playlists fetched and stored:');
-       // print(playlistDetails); // Debug print the entire response
-        return playlistDetails['items'];
+        final List<dynamic> fetchedPlaylists = playlistDetails['items'];
+        final List<Map<String, dynamic>> matchingPlaylists = [];
+
+        // Loop through fetched playlists and compare with local database
+        for (var playlist in fetchedPlaylists) {
+          final String playlistId = playlist['id'];
+
+          // Check if the fetched playlist ID matches any in the local database
+          if (localPlaylistIds.contains(playlistId)) {
+            // Find the corresponding local playlist entry
+            final matchingLocalPlaylist = localPlaylists.firstWhere(
+                  (localPlaylist) => localPlaylist['playlistId'] == playlistId,
+            );
+
+            // Add the mood from the local database to the playlist object
+            playlist['mood'] = matchingLocalPlaylist['mood'];
+            playlist['dateCreated'] = matchingLocalPlaylist['dateCreated'];
+            matchingPlaylists.add(playlist);
+          }
+        }
+        print("matching playlists are as follows:");
+        print(matchingPlaylists);
+        return matchingPlaylists;
       } else {
         print('Failed to fetch user playlists: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -1104,6 +1146,7 @@ class SpotifyAuth {
 
     //Commented this out to Reduce Calls to fetchUserTopArtistAndTracks()
     // Fetch top artists and tracks for seeds
+
     // final seeds = await fetchUserTopArtistsAndTracks();
     //
     // if (seeds.isEmpty) {
@@ -1117,6 +1160,7 @@ class SpotifyAuth {
       print('No seeds available for recommendations');
       return;
     }
+
 
     Map<String, double> params = songParameters(mood);
     double? valence = params['valence'];
@@ -1191,7 +1235,7 @@ class SpotifyAuth {
     final String createPlaylistEndpoint = 'https://api.spotify.com/v1/users/$userId/playlists';
     final String userName = currentUser!.displayName;
     final Map<String, dynamic> requestBody = {
-      'name': '$playlistName for $userName - $mood',
+      'name': '$userName - $mood',
       'description': 'a $mood made and curated by MoodMix',
       'public': true,
     };
@@ -1211,10 +1255,21 @@ class SpotifyAuth {
         final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
         final String playlistId = playlistDetails['id'];
 
-        // print('Playlist ID: $playlistId');
-        // print('Playlist details: $playlistDetails');
+        String now() {
+          return DateFormat('yyyy-MM-dd').format(DateTime.now());
+        }
 
-        // Add tracks to the playlist
+        Map<String, dynamic> playlistData = {
+          'playlistId': playlistId,
+          'mood': mood,
+          'userId': userId,
+          'dateCreated': now(),
+        };
+        await instance.insertPlaylist(playlistData);
+
+
+
+
         await addTracksToPlaylist(playlistId, trackUris);
       } else {
         print('Failed to create playlist: ${createPlaylistResponse.statusCode}');

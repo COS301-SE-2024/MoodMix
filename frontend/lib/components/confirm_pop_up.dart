@@ -4,21 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:frontend/auth/auth_service.dart';
 import 'package:frontend/mood_service.dart';
 import 'playlist_details.dart';
+import '../mood_service.dart';
 
 class ConfirmationPopUp extends StatefulWidget {
   final String? imagePath;
   final String? transcribedText;
   final bool isFrontCamera;
-  final String mood;
+  final List<String> moods; // Changed from single mood to a list of moods
   final bool isImage;
+  final bool isRealTimeVideo; // New parameter for real-time video
 
   const ConfirmationPopUp({
     Key? key,
     this.imagePath,
     this.transcribedText,
-    required this.mood,
+    required this.moods,
     this.isFrontCamera = false,
     this.isImage = true,
+    this.isRealTimeVideo = false, // Defaults to false
   }) : super(key: key);
 
   @override
@@ -26,6 +29,16 @@ class ConfirmationPopUp extends StatefulWidget {
 }
 
 class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
+  String get moodDisplay {
+    if (widget.moods.isEmpty) {
+      return 'No mood detected';
+    } else if (widget.moods.toSet().length == 1) {
+      return widget.moods.first;
+    } else {
+      return 'mixed';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -95,13 +108,51 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                       ),
                     ),
                   ),
+                ] else if (widget.isRealTimeVideo && widget.moods.isNotEmpty) ...[
+                  // Display moods for real-time video
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Detected Moods:",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 8.0,
+                            runSpacing: 8.0,
+                            children: widget.moods
+                                .map((mood) => Chip(
+                              label: Text(
+                                mood,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSecondary,
+                                ),
+                              ),
+                              backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                            ))
+                                .toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ] else ...[
-                  // Playlist details widget
+                  // Playlist details widget for audio or image cases
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: PlaylistDetails(
-                        playlistName: "MoodMix for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}",
+                        playlistName: "MoodMix for ${SpotifyAuth.currentUser?.displayName} - $moodDisplay",
                         songCount: 23,
                         playlistLink: 'kdsjfhlsdf',
                       ),
@@ -112,7 +163,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
             ),
           ),
         ),
-        if (widget.isImage || widget.transcribedText != null)
+        if (widget.isImage || widget.transcribedText != null || widget.isRealTimeVideo)
           Positioned(
             bottom: screenHeight * 0.15,
             left: screenWidth * 0.2,
@@ -137,16 +188,8 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                   backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   onPressed: () {
                     Navigator.of(context).pop(); // Closes the pop-up
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PlaylistDetails(
-                          playlistName: 'MoodMix for ${SpotifyAuth.currentUser?.displayName} - ${MoodService().mood}',
-                          songCount: 23,
-                          playlistLink: 'kdsjfhlsdf',
-                        ),
-                      ),
-                    );
+                    SpotifyAuth.createAndPopulatePlaylistWithRecommendations("MoodMix", moodDisplay);
+                    Navigator.pushReplacementNamed(context, '/userplaylist');
                   },
                   child: Icon(
                     Icons.arrow_forward,
