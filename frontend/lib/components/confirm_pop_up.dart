@@ -184,11 +184,25 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                   ),
                 ),
                 // Continue button (forward arrow)
+                // Continue button (forward arrow)
                 FloatingActionButton(
                   backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   onPressed: () {
                     Navigator.of(context).pop(); // Closes the pop-up
-                    SpotifyAuth.createAndPopulatePlaylistWithRecommendations("MoodMix", moodDisplay);
+
+                    // Check if it's real-time video mode and call the appropriate function
+                    if (widget.isRealTimeVideo) {
+                      SpotifyAuth.realTimeCreateAndPopulatePlaylistWithRecommendations(
+                          "MoodMix",
+                          widget.moods
+                      );
+                    } else {
+                      SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
+                          "MoodMix",
+                          widget.moods.first
+                      );
+                    }
+
                     Navigator.pushReplacementNamed(context, '/userplaylist');
                   },
                   child: Icon(

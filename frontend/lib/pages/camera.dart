@@ -195,18 +195,21 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   void _navigateToConfirmationPage() {
-    String transcribedText = returnedMoods.join(", ");
+    // String transcribedText = returnedMoods.join(", ");
+    print("RETURNED MOODS");
+    print(returnedMoods.toString());
 
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ConfirmationPopUp(
           imagePath: pictureFile?.path,
-          transcribedText: transcribedText,
+          transcribedText: "transcribedText",
           moods: returnedMoods ?? [],
           isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
               CameraLensDirection.front,
           isImage: false,
+          isRealTimeVideo: true,
         ),
       ),
     ).then((_) {
