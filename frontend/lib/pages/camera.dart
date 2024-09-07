@@ -309,6 +309,29 @@ class _CameraPageState extends State<CameraPage> {
               ),
             ),
             CheckboxListTile(
+              title: Text('Alternative'),
+              value: isChecked[4],
+              activeColor: Colors.black,
+              checkColor: Colors.green,
+              onChanged: (bool? newValue){
+                setState(() {
+                  if(newValue == true){
+                    for(int i = 0; i < 9; i++){
+                      isChecked[i] = false;
+                    }
+                    selectedGenres.clear();
+                    selectedGenres.add('Alternative');
+                    isChecked[4] = newValue ?? false;
+                    _setGenres();
+                  }
+                  // else{
+                  //   selectedGenres.remove('Latin');
+                  //   isChecked[4] = false;
+                  // }
+                });
+              },
+            ),
+            CheckboxListTile(
               title: Text('Classical'),
               value: isChecked[0],
               activeColor: Colors.black,
@@ -396,29 +419,6 @@ class _CameraPageState extends State<CameraPage> {
                   // else{
                   //   selectedGenres.remove('Jazz');
                   //   isChecked[3] = false;
-                  // }
-                });
-              },
-            ),
-            CheckboxListTile(
-              title: Text('Latin'),
-              value: isChecked[4],
-              activeColor: Colors.black,
-              checkColor: Colors.green,
-              onChanged: (bool? newValue){
-                setState(() {
-                  if(newValue == true){
-                    for(int i = 0; i < 9; i++){
-                      isChecked[i] = false;
-                    }
-                    selectedGenres.clear();
-                    selectedGenres.add('Latin');
-                    isChecked[4] = newValue ?? false;
-                    _setGenres();
-                  }
-                  // else{
-                  //   selectedGenres.remove('Latin');
-                  //   isChecked[4] = false;
                   // }
                 });
               },
