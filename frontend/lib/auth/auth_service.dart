@@ -226,6 +226,7 @@ class SpotifyAuth {
   static Function(String)? _onSuccessCallback; // Callback function
   static SpotifyUser? currentUser;
   static String selectedGenres = '';
+  static List<String> realtimeArtists = [];
 
   static Future<String?> authenticate() async {
     try {
@@ -634,6 +635,8 @@ class SpotifyAuth {
           artistId = chosenArtist['id'];
         }
 
+        addArtist(chosenArtist['name']);
+
         print("Artist ID:");
         print(artistId);
 
@@ -674,6 +677,12 @@ class SpotifyAuth {
       print('Error occurred: $e');
       return {};
     }
+  }
+
+   static void addArtist( String artist) async{
+    realtimeArtists.add(artist);
+
+
   }
 
 
@@ -1245,9 +1254,10 @@ class SpotifyAuth {
     final String userId = currentUser!.id;
     final String createPlaylistEndpoint = 'https://api.spotify.com/v1/users/$userId/playlists';
     final String userName = currentUser!.displayName;
+    final String artistsNames = realtimeArtists.join(" , ");
     final Map<String, dynamic> requestBody = {
       'name': '$userName - $mood',
-      'description': 'a $mood made and curated by MoodMix',
+      'description': 'a $mood playlist made and curated by MoodMix based off the Artist : $artistsNames ',
       'public': true,
     };
 
@@ -1263,6 +1273,7 @@ class SpotifyAuth {
 
       if (createPlaylistResponse.statusCode == 201) {
         print('Playlist created successfully');
+        realtimeArtists.clear();
         final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
         final String playlistId = playlistDetails['id'];
 

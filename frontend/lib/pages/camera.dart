@@ -204,7 +204,7 @@ class _CameraPageState extends State<CameraPage> {
       MaterialPageRoute(
         builder: (context) => ConfirmationPopUp(
           imagePath: pictureFile?.path,
-          transcribedText: "transcribedText",
+          transcribedText: returnedMoods.toString(),
           moods: returnedMoods ?? [],
           isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
               CameraLensDirection.front,
