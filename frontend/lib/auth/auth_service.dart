@@ -226,6 +226,7 @@ class SpotifyAuth {
   static Function(String)? _onSuccessCallback; // Callback function
   static SpotifyUser? currentUser;
   static String selectedGenres = '';
+  static List<String> realtimeArtists = [];
 
   static Future<String?> authenticate() async {
     try {
@@ -564,83 +565,82 @@ class SpotifyAuth {
         // Parse the top artists
         final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
         print(artistsData);
+        print("////////////////////////////////");
         final List<dynamic> artists = artistsData['items'];
 
-        // Select a random artist if no genre was selected
+        // If no genre is selected, pick a random artist
         final Random random = Random();
         final int randomIndex = random.nextInt(artists.length);
         final Map<String, dynamic> randomArtist = artists[randomIndex];
 
-        //If Users does not listen to that Genre
+        // If user does not listen to that Genre
         bool flag = false;
 
-        // Finding your most listened to artists of that genre
-        List<String> artistC = [];
-        final Map<String, dynamic> chosenArtist = {};
-        if(selectedGenres != ''){
-          for(Map<String, dynamic> g in artistsData['items']){
-            if(g['genres'].contains(selectedGenres.toLowerCase())){
-              chosenArtist.addAll(g);
-              flag = true; // Will be set true if you have selected a genre that you listen to else it stays false
+        // Store the chosen artist data
+        Map<String, dynamic> chosenArtist = {};
+
+        // Handle genre selection logic
+        if (selectedGenres.isNotEmpty) {
+          for (Map<String, dynamic> artist in artists) {
+            if (artist['genres'].contains(selectedGenres.toLowerCase())) {
+              chosenArtist = artist;
+              flag = true; // Will be true if a genre match is found
+              break;
             }
           }
         }
-        print("FLAG VALUE");
-        print(flag);
 
-        /*
-        Alternative Base Seed Will be Gorrilaz - 3AA28KZvwAUcZuOKwyblJQ
-        Classical Base Seed Will be Mozart - 4NJhFmfw43RLBLjQvxDuRS
-        Country Base Seed will be Zach Bryan - 40ZNYROS4zLfyyBSs2PGe2
-        Hip Hop Base Seed will be Drake - 3TVXtAsR1Inumwj472S9r4
-        Jazz Base Seed Will be Louis Armstrong - 19eLuQmk9aCobbVDHc6eek
-        Pop Base Seed Will be Katy Perry - 6jJ0s89eD6GaHleKKya26X
-        R&B Base seed Will be Usher - 23zg3TcAtWQy7J6upgbUnj
-        Reggae Base Seed will be Bob Marley - 2QsynagSdAqZj3U9HgDzjD
-        Rock Base seed will be Led Zeppelin or Rolling Stones (in order) - 36QJpDe2go2KgaRleHCDTp 22bE4uQ6baNwSHPVcDxLCe
-       */
-
-        // Extract the artist's genres
-        // final List<String> genres = List<String>.from(randomArtist['genres']);
-
-        // Fetch the artist's top tracks
-        String artistId = '';
-
-        if(flag == false){
-          if(selectedGenres.toLowerCase() == "alternative"){
-            artistId = "3AA28KZvwAUcZuOKwyblJQ";
-          }
-          if(selectedGenres.toLowerCase() == "classical"){
-            artistId = "4NJhFmfw43RLBLjQvxDuRS";
-          }
-          if(selectedGenres.toLowerCase() == "country"){
-            artistId = "40ZNYROS4zLfyyBSs2PGe2";
-          }
-          if(selectedGenres.toLowerCase() == "hip hop"){
-            artistId = "3TVXtAsR1Inumwj472S9r4";
-          }
-          if(selectedGenres.toLowerCase() == "jazz"){
-            artistId = "19eLuQmk9aCobbVDHc6eek";
-          }
-          if(selectedGenres.toLowerCase() == "pop"){
-            artistId = "6jJ0s89eD6GaHleKKya26X";
-          }
-          if(selectedGenres.toLowerCase() == "r&b"){
-            artistId = "23zg3TcAtWQy7J6upgbUnj";
-          }
-          if(selectedGenres.toLowerCase() == "reggae"){
-            artistId = "2QsynagSdAqZj3U9HgDzjD";
-          }
-          if(selectedGenres.toLowerCase() == "rock"){
-            artistId = "36QJpDe2go2KgaRleHCDTp";
-          }
+        // If no genre was selected or no match was found, pick the random artist
+        if (!flag) {
+          chosenArtist = randomArtist;
         }
-        else{
+
+        // Determine artistId based on selected genre or chosen artist
+        String artistId;
+        if (selectedGenres.isNotEmpty && !flag) {
+          // Use the base seed for specific genres if no matching artist is found
+          switch (selectedGenres.toLowerCase()) {
+            case "alternative":
+              artistId = "3AA28KZvwAUcZuOKwyblJQ";
+              break;
+            case "classical":
+              artistId = "4NJhFmfw43RLBLjQvxDuRS";
+              break;
+            case "country":
+              artistId = "40ZNYROS4zLfyyBSs2PGe2";
+              break;
+            case "hip hop":
+              artistId = "3TVXtAsR1Inumwj472S9r4";
+              break;
+            case "jazz":
+              artistId = "19eLuQmk9aCobbVDHc6eek";
+              break;
+            case "pop":
+              artistId = "6jJ0s89eD6GaHleKKya26X";
+              break;
+            case "r&b":
+              artistId = "23zg3TcAtWQy7J6upgbUnj";
+              break;
+            case "reggae":
+              artistId = "2QsynagSdAqZj3U9HgDzjD";
+              break;
+            case "rock":
+              artistId = "36QJpDe2go2KgaRleHCDTp";
+              break;
+            default:
+              artistId = randomArtist['id'];
+          }
+        } else {
+          // Use the chosen artist's ID
           artistId = chosenArtist['id'];
         }
+
+        addArtist(chosenArtist['name']);
+
         print("Artist ID:");
         print(artistId);
 
+        // Fetch the artist's top tracks
         final String topTracksEndpoint = 'https://api.spotify.com/v1/artists/$artistId/top-tracks';
 
         print("After Endpoint");
@@ -666,6 +666,7 @@ class SpotifyAuth {
           };
         } else {
           print('Failed to fetch top tracks for artist');
+          print(topTracksResponse.statusCode);
           return {};
         }
       } else {
@@ -677,6 +678,13 @@ class SpotifyAuth {
       return {};
     }
   }
+
+   static void addArtist( String artist) async{
+    realtimeArtists.add(artist);
+
+
+  }
+
 
   //My Idea for PlaylistGeneration is to get a Users most listened to Artists and add their songs to the playlist
   //then also add the spotify Recommendations
@@ -928,6 +936,8 @@ class SpotifyAuth {
       required Map<String, List<String>> topArtistsTracksGenres,
     }) async{
     Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
+    print(topArtistsAndTracks.toString());
+    print(moods.toString());
     final List<String> seedArtists = topArtistsAndTracks['artistId'] ?? [];
     final List<String> seedTracks = topArtistsAndTracks['topTracks'] ?? [];
     final List<String> genres = topArtistsAndTracks['genres'] ?? [];
@@ -958,6 +968,7 @@ class SpotifyAuth {
         };
         //Uri
         final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+        print(uri.toString());
 
         try {
           final response = await http.get(
@@ -1178,42 +1189,51 @@ class SpotifyAuth {
     await createAndPopulatePlaylist(playlistName, mood, recommendedTracks);
   }
 
-  // Function to create and populate playlist with recommendations
-  static Future<void> realTimeCreateAndPopulatePlaylistWithRecommendations(
+  static void realTimeCreateAndPopulatePlaylistWithRecommendations(
       String playlistName,
-      List<String> moods
-      ) async {
+      List<String> moods,
+      ) {
     if (_accessToken == null) {
       print('Access token is not available');
       return;
     }
 
-    //Commented out to Reduce Calls to fetchUserTopArtistAndTracks()
+    // Make a copy of moods to avoid potential mutation issues
+    List<String> moodsCopy = List.from(moods);
+
     // Fetch top artists and tracks for seeds
-    // final seeds = await fetchUserTopArtistsAndTracks();
-    //
-    // if (seeds.isEmpty) {
-    //   print('No seeds available for recommendations');
-    //   return;
-    // }
+    fetchUserTopArtistsAndTracks().then((topArtistsAndTracks) {
+      if (topArtistsAndTracks.isEmpty) {
+        print('No seeds available for recommendations');
+        return;
+      }
 
-    // Generate recommendations based on mood
-    Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
+      // Generate recommendations based on mood
+      realTimeGetSpotifyRecommendations(
+        moods: moodsCopy, // Pass the copy instead
+        topArtistsTracksGenres: topArtistsAndTracks,
+      ).then((recommendedTracks) {
+        if (recommendedTracks.isEmpty) {
+          print('No recommendations found.');
+          return;
+        }
 
-    if(topArtistsAndTracks.isEmpty){
-      print('No seeds available for recommendations');
-      return;
-    }
-
-    List<String> recommendedTracks = await realTimeGetSpotifyRecommendations(
-      moods: moods,
-      topArtistsTracksGenres: topArtistsAndTracks
-    );
-
-
-    // Create and populate the playlist
-    await createAndPopulatePlaylist(playlistName, "MixedMood", recommendedTracks);
+        // Create and populate the playlist
+        print(recommendedTracks.toString());
+        createAndPopulatePlaylist(playlistName, "mixed", recommendedTracks).then((_) {
+          print('Playlist created and populated successfully.');
+        }).catchError((error) {
+          print('Error creating or populating playlist: $error');
+        });
+      }).catchError((error) {
+        print('Error fetching recommendations: $error');
+      });
+    }).catchError((error) {
+      print('Error fetching top artists and tracks: $error');
+    });
   }
+
+
 
   // Function to create and populate playlist
   static Future<void> createAndPopulatePlaylist(
@@ -1234,9 +1254,10 @@ class SpotifyAuth {
     final String userId = currentUser!.id;
     final String createPlaylistEndpoint = 'https://api.spotify.com/v1/users/$userId/playlists';
     final String userName = currentUser!.displayName;
+    final String artistsNames = realtimeArtists.join(" , ");
     final Map<String, dynamic> requestBody = {
       'name': '$userName - $mood',
-      'description': 'a $mood made and curated by MoodMix',
+      'description': 'a $mood playlist made and curated by MoodMix based off the Artist : $artistsNames ',
       'public': true,
     };
 
@@ -1252,6 +1273,7 @@ class SpotifyAuth {
 
       if (createPlaylistResponse.statusCode == 201) {
         print('Playlist created successfully');
+        realtimeArtists.clear();
         final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
         final String playlistId = playlistDetails['id'];
 
