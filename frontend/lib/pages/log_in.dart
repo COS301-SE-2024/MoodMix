@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,8 +15,12 @@ class _LogInState extends State<LogIn> {
   final AuthService _authService = AuthService();
   final TextEditingController _usernameOrEmailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  // FocusNode for email TextField
+  final FocusNode _emailFocusNode = FocusNode();
+
   bool _isLoading = false;
   bool _shouldNavigate = false;
+  bool _isPasswordFieldEnabled = true; // Control password field activation
 
   Future<void> _handleLogin() async {
     final email = _usernameOrEmailController.text.trim();
@@ -60,10 +65,41 @@ class _LogInState extends State<LogIn> {
     return false;
   }
 
+  Future<void> _handleForgotPassword() async {
+    setState(() {
+      // Deactivate the password TextField and focus on the email TextField
+      _isPasswordFieldEnabled = false;
+      FocusScope.of(context).requestFocus(_emailFocusNode);
+    });
+
+    final email = _usernameOrEmailController.text.trim();
+
+    if (email.isNotEmpty) {
+      final result = await _authService.sendPasswordResetEmail(email);
+
+      if (result == 'Success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Password reset email sent')),
+        );
+        _isPasswordFieldEnabled = true;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result ?? 'Failed to send reset email')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter your email')),
+      );
+    }
+  }
+
+
   @override
   void dispose() {
     _usernameOrEmailController.dispose();
     _passwordController.dispose();
+    _emailFocusNode.dispose(); // Dispose FocusNode
     super.dispose();
   }
 
@@ -141,6 +177,12 @@ class _LogInState extends State<LogIn> {
                         Container(
                           width: screenWidth * 0.75,
                           child: TextField(
+                            onSubmitted: (value) {
+                              if (!_isPasswordFieldEnabled) {
+                                _handleForgotPassword();
+                              }
+                            },
+                            focusNode: _emailFocusNode, // Attach FocusNode
                             cursorColor: Theme.of(context).colorScheme.secondary,
                             style: TextStyle(
                               fontSize: 20,
@@ -150,7 +192,7 @@ class _LogInState extends State<LogIn> {
                             ),
                             controller: _usernameOrEmailController,
                             decoration: InputDecoration(
-                              hintText: 'Username or Email',
+                              hintText: 'Email',
                               hintStyle: TextStyle(
                                 fontSize: 20,
                                 color: Theme.of(context).colorScheme.secondary,
@@ -173,9 +215,11 @@ class _LogInState extends State<LogIn> {
                           ),
                         ),
                         SizedBox(height: 50),
+                        // Password TextField (conditionally enabled)
                         Container(
                           width: screenWidth * 0.75,
                           child: TextField(
+                            enabled: _isPasswordFieldEnabled, // Control activation
                             cursorColor: Theme.of(context).colorScheme.secondary,
                             style: TextStyle(
                               fontSize: 20,
@@ -215,7 +259,7 @@ class _LogInState extends State<LogIn> {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       color: Theme.of(context).colorScheme.primary,
-                      height: 180,
+                      height: 200,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -230,31 +274,42 @@ class _LogInState extends State<LogIn> {
                               Expanded(
                                 flex: 6,
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15),
+                                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "Forgot your password?",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w400,
+                                      TextButton(
+                                        onPressed: _handleForgotPassword,
+                                        child: Text(
+                                          "Forgot your password?",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          textAlign: TextAlign.left,
                                         ),
-                                        textAlign: TextAlign.left,
                                       ),
-                                      SizedBox(height: 20),
-                                      Text(
-                                        "Terms and Conditions",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w400,
+
+                                      TextButton(
+                                        onPressed: () async {
+                                          Uri _url = Uri.parse("https://github.com/COS301-SE-2024/MoodMix");
+                                          if (!await launchUrl(_url)) {
+                                            throw 'Could not launch $_url';
+                                          }
+                                        },
+                                        child: Text(
+                                          "Terms and Conditions",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          textAlign: TextAlign.left,
                                         ),
-                                        textAlign: TextAlign.left,
                                       ),
                                     ],
                                   ),
