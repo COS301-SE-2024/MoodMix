@@ -193,6 +193,7 @@ class _UserProfileState extends State<UserProfile> {
                               date: playlist['date'] ?? "Unknown", // Use a default value if dateCreated is null
                               alignOffset: avatarCenterX,
                               scale: parentWidth * 0.004,
+                              link: playlist['url'],
                             );
                           }).toList(),
                         ],
