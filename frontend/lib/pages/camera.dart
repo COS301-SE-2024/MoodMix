@@ -234,19 +234,6 @@ class _CameraPageState extends State<CameraPage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea(
         child: FlashingScrollbarWidget(
           child: ConstrainedBox(
@@ -287,6 +274,22 @@ class _CameraPageState extends State<CameraPage> {
                             AspectRatio(
                               aspectRatio: controller!.value.aspectRatio,
                               child: CameraPreview(controller!),
+                            ),
+                            Builder(
+                              builder: (BuildContext context) {
+                                return Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: IconButton(
+                                      icon: Icon(Icons.menu, color: Color.fromARGB(255, 200, 200, 200)),
+                                      onPressed: () {
+                                        Scaffold.of(context).openDrawer();
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                             Align(
                               alignment: Alignment.center,
@@ -429,10 +432,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[4] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Latin');
-                  //   isChecked[4] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Latin');
+                    isChecked[4] = false;
+                  }
                 });
               },
             ),
@@ -452,10 +455,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[0] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Classical');
-                  //   isChecked[0] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Classical');
+                    isChecked[0] = false;
+                  }
                 });
               },
             ),
@@ -475,10 +478,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[1] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Country');
-                  //   isChecked[1] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Country');
+                    isChecked[1] = false;
+                  }
                 });
               },
             ),
@@ -498,10 +501,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[2] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Hip Hop');
-                  //   isChecked[2] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Hip Hop');
+                    isChecked[2] = false;
+                  }
                 });
               },
             ),
@@ -521,10 +524,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[3] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Jazz');
-                  //   isChecked[3] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Jazz');
+                    isChecked[3] = false;
+                  }
                 });
               },
             ),
@@ -544,10 +547,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[5] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Pop');
-                  //   isChecked[5] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Pop');
+                    isChecked[5] = false;
+                  }
                 });
               },
             ),
@@ -567,10 +570,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[6] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('R&B');
-                  //   isChecked[6] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('R&B');
+                    isChecked[6] = false;
+                  }
                 });
               },
             ),
@@ -590,10 +593,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[7] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Reggae');
-                  //   isChecked[7] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Reggae');
+                    isChecked[7] = false;
+                  }
                 });
               },
             ),
@@ -613,10 +616,10 @@ class _CameraPageState extends State<CameraPage> {
                     isChecked[8] = newValue ?? false;
                     _setGenres();
                   }
-                  // else{
-                  //   selectedGenres.remove('Rock');
-                  //   isChecked[8] = false;
-                  // }
+                  else{
+                    selectedGenres.remove('Rock');
+                    isChecked[8] = false;
+                  }
                 });
               },
             ),
