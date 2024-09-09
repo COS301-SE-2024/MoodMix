@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/auth/auth_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -195,15 +196,23 @@ class _WelcomeState extends State<Welcome> {
                           alignment: Alignment.bottomCenter,
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
-                            child: Text(
-                              "Terms and Conditions",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w300,
+                            child: TextButton(
+                              onPressed: () async {
+                                Uri _url = Uri.parse("https://github.com/COS301-SE-2024/MoodMix");
+                                if (!await launchUrl(_url)) {
+                                  throw 'Could not launch $_url';
+                                }
+                              },
+                              child: Text(
+                                "Terms and Conditions",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
