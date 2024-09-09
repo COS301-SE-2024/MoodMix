@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/theme/theme_provider.dart';
 import 'package:frontend/pages/user_profile.dart';
+import '../auth/auth_service.dart';
 import '../theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatelessWidget {
+  final AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,10 +55,27 @@ class SettingsPage extends StatelessWidget {
 
             // Profile Changes Button
             ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile Changes'),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/userprofile');
+              leading: Icon(Icons.key),
+              title: Text('Change Password'),
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                final email = prefs.getString('email') ?? '';
+                if (email != "") {
+                  final result = await _authService.sendPasswordResetEmail(email);
+                  if (result == 'Success') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Password reset email sent')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(result ?? 'Failed to send reset email')),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Log out and retry if no email has been sent.')),
+                  );
+                }
               },
             ),
             Divider(),

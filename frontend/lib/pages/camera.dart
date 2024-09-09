@@ -385,7 +385,7 @@ class _CameraPageState extends State<CameraPage> {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushReplacementNamed(context, '/camera');
+              // Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/userplaylist');
