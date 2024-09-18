@@ -14,22 +14,41 @@ class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   int selectedCameraIndex = 0;
 
-  double innerCircleSize = 60.0; // Initial size of the inner circle
-  Color innerCircleColor = Colors.white; // Initial color of the inner circle
-  String mode = "photo"; // Default mode
-  bool isAudioActive = false; // To track if audio mode is active
-  Timer? _timer; // Timer for pulsing effect
+  double innerCircleSize = 60.0;
+  Color innerCircleColor = Colors.white;
+  String mode = "Photo";
+  bool isAudioActive = false;
+  Timer? _timer;
+
+  final List<String> modes = ["Photo", "Real-Time Video", "Audio"];
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: 0);
     _initializeCamera();
+
+    _pageController.addListener(() {
+      final int page = _pageController.page?.round() ?? 0;
+      if (page < modes.length) {
+        setState(() {
+          mode = modes[page];
+        });
+      }
+    });
   }
 
   Future<void> _initializeCamera() async {
     if (widget.cameras.isNotEmpty) {
+      if (controller != null) {
+        await controller!.dispose();
+        controller = null;
+      }
       controller = CameraController(
-          widget.cameras[selectedCameraIndex], ResolutionPreset.high);
+        widget.cameras[selectedCameraIndex],
+        ResolutionPreset.high,
+      );
       try {
         await controller?.initialize();
         if (mounted) {
@@ -44,19 +63,18 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void dispose() {
     controller?.dispose();
-    _timer?.cancel(); // Cancel the timer when disposing
+    _timer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
   void _handleButtonPress() {
-    if (mode == "realTimeVideo") {
+    if (mode == "Real-Time Video") {
       setState(() {
-        // Toggle size and color in realTimeVideo mode
         innerCircleSize = innerCircleSize == 50.0 ? 60.0 : 50.0;
         innerCircleColor = innerCircleSize == 50.0 ? Colors.red : Colors.white;
       });
-    } else if (mode == "photo") {
-      // Trigger a one-time size animation in photo mode
+    } else if (mode == "Photo") {
       setState(() {
         innerCircleSize = 50.0;
         innerCircleColor = Colors.white;
@@ -67,9 +85,8 @@ class _CameraPageState extends State<CameraPage> {
           innerCircleSize = 60.0;
         });
       });
-    } else if (mode == "audio") {
+    } else if (mode == "Audio") {
       if (isAudioActive) {
-        // Stop pulsing and reset size/color
         setState(() {
           innerCircleSize = 60.0;
           innerCircleColor = Colors.white;
@@ -77,7 +94,6 @@ class _CameraPageState extends State<CameraPage> {
         });
         _timer?.cancel();
       } else {
-        // Start pulsing effect
         setState(() {
           innerCircleSize = 60.0;
           innerCircleColor = Colors.red;
@@ -91,7 +107,6 @@ class _CameraPageState extends State<CameraPage> {
   void _startPulsing() {
     _timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
       setState(() {
-        // Change size and color based on size
         if (innerCircleSize == 53.0) {
           innerCircleSize = 50.0;
           innerCircleColor = Colors.red;
@@ -104,13 +119,22 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   void _resetAnimation() {
-    // Reset animation to the default unpressed state
     setState(() {
       innerCircleSize = 60.0;
       innerCircleColor = Colors.white;
       isAudioActive = false;
     });
     _timer?.cancel();
+  }
+
+  Future<void> _switchCamera() async {
+    // Placeholder for camera switch logic
+  }
+
+  void _handlePageChange(int index) async {
+    setState(() {
+      mode = modes[index];
+    });
   }
 
   @override
@@ -122,42 +146,68 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
+    final screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
-          fit: StackFit.expand,
           children: [
-            FittedBox(
-              fit: BoxFit.fill,
-              child: SizedBox(
-                width: controller!.value.previewSize!.width,
-                height: controller!.value.previewSize!.height,
-                child: CameraPreview(controller!),
+            Center(
+              child: ClipRect(
+                child: OverflowBox(
+                  maxWidth: screenSize.width + 1000,
+                  maxHeight: screenSize.height,
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: screenSize.height,
+                      height: screenSize.height * (controller!.value.previewSize!.width / controller!.value.previewSize!.height),
+                      child: CameraPreview(controller!),
+                    ),
+                  ),
+                ),
               ),
             ),
-            // Add button with circular outline at the bottom center
+            Positioned(
+              top: 20,
+              right: 20,
+              child: IconButton(
+                icon: Icon(Icons.switch_camera_outlined),
+                color: Colors.white,
+                onPressed: _switchCamera,
+              ),
+            ),
+            Positioned(
+              top: 20,
+              left: 20,
+              child: IconButton(
+                icon: Icon(Icons.info_outline),
+                color: Colors.white,
+                onPressed: () {
+                  print('Info icon pressed');
+                },
+              ),
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 40), // Adjust the distance from bottom
+                padding: const EdgeInsets.only(bottom: 150),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // Outer circle (static outline)
                     Container(
-                      width: 80, // Size of outer circle
+                      width: 80,
                       height: 80,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Colors.white, // Outline color
-                          width: 4, // Outline width
+                          color: Colors.white,
+                          width: 4,
                         ),
                       ),
                     ),
-                    // Inner button (filled circle with size and color animation)
                     AnimatedContainer(
-                      duration: Duration(milliseconds: 100), // Animation duration
+                      duration: Duration(milliseconds: 100),
                       width: innerCircleSize,
                       height: innerCircleSize,
                       decoration: BoxDecoration(
@@ -166,9 +216,68 @@ class _CameraPageState extends State<CameraPage> {
                       ),
                       child: RawMaterialButton(
                         onPressed: _handleButtonPress,
-                        shape: CircleBorder(), // Ensures it's a circle
+                        shape: CircleBorder(),
                         elevation: 2.0,
-                        child: null, // No child content for now
+                        child: null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 40,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 80,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: modes.length,
+                        onPageChanged: (index) {
+                          if (index < modes.length) {
+                            _handlePageChange(index);
+                          }
+                        },
+                        itemBuilder: (context, index) {
+                          final currentMode = modes[index];
+                          return Center(
+                            child: Text(
+                              currentMode,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      height: 10,
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          modes.length,
+                              (index) {
+                            final bool isActive = (_pageController.page?.round() ?? 0) == index;
+                            return AnimatedContainer(
+                              duration: Duration(milliseconds: 200),
+                              width: isActive ? 24 : 8,
+                              height: 8,
+                              margin: EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                color: isActive ? Colors.green : Colors.white,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -177,22 +286,6 @@ class _CameraPageState extends State<CameraPage> {
             ),
           ],
         ),
-      ),
-      // Add buttons to change modes for testing purposes
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Reset animation when switching modes
-          _resetAnimation();
-
-          setState(() {
-            mode = mode == "photo"
-                ? "realTimeVideo"
-                : mode == "realTimeVideo"
-                ? "audio"
-                : "photo";
-          });
-        },
-        child: Icon(Icons.switch_camera),
       ),
     );
   }
