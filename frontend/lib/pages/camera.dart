@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
+import '../auth/auth_service.dart';
+import '../components/confirm_pop_up.dart';
 import '../components/navbar.dart';
+import '../mood_service.dart';
+import '../neural_net/neural_net_method_channel.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -20,15 +24,24 @@ class _CameraPageState extends State<CameraPage> {
   String mode = "Photo";
   bool isAudioActive = false;
   Timer? _timer;
+  XFile? pictureFile;
+  String? _mood;
+  bool isRecording = false;
+  Timer? captureTimer;
+  List<String> returnedMoods = [];
 
   final List<String> modes = ["Photo", "Video", "Audio"];
   final List<String> selectedGenres = [];
   final List<bool> isChecked = List<bool>.generate(9, (_) => false); // To manage checkboxes for genres
 
+  final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
+
   @override
   void initState() {
     super.initState();
+    isRecording = false; // Initialize recording state
     _initializeCamera();
+    SpotifyAuth.fetchUserDetails();
   }
 
   Future<void> _initializeCamera() async {
@@ -67,22 +80,36 @@ class _CameraPageState extends State<CameraPage> {
   void dispose() {
     controller?.dispose();
     _timer?.cancel();
+    captureTimer?.cancel(); // Cancel capture timer if exists
     super.dispose();
   }
 
-  void _handleButtonPress() {
+  void _handleButtonPress() async {
     if (mode == "Video") {
       setState(() {
         innerCircleSize = innerCircleSize == 50.0 ? 60.0 : 50.0;
         innerCircleColor = innerCircleSize == 50.0 ? Colors.red : Colors.white;
+        _recordRealTime(); // Toggle real-time recording
       });
     } else if (mode == "Photo") {
       setState(() {
         innerCircleSize = 50.0;
         innerCircleColor = Colors.white;
       });
-      Future.delayed(Duration(milliseconds: 200), () {
-        setState(() => innerCircleSize = 60.0);
+
+      // Delay to give a visual feedback
+      await Future.delayed(Duration(milliseconds: 200));
+
+      // Capture picture and fetch mood
+      if (controller != null && controller!.value.isInitialized) {
+        pictureFile = await controller!.takePicture();
+        if (pictureFile != null) {
+          await _fetchMood(); // Fetch mood after picture is taken
+        }
+      }
+
+      setState(() {
+        innerCircleSize = 60.0;
       });
     } else if (mode == "Audio") {
       if (isAudioActive) {
@@ -114,6 +141,104 @@ class _CameraPageState extends State<CameraPage> {
 
   void _setGenres() {
     print('Selected genres: $selectedGenres');
+  }
+
+  Future<void> _fetchMood() async {
+    if (pictureFile != null) {
+      String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+      setState(() {
+        _mood = mood;
+      });
+      MoodService().setMood(mood);
+      _showConfirmImage(); // Show confirmation after mood fetch
+    }
+  }
+
+  void _showConfirmImage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          imagePath: pictureFile!.path,
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
+              CameraLensDirection.front,
+          moods: [MoodService().mood],
+        );
+      },
+    ).then((_) {
+      setState(() {
+        pictureFile = null; // Reset picture file after dialog closes
+      });
+    });
+  }
+
+  void _recordRealTime() {
+    if (controller == null || !controller!.value.isInitialized) {
+      print("Camera is not initialized.");
+      return;
+    }
+
+    if (isRecording) {
+      // Stop recording
+      setState(() {
+        isRecording = false; // Stop recording
+        captureTimer?.cancel(); // Stop the timer
+        print("Recording stopped. Moods: $returnedMoods");
+        _navigateToConfirmationPage();
+      });
+    } else {
+      // Start recording
+      setState(() {
+        isRecording = true; // Start recording
+        returnedMoods.clear(); // Clear previous moods
+      });
+
+      // Start capturing photos at intervals
+      captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
+        try {
+          pictureFile = await controller?.takePicture();
+          if (pictureFile != null) {
+            // Send photo to method channel and get the mood
+            String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+            setState(() {
+              returnedMoods.add(mood ?? 'Unknown'); // Store the mood
+            });
+            print("Captured mood: $mood");
+          }
+        } catch (e) {
+          print("Error during intermittent capture: $e");
+          timer.cancel(); // Stop the timer in case of an error
+        }
+      });
+    }
+  }
+
+  Future<void> _navigateToConfirmationPage() async {
+    print("RETURNED MOODS");
+    print(returnedMoods.toString());
+
+    // Delay to give a visual feedback
+    await Future.delayed(Duration(milliseconds: 200));
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConfirmationPopUp(
+          imagePath: pictureFile?.path,
+          transcribedText: returnedMoods.toString(),
+          moods: returnedMoods,
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
+              CameraLensDirection.front,
+          isImage: false,
+          isRealTimeVideo: true,
+        ),
+      ),
+    ).then((_) {
+      setState(() {
+        pictureFile = null;
+        returnedMoods.clear();
+      });
+    });
   }
 
   @override
