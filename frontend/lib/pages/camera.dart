@@ -29,6 +29,8 @@ class _CameraPageState extends State<CameraPage> {
   bool isRecording = false;
   Timer? captureTimer;
   List<String> returnedMoods = [];
+  List<String> imagePaths = [];
+
 
   final List<String> modes = ["Photo", "Video", "Audio"];
   final List<String> selectedGenres = [];
@@ -103,10 +105,12 @@ class _CameraPageState extends State<CameraPage> {
       // Capture picture and fetch mood
       if (controller != null && controller!.value.isInitialized) {
         pictureFile = await controller!.takePicture();
+        imagePaths.add(pictureFile!.path); // Add the image path here
         if (pictureFile != null) {
           await _fetchMood(); // Fetch mood after picture is taken
         }
       }
+
 
       setState(() {
         innerCircleSize = 60.0;
@@ -154,24 +158,6 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  void _showConfirmImage() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ConfirmationPopUp(
-          imagePath: pictureFile!.path,
-          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
-              CameraLensDirection.front,
-          moods: [MoodService().mood],
-        );
-      },
-    ).then((_) {
-      setState(() {
-        pictureFile = null; // Reset picture file after dialog closes
-      });
-    });
-  }
-
   void _recordRealTime() {
     if (controller == null || !controller!.value.isInitialized) {
       print("Camera is not initialized.");
@@ -191,17 +177,19 @@ class _CameraPageState extends State<CameraPage> {
       setState(() {
         isRecording = true; // Start recording
         returnedMoods.clear(); // Clear previous moods
+        imagePaths.clear(); // Clear previous image paths
       });
 
       // Start capturing photos at intervals
       captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
         try {
-          pictureFile = await controller?.takePicture();
+          XFile? pictureFile = await controller?.takePicture();
           if (pictureFile != null) {
             // Send photo to method channel and get the mood
             String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
             setState(() {
               returnedMoods.add(mood ?? 'Unknown'); // Store the mood
+              imagePaths.add(pictureFile.path); // Store the image path
             });
             print("Captured mood: $mood");
           }
@@ -213,6 +201,27 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
+
+  void _showConfirmImage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          imagePaths: pictureFile != null ? [pictureFile!.path] : [], // Send a list with a single image
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front,
+          moods: [MoodService().mood],
+          isImage: true, // Indicate that it's a single image
+          isRealTimeVideo: false,
+        );
+      },
+    ).then((_) {
+      setState(() {
+        pictureFile = null; // Reset picture file after dialog closes
+      });
+    });
+  }
+
+
   Future<void> _navigateToConfirmationPage() async {
     print("RETURNED MOODS");
     print(returnedMoods.toString());
@@ -220,15 +229,15 @@ class _CameraPageState extends State<CameraPage> {
     // Delay to give a visual feedback
     await Future.delayed(Duration(milliseconds: 200));
 
+    // Send all the captured images during real-time video as a list
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ConfirmationPopUp(
-          imagePath: pictureFile?.path,
+          imagePaths: imagePaths,  // Pass the list of all captured images
           transcribedText: returnedMoods.toString(),
           moods: returnedMoods,
-          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection ==
-              CameraLensDirection.front,
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front,
           isImage: false,
           isRealTimeVideo: true,
         ),
