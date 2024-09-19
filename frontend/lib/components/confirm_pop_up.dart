@@ -141,7 +141,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               ? PageView.builder(
             itemCount: 1, // Only one image
             itemBuilder: (context, index) {
-              final file = File(widget.imagePath![0]);
+              final file = File(widget.imagePaths![0]);
               if (!file.existsSync()) {
                 print('File does not exist: ${widget.imagePath}'); // Debugging: File existence
                 return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Show error icon if file does not exist
