@@ -31,12 +31,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-    await dotenv.load(fileName: "assets/.env");
+  await dotenv.load(fileName: "assets/.env");
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
       child: MyApp(),
-    )
+    ),
   );
 }
 
@@ -51,26 +51,31 @@ Future<void> initializeCameras() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const Welcome(),
-        '/signup': (context) => const SignUp(),
-        '/login': (context) => const LogIn(),
-        '/userprofile': (context) => const UserProfile(),
-        '/linkspotify': (context) => const LinkSpotify(),
-        '/userplaylist': (context) => const PlaylistPage(),
-        '/camera': (context) => CameraPage(cameras: cameras), // Pass the actual cameras list here
-        '/help': (context) => HelpPage(),
-        '/accounthelp': (context) => AccountHelpPage(),
-        '/playlisthelp': (context) => PlaylistHelpPage(),
-        '/camerahelp': (context) => CameraVoiceHelpPage(),
-        '/settings': (context) => SettingsPage(),
-        '/audio': (context) => AudioPlayerPage(),
-        // '/playlistribbon': (context) => PlaylistRibbon()
-        // '/explaylist': (context) => ExpandedPlaylist(),
+    return WillPopScope(
+      onWillPop: () async {
+        // Force navigation to the /camera page when back is pressed
+        Navigator.pushNamedAndRemoveUntil(context, '/camera', (route) => false);
+        return false; // Prevent default back action
       },
-      theme: Provider.of<ThemeProvider>(context).themeData,
+      child: MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const Welcome(),
+          '/signup': (context) => const SignUp(),
+          '/login': (context) => const LogIn(),
+          '/userprofile': (context) => const UserProfile(),
+          '/linkspotify': (context) => const LinkSpotify(),
+          '/userplaylist': (context) => const PlaylistPage(),
+          '/camera': (context) => CameraPage(cameras: cameras), // Pass the actual cameras list here
+          '/help': (context) => HelpPage(),
+          '/accounthelp': (context) => AccountHelpPage(),
+          '/playlisthelp': (context) => PlaylistHelpPage(),
+          '/camerahelp': (context) => CameraVoiceHelpPage(),
+          '/settings': (context) => SettingsPage(),
+          '/audio': (context) => AudioPlayerPage(),
+        },
+        theme: Provider.of<ThemeProvider>(context).themeData,
+      ),
     );
   }
 }

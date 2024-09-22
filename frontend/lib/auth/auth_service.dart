@@ -1204,10 +1204,10 @@ class SpotifyAuth {
     await createAndPopulatePlaylist(playlistName, mood, recommendedTracks);
   }
 
-  static void realTimeCreateAndPopulatePlaylistWithRecommendations(
+  static Future<void> realTimeCreateAndPopulatePlaylistWithRecommendations(
       String playlistName,
       List<String> moods,
-      ) {
+      ) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return;
