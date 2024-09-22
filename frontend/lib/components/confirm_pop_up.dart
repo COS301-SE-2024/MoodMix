@@ -220,36 +220,74 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                   child: Icon(
                     Icons.refresh,
                     size: 50,
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Colors.white,
                   ),
                 ),
                 // Continue button
                 FloatingActionButton(
-                  heroTag: 'continue', // Unique tag for continue button
+                  heroTag: 'continue',
                   backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Closes the pop-up
+                  onPressed: () async {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => Container(
+                        color: Theme.of(context).colorScheme.primary, // Full screen background
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).colorScheme.secondary, // Keep indicator color
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
 
-                    if (widget.isRealTimeVideo) {
-                      SpotifyAuth.realTimeCreateAndPopulatePlaylistWithRecommendations(
-                          "MoodMix",
-                          widget.moods
-                      );
-                    } else {
-                      SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
-                          "MoodMix",
-                          widget.moods.first
+                    try {
+                      if (widget.isRealTimeVideo) {
+                        await SpotifyAuth.realTimeCreateAndPopulatePlaylistWithRecommendations(
+                            "MoodMix",
+                            widget.moods
+                        );
+                      } else {
+                        await SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
+                            "MoodMix",
+                            widget.moods.first
+                        );
+                      }
+
+                      // Close the loading indicator
+                      Navigator.of(context).pop();
+
+                      // Navigate to the user playlist page after completion
+                      Navigator.pushReplacementNamed(context, '/userplaylist');
+                    } catch (error) {
+                      // Close the loading indicator if there's an error
+                      Navigator.of(context).pop();
+                      // Show error dialog
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Error'),
+                          content: Text('Failed to create playlist. Please try again.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        ),
                       );
                     }
-
-                    Navigator.pushReplacementNamed(context, '/userplaylist');
                   },
                   child: Icon(
                     Icons.arrow_forward,
                     size: 50,
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                ),
+                )
               ],
             ),
           ),

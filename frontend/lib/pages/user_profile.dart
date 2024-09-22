@@ -15,16 +15,39 @@ class _UserProfileState extends State<UserProfile> {
   String? _displayName = '';
   String? _spotifyUsername = '';
   String? _spotifyProfileImage = '';
-  List<Map<String, dynamic>> _playlists = []; // Changed to hold map data
-  bool isLoading = true;
-  bool isFadeOut = false;
+  List<Map<String, dynamic>> _playlists = [];
+  bool isLoading = true; // Loading indicator control
+  bool isFadeOut = false; // For fade effect on loading spinner
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-    _fetchSpotifyUserDetails();
-    _fetchSpotifyPlaylists(); // Fetch playlists from database
+    _loadAllData();
+  }
+
+  Future<void> _loadAllData() async {
+    try {
+      await Future.wait([
+        _loadUserData(),
+        _fetchSpotifyUserDetails(),
+        _fetchSpotifyPlaylists(),
+      ]);
+      // Wait for the profile image to be loaded
+      if (_spotifyProfileImage != null) {
+        await precacheImage(NetworkImage(_spotifyProfileImage!), context);
+      }
+    } finally {
+      Future.delayed(Duration(milliseconds: 300), () {
+        setState(() {
+          isFadeOut = true;
+        });
+        Future.delayed(Duration(milliseconds: 500), () {
+          setState(() {
+            isLoading = false;
+          });
+        });
+      });
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -50,45 +73,29 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _fetchSpotifyPlaylists() async {
     String? userId = SpotifyAuth.getUserId();
+    final playlistData = await SpotifyAuth.fetchUserPlaylists(userId);
 
-    try {
-      final playlistData = await SpotifyAuth.fetchUserPlaylists(userId);
-      print("Playlist Data being returned is as follows:");
-      print(playlistData);
-      if (playlistData != null) {
-        setState(() {
-          _playlists = playlistData.map((playlist) {
-            final firstImageUrl = playlist['images'].isNotEmpty
-                ? playlist['images'][0]['url']
-                : '';
-            return {
-              'name': playlist['name'],
-              'image': firstImageUrl,
-              'url': playlist['external_urls']['spotify'],
-              'mood': playlist['mood'],
-              'date': playlist['dateCreated'],
-            };
-          }).toList();
-        });
-      } else {
-        setState(() {
-          _playlists = [];
-        });
-      }
-    } finally {
-      Future.delayed(Duration(milliseconds: 300), () {
-        setState(() {
-          isFadeOut = true;
-        });
-        Future.delayed(Duration(milliseconds: 500), () {
-          setState(() {
-            isLoading = false;
-          });
-        });
+    if (playlistData != null) {
+      setState(() {
+        _playlists = playlistData.map((playlist) {
+          final firstImageUrl = playlist['images'].isNotEmpty
+              ? playlist['images'][0]['url']
+              : '';
+          return {
+            'name': playlist['name'],
+            'image': firstImageUrl,
+            'url': playlist['external_urls']['spotify'],
+            'mood': playlist['mood'],
+            'date': playlist['dateCreated'],
+          };
+        }).toList();
+      });
+    } else {
+      setState(() {
+        _playlists = [];
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +104,7 @@ class _UserProfileState extends State<UserProfile> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         elevation: 0,
-        automaticallyImplyLeading: false, // Ensures no back button
+        automaticallyImplyLeading: false,
         title: Stack(
           children: [
             Align(
@@ -116,7 +123,6 @@ class _UserProfileState extends State<UserProfile> {
       ),
       body: Stack(
         children: [
-          // Content of the page
           Visibility(
             visible: !isLoading,
             child: SafeArea(
@@ -144,41 +150,40 @@ class _UserProfileState extends State<UserProfile> {
                               ),
                               SizedBox(width: 30),
                               Flexible(
-                                  child: Opacity(
-                                    opacity: 0.8,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Profile',
-                                          style: TextStyle(
-                                            fontSize: parentWidth * 0.1,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w700,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
+                                child: Opacity(
+                                  opacity: 0.8,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Profile',
+                                        style: TextStyle(
+                                          fontSize: parentWidth * 0.1,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w700,
+                                          color: Theme.of(context).colorScheme.secondary,
                                         ),
-                                        Text(
-                                          '$_displayName',
-                                          style: TextStyle(
-                                            fontSize: parentWidth * 0.07,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
+                                      ),
+                                      Text(
+                                        '$_displayName',
+                                        style: TextStyle(
+                                          fontSize: parentWidth * 0.07,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w400,
+                                          color: Theme.of(context).colorScheme.secondary,
                                         ),
-                                      ],
-                                    ),
-                                  )
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          // Dynamically generated ProfileTimelineNodes
                           ..._playlists.map((playlist) {
                             return ProfileTimelineNode(
-                              title: playlist['name'], // Replace with your actual data
-                              mood: playlist['mood'] ?? "Unknown", // Use a default value if mood is null
-                              date: playlist['date'] ?? "Unknown", // Use a default value if dateCreated is null
+                              title: playlist['name'],
+                              mood: playlist['mood'] ?? "Unknown",
+                              date: playlist['date'] ?? "Unknown",
                               alignOffset: avatarCenterX,
                               scale: parentWidth * 0.004,
                               link: playlist['url'],
@@ -192,7 +197,6 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
           ),
-          // Loading indicator
           AnimatedOpacity(
             opacity: isLoading ? 1.0 : isFadeOut ? 0.0 : 1.0,
             duration: Duration(milliseconds: 300),

@@ -3,7 +3,7 @@ import 'package:frontend/theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider with ChangeNotifier {
-  ThemeData _themeData = darkMode;
+  ThemeData _themeData = lightMode;
 
   ThemeProvider() {
     _loadTheme();
