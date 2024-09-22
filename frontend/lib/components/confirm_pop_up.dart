@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/auth/auth_service.dart';
 import 'package:frontend/mood_service.dart';
 import 'playlist_details.dart';
-import '../mood_service.dart';
 
 class ConfirmationPopUp extends StatefulWidget {
   final String? imagePath;
@@ -105,37 +104,44 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
         // Image display logic
         Positioned.fill(
           child: widget.isRealTimeVideo && widget.imagePaths != null && widget.imagePaths!.isNotEmpty
-              ? PageView.builder(
-            controller: _pageController,
-            itemCount: widget.imagePaths!.length,
-            itemBuilder: (context, index) {
-              final imagePath = widget.imagePaths![index];
-              print('Displaying image at index $index: $imagePath'); // Debugging: Print current image path
-              final file = File(imagePath);
-              if (!file.existsSync()) {
-                print('File does not exist: $imagePath'); // Debugging: File existence
-                return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Show error icon if file does not exist
+              ? NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent) {
+                // If reached the last image, reset index
+                _currentIndex = 0; // Reset index to the first image
+                _pageController.jumpToPage(_currentIndex); // Jump back to the first image
               }
-              return Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.rotationY(math.pi), // Flip the image horizontally
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(0.0), // No rounding for full-screen image
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Image.file(
-                      file,
-                      fit: BoxFit.cover, // Ensure the image fills the screen
-                      errorBuilder: (context, error, stackTrace) {
-                        print('Error loading image: $error'); // Debugging: Error loading image
-                        return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Fallback image if there's an error loading the image
-                      },
+              return true;
+            },
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: widget.imagePaths!.length,
+              itemBuilder: (context, index) {
+                final imagePath = widget.imagePaths![index];
+                final file = File(imagePath);
+                if (!file.existsSync()) {
+                  return Center(child: Icon(Icons.error, color: Colors.red, size: 100));
+                }
+                return Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(math.pi), // Flip the image horizontally
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(0.0), // No rounding for full-screen image
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: Image.file(
+                        file,
+                        fit: BoxFit.cover, // Ensure the image fills the screen
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Fallback image if there's an error loading the image
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           )
               : widget.isImage
               ? PageView.builder(
@@ -143,7 +149,6 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
             itemBuilder: (context, index) {
               final file = File(widget.imagePaths![0]);
               if (!file.existsSync()) {
-                print('File does not exist: ${widget.imagePath}'); // Debugging: File existence
                 return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Show error icon if file does not exist
               }
               return Transform(
@@ -158,7 +163,6 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                       file,
                       fit: BoxFit.cover, // Ensure the image fills the screen
                       errorBuilder: (context, error, stackTrace) {
-                        print('Error loading image: $error'); // Debugging: Error loading image
                         return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Fallback image if there's an error loading the image
                       },
                     ),
@@ -177,120 +181,144 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
           child: Text(
             currentMood,
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 40,
+              fontFamily: 'Roboto',
               fontWeight: FontWeight.bold,
               color: Colors.white, // Mood text is white
+              decoration: TextDecoration.none, // Remove underline
             ),
             textAlign: TextAlign.center,
-          ),
-        ),
-        // Positioned Container for other UI elements
-        Positioned(
-          top: screenHeight * 0.035,
-          left: screenWidth * 0.1,
-          right: screenWidth * 0.1,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            child: Column(
-              children: [
-                // Your other content (like moods, transcribed text) goes here
-              ],
-            ),
           ),
         ),
         // Controls for retake and continue buttons
         if (widget.isImage || widget.transcribedText != null || widget.isRealTimeVideo)
           Positioned(
-            bottom: screenHeight * 0.15,
+            bottom: screenHeight * 0.1,
             left: screenWidth * 0.2,
             right: screenWidth * 0.2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Retake button
-                FloatingActionButton(
-                  heroTag: 'retake', // Unique tag for retake button
-                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Closes the pop-up
-                  },
-                  child: Icon(
-                    Icons.refresh,
-                    size: 50,
-                    color: Colors.white,
+                // Background container
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent, // Make the background container transparent
                   ),
-                ),
-                // Continue button
-                FloatingActionButton(
-                  heroTag: 'continue',
-                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  onPressed: () async {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) => Container(
-                        color: Theme.of(context).colorScheme.primary, // Full screen background
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).colorScheme.secondary, // Keep indicator color
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Retake button
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Background circle with gradient opacity
+                          Container(
+                            width: 80, // Adjust size based on FAB size
+                            height: 80,
+                            decoration: BoxDecoration(
+                              gradient: RadialGradient(
+                                colors: [
+                                  Theme.of(context).colorScheme.primary.withOpacity(0.1), // Least opaque at the center
+                                  Theme.of(context).colorScheme.primary.withOpacity(0.3), // More opaque towards the edges
+                                ],
+                                stops: [0.5, 1.0], // Control the spread of the gradient
+                                center: Alignment.center,
+                                radius: 1.0,
+                              ),
+                              shape: BoxShape.circle,
                             ),
                           ),
-                        ),
-                      ),
-                    );
-
-                    try {
-                      if (widget.isRealTimeVideo) {
-                        await SpotifyAuth.realTimeCreateAndPopulatePlaylistWithRecommendations(
-                            "MoodMix",
-                            widget.moods
-                        );
-                      } else {
-                        await SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
-                            "MoodMix",
-                            widget.moods.first
-                        );
-                      }
-
-                      // Close the loading indicator
-                      Navigator.of(context).pop();
-
-                      // Navigate to the user playlist page after completion
-                      Navigator.pushReplacementNamed(context, '/userplaylist');
-                    } catch (error) {
-                      // Close the loading indicator if there's an error
-                      Navigator.of(context).pop();
-                      // Show error dialog
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Failed to create playlist. Please try again.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('OK'),
+                          FloatingActionButton(
+                            heroTag: 'retake', // Unique tag for retake button
+                            backgroundColor: Colors.transparent, // Keep the FAB's background transparent
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Closes the pop-up
+                            },
+                            child: Icon(
+                              Icons.refresh,
+                              size: 50,
+                              color: Colors.white,
                             ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  child: Icon(
-                    Icons.arrow_forward,
-                    size: 50,
-                    color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ],
+                      ),
+                      // Continue button
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Background circle with gradient opacity
+                          Container(
+                            width: 80, // Adjust size based on FAB size
+                            height: 80,
+                            decoration: BoxDecoration(
+                              gradient: RadialGradient(
+                                colors: [
+                                  Theme.of(context).colorScheme.primary.withOpacity(0.1), // Least opaque at the center
+                                  Theme.of(context).colorScheme.primary.withOpacity(0.3), // More opaque towards the edges
+                                ],
+                                stops: [1.0, 0.01], // Control the spread of the gradient
+                                center: Alignment.center,
+                                radius: 1.0,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          FloatingActionButton(
+                            heroTag: 'continue',
+                            backgroundColor: Colors.transparent, // Keep the FAB's background transparent
+                            onPressed: () async {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => Container(
+                                  color: Theme.of(context).colorScheme.primary, // Full screen background
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Theme.of(context).colorScheme.secondary, // Keep indicator color
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+
+                              try {
+                                if (widget.isRealTimeVideo) {
+                                  await SpotifyAuth.realTimeCreateAndPopulatePlaylistWithRecommendations(
+                                    "MoodMix",
+                                    widget.moods,
+                                  );
+                                } else {
+                                  await SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
+                                    "MoodMix",
+                                    widget.moods.first,
+                                  );
+                                }
+
+                                // Close the loading indicator
+                                Navigator.of(context).pop();
+
+                                // Navigate to the user playlist page after completion
+                                Navigator.pushReplacementNamed(context, '/userplaylist');
+                              } catch (error) {
+                                // Handle error (show snackbar, log, etc.)
+                              }
+                            },
+                            child: Icon(
+                              Icons.check,
+                              size: 50,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                )
+                ),
               ],
             ),
           ),
+
       ],
     );
   }

@@ -151,7 +151,7 @@ class _UserProfileState extends State<UserProfile> {
                               SizedBox(width: 30),
                               Flexible(
                                 child: Opacity(
-                                  opacity: 0.8,
+                                  opacity: 0.9,
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [

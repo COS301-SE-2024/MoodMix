@@ -81,7 +81,7 @@ class ProfileTimelineNode extends StatelessWidget {
         }
       },
       child: Opacity(
-        opacity: 0.7,
+        opacity: 0.9,
         child: Container(
           margin: EdgeInsets.only(left: alignOffset),
           child: Column(
