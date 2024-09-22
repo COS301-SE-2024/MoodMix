@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import this for SVG support
 import 'package:frontend/components/profile_timeline_node.dart';
-import 'package:frontend/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:frontend/components/navbar.dart';
 import '../auth/auth_service.dart';
-import '/database/database.dart'; // Import the database helper
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -153,9 +150,9 @@ class _UserProfileState extends State<UserProfile> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Your Profile',
+                                          'Profile',
                                           style: TextStyle(
-                                            fontSize: parentWidth * 0.09,
+                                            fontSize: parentWidth * 0.1,
                                             fontFamily: 'Roboto',
                                             fontWeight: FontWeight.w700,
                                             color: Theme.of(context).colorScheme.secondary,
@@ -170,15 +167,6 @@ class _UserProfileState extends State<UserProfile> {
                                             color: Theme.of(context).colorScheme.secondary,
                                           ),
                                         ),
-                                        // Text(
-                                        //   '$_spotifyUsername',
-                                        //   style: TextStyle(
-                                        //     fontSize: parentWidth * 0.07,
-                                        //     fontFamily: 'Roboto',
-                                        //     fontWeight: FontWeight.w400,
-                                        //     color: Theme.of(context).colorScheme.secondary,
-                                        //   ),
-                                        // ),
                                       ],
                                     ),
                                   )

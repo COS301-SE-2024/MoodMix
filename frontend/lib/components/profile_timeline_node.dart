@@ -20,55 +20,50 @@ class ProfileTimelineNode extends StatelessWidget {
   }) : super(key: key);
 
   BoxDecoration _getMoodDecoration(String mood) {
+    return BoxDecoration(
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.3), // Shadow color
+          blurRadius: 8.0, // Amount of blur
+          offset: Offset(4, 4), // Shadow offset
+        ),
+      ],
+      gradient: LinearGradient(
+        colors: _getMoodColors(mood),
+        stops: _getMoodStops(mood),
+      ),
+    );
+  }
+
+  List<Color> _getMoodColors(String mood) {
     switch (mood.toLowerCase()) {
       case 'happy':
-        return BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [Colors.yellow.shade300, Colors.yellow.shade800],
-            stops: [0.0, 1.0],
-          ),
-        );
+        return [Colors.yellow.shade300, Colors.yellow.shade800];
       case 'sad':
-        return BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade300, Colors.blue.shade800],
-            stops: [0.0, 1.0],
-          ),
-        );
+        return [Colors.blue.shade300, Colors.blue.shade800];
       case 'angry':
-        return BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [Colors.red.shade300, Colors.red.shade800],
-            stops: [0.0, 1.0],
-          ),
-        );
+        return [Colors.red.shade300, Colors.red.shade800];
       case 'mixed':
-        return BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [
-              Colors.red,
-              Colors.orange,
-              Colors.yellow,
-              Colors.green,
-              Colors.blue,
-              Colors.indigo,
-              Colors.purple
-            ],
-            stops: [0.0, 0.17, 0.33, 0.5, 0.67, 0.83, 1.0],
-          ),
-        );
+        return [
+          Colors.red,
+          Colors.orange,
+          Colors.yellow,
+          Colors.green,
+          Colors.blue,
+          Colors.indigo,
+          Colors.purple,
+        ];
       default:
-        return BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [Colors.grey.shade300, Colors.grey.shade800],
-            stops: [0.0, 1.0],
-          ),
-        );
+        return [Colors.grey.shade300, Colors.grey.shade800];
+    }
+  }
+
+  List<double> _getMoodStops(String mood) {
+    if (mood.toLowerCase() == 'mixed') {
+      return [0.0, 0.17, 0.33, 0.5, 0.67, 0.83, 1.0];
+    } else {
+      return [0.0, 1.0];
     }
   }
 
@@ -82,7 +77,7 @@ class ProfileTimelineNode extends StatelessWidget {
       onTap: () async {
         Uri _url = Uri.parse(link);
         if (!await launchUrl(_url)) {
-        throw 'Could not launch $_url';
+          throw 'Could not launch $_url';
         }
       },
       child: Opacity(
@@ -101,11 +96,10 @@ class ProfileTimelineNode extends StatelessWidget {
                   color: Colors.grey, // Line color
                 ),
               ),
-
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Mood circle
+                  // Mood circle with shadow
                   Container(
                     width: moodCircleSize,
                     height: moodCircleSize,

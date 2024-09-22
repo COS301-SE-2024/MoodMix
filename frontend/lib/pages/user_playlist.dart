@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart';
-import 'package:frontend/mood_service.dart';
 import '../auth/auth_service.dart';
-import '../components/custom_scrollbar.dart';
-import '/database/database.dart';
 import '../components/custom_scrollbar.dart';
 
 class PlaylistPage extends StatefulWidget {
@@ -96,7 +93,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                     children: <Widget>[
                       SizedBox(height: 20),
                       Text(
-                        "My Playlists",
+                        "My playlists",
                         style: TextStyle(
                           fontSize: 40,
                           fontFamily: 'Roboto',

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
-
 import 'expanded_playlist.dart';
 
 class RoundedTrianglePainter extends CustomPainter {
@@ -11,9 +10,7 @@ class RoundedTrianglePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..style = PaintingStyle.fill;
-
+    final Paint paint = Paint()..style = PaintingStyle.fill;
     final Path path = Path();
     final double width = size.width;
     final double height = size.height;
@@ -29,7 +26,6 @@ class RoundedTrianglePainter extends CustomPainter {
         colors: [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.indigo, Colors.purple],
         stops: [0.0, 0.17, 0.33, 0.5, 0.67, 0.83, 1.0],
       ).createShader(Rect.fromLTWH(0, 0, width, height));
-
       paint.shader = gradient;
     } else {
       // Default colors for other moods
@@ -50,7 +46,6 @@ class RoundedTrianglePainter extends CustomPainter {
         default:
           triangleColor = Colors.grey;
       }
-
       paint.color = triangleColor;
     }
 
@@ -119,18 +114,24 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
       child: Container(
         width: screenWidth * 0.9,
         height: screenHeight * 0.1,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
+          color: Theme.of(context).colorScheme.tertiary,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 6,
+              offset: Offset(0, 4), // Horizontal and vertical shadow offset
+            ),
+          ],
+        ),
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
-                color: Theme.of(context).colorScheme.tertiary,
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
             Positioned(
               bottom: 0,
               right: 0,
