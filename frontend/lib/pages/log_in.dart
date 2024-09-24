@@ -118,14 +118,15 @@ class _LogInState extends State<LogIn> {
           .of(context)
           .colorScheme
           .primary,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: _isLoading
             ? Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Theme
-                .of(context)
-                .colorScheme
-                .secondary),
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary),
           ),
         )
             : Column(

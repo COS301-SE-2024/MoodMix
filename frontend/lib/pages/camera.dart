@@ -201,6 +201,48 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
+  void _recordAudio() {
+    // if (controller == null || !controller!.value.isInitialized) {
+    //   print("Camera is not initialized.");
+    //   return;
+    // }
+
+    if (isRecording) {
+      // Stop recording
+      setState(() {
+        isRecording = false; // Stop recording
+        captureTimer?.cancel(); // Stop the timer
+        print("Recording stopped. Moods: $returnedMoods");
+        _navigateToConfirmationPage();
+      });
+    } else {
+      // Start recording
+      setState(() {
+        isRecording = true; // Start recording
+        returnedMoods.clear(); // Clear previous moods
+        imagePaths.clear(); // Clear previous image paths
+      });
+
+      // // Start capturing photos at intervals
+      // captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
+      //   try {
+      //     XFile? pictureFile = await controller?.takePicture();
+      //     if (pictureFile != null) {
+      //       // Send photo to method channel and get the mood
+      //       String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+      //       setState(() {
+      //         returnedMoods.add(mood ?? 'Unknown'); // Store the mood
+      //         imagePaths.add(pictureFile.path); // Store the image path
+      //       });
+      //       print("Captured mood: $mood");
+      //     }
+      //   } catch (e) {
+      //     print("Error during intermittent capture: $e");
+      //     timer.cancel(); // Stop the timer in case of an error
+      //   }
+      // });
+    }
+  }
 
   void _showConfirmImage() {
     showDialog(
@@ -380,7 +422,13 @@ class _CameraPageState extends State<CameraPage> {
                 children: modes.map((String modeItem) {
                   return GestureDetector(
                     onTap: () {
-                      setState(() => mode = modeItem);
+                      if (!isRecording && !isAudioActive) {  // Check if not recording before switching mode
+                        setState(() => mode = modeItem);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Cannot switch modes while recording.')),
+                        );
+                      }
                     },
                     child: Text(
                       modeItem,
