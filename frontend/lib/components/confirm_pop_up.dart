@@ -39,7 +39,9 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
   @override
   void initState() {
     super.initState();
-    if (widget.isRealTimeVideo && widget.imagePaths != null && widget.imagePaths!.isNotEmpty) {
+    if (widget.isRealTimeVideo &&
+        widget.imagePaths != null &&
+        widget.imagePaths!.isNotEmpty) {
       _pageController = PageController();
       _startAutoPageChange();
     }
@@ -72,7 +74,8 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
     if (widget.isRealTimeVideo && widget.moods.isNotEmpty) {
       // Get the mood associated with the current index for carousel images
       if (widget.moods.length > _currentIndex) {
-        return widget.moods[_currentIndex][0].toUpperCase() + widget.moods[_currentIndex].substring(1); // Capitalize first letter
+        return widget.moods[_currentIndex][0].toUpperCase() +
+            widget.moods[_currentIndex].substring(1); // Capitalize first letter
       } else {
         return 'No mood detected';
       }
@@ -80,7 +83,8 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
       if (widget.moods.isEmpty) {
         return 'No mood detected';
       } else if (widget.moods.toSet().length == 1) {
-        return widget.moods.first[0].toUpperCase() + widget.moods.first.substring(1); // Capitalize first letter
+        return widget.moods.first[0].toUpperCase() +
+            widget.moods.first.substring(1); // Capitalize first letter
       } else {
         return 'Mixed Mood';
       }
@@ -103,75 +107,102 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
         ),
         // Image display logic
         Positioned.fill(
-          child: widget.isRealTimeVideo && widget.imagePaths != null && widget.imagePaths!.isNotEmpty
+          child: widget.isRealTimeVideo &&
+                  widget.imagePaths != null &&
+                  widget.imagePaths!.isNotEmpty
               ? NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent) {
-                // If reached the last image, reset index
-                _currentIndex = 0; // Reset index to the first image
-                _pageController.jumpToPage(_currentIndex); // Jump back to the first image
-              }
-              return true;
-            },
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: widget.imagePaths!.length,
-              itemBuilder: (context, index) {
-                final imagePath = widget.imagePaths![index];
-                final file = File(imagePath);
-                if (!file.existsSync()) {
-                  return Center(child: Icon(Icons.error, color: Colors.red, size: 100));
-                }
-                return Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(math.pi), // Flip the image horizontally
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(0.0), // No rounding for full-screen image
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      child: Image.file(
-                        file,
-                        fit: BoxFit.cover, // Ensure the image fills the screen
-                        errorBuilder: (context, error, stackTrace) {
-                          return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Fallback image if there's an error loading the image
-                        },
-                      ),
-                    ),
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent) {
+                      // If reached the last image, reset index
+                      _currentIndex = 0; // Reset index to the first image
+                      _pageController.jumpToPage(
+                          _currentIndex); // Jump back to the first image
+                    }
+                    return true;
+                  },
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: widget.imagePaths!.length,
+                    itemBuilder: (context, index) {
+                      final imagePath = widget.imagePaths![index];
+                      final file = File(imagePath);
+                      if (!file.existsSync()) {
+                        return Center(
+                            child: Icon(Icons.error,
+                                color: Colors.red, size: 100));
+                      }
+                      return Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(
+                            math.pi * 2), // Flip the image horizontally
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              0.0), // No rounding for full-screen image
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Image.file(
+                              file,
+                              fit: BoxFit
+                                  .cover, // Ensure the image fills the screen
+                              errorBuilder: (context, error, stackTrace) {
+                                return Center(
+                                    child: Icon(Icons.error,
+                                        color: Colors.red,
+                                        size:
+                                            100)); // Fallback image if there's an error loading the image
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          )
+                )
               : widget.isImage
-              ? PageView.builder(
-            itemCount: 1, // Only one image
-            itemBuilder: (context, index) {
-              final file = File(widget.imagePaths![0]);
-              if (!file.existsSync()) {
-                return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Show error icon if file does not exist
-              }
-              return Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.rotationY(math.pi), // Flip the image horizontally
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(0.0), // No rounding for full-screen image
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Image.file(
-                      file,
-                      fit: BoxFit.cover, // Ensure the image fills the screen
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(child: Icon(Icons.error, color: Colors.red, size: 100)); // Fallback image if there's an error loading the image
+                  ? PageView.builder(
+                      itemCount: 1, // Only one image
+                      itemBuilder: (context, index) {
+                        final file = File(widget.imagePaths![0]);
+                        if (!file.existsSync()) {
+                          return Center(
+                              child: Icon(Icons.error,
+                                  color: Colors.red,
+                                  size:
+                                      100)); // Show error icon if file does not exist
+                        }
+                        return Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.rotationY(
+                              math.pi * 2), // Flip the image horizontally
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                0.0), // No rounding for full-screen image
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Image.file(
+                                file,
+                                fit: BoxFit
+                                    .cover, // Ensure the image fills the screen
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(
+                                      child: Icon(Icons.error,
+                                          color: Colors.red,
+                                          size:
+                                              100)); // Fallback image if there's an error loading the image
+                                },
+                              ),
+                            ),
+                          ),
+                        );
                       },
-                    ),
-                  ),
-                ),
-              );
-            },
-          )
-              : Center(child: Icon(Icons.error, color: Colors.white, size: 100)), // Fallback if neither condition is met
+                    )
+                  : Center(
+                      child: Icon(Icons.error,
+                          color: Colors.white,
+                          size: 100)), // Fallback if neither condition is met
         ),
         // Mood display text at the top of the screen
         Positioned(
@@ -191,7 +222,9 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
           ),
         ),
         // Controls for retake and continue buttons
-        if (widget.isImage || widget.transcribedText != null || widget.isRealTimeVideo)
+        if (widget.isImage ||
+            widget.transcribedText != null ||
+            widget.isRealTimeVideo)
           Positioned(
             bottom: screenHeight * 0.1,
             left: screenWidth * 0.2,
@@ -202,7 +235,8 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                 // Background container
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.transparent, // Make the background container transparent
+                    color: Colors
+                        .transparent, // Make the background container transparent
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -218,10 +252,21 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                             decoration: BoxDecoration(
                               gradient: RadialGradient(
                                 colors: [
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.1), // Least opaque at the center
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.3), // More opaque towards the edges
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(
+                                          0.1), // Least opaque at the center
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(
+                                          0.3), // More opaque towards the edges
                                 ],
-                                stops: [0.5, 1.0], // Control the spread of the gradient
+                                stops: [
+                                  0.5,
+                                  1.0
+                                ], // Control the spread of the gradient
                                 center: Alignment.center,
                                 radius: 1.0,
                               ),
@@ -230,7 +275,8 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                           ),
                           FloatingActionButton(
                             heroTag: 'retake', // Unique tag for retake button
-                            backgroundColor: Colors.transparent, // Keep the FAB's background transparent
+                            backgroundColor: Colors
+                                .transparent, // Keep the FAB's background transparent
                             onPressed: () {
                               Navigator.of(context).pop(); // Closes the pop-up
                             },
@@ -253,10 +299,21 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                             decoration: BoxDecoration(
                               gradient: RadialGradient(
                                 colors: [
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.1), // Least opaque at the center
-                                  Theme.of(context).colorScheme.primary.withOpacity(0.3), // More opaque towards the edges
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(
+                                          0.1), // Least opaque at the center
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(
+                                          0.3), // More opaque towards the edges
                                 ],
-                                stops: [1.0, 0.01], // Control the spread of the gradient
+                                stops: [
+                                  1.0,
+                                  0.01
+                                ], // Control the spread of the gradient
                                 center: Alignment.center,
                                 radius: 1.0,
                               ),
@@ -265,17 +322,22 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                           ),
                           FloatingActionButton(
                             heroTag: 'continue',
-                            backgroundColor: Colors.transparent, // Keep the FAB's background transparent
+                            backgroundColor: Colors
+                                .transparent, // Keep the FAB's background transparent
                             onPressed: () async {
                               showDialog(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (context) => Container(
-                                  color: Theme.of(context).colorScheme.primary, // Full screen background
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary, // Full screen background
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                        Theme.of(context).colorScheme.secondary, // Keep indicator color
+                                        Theme.of(context)
+                                            .colorScheme
+                                            .secondary, // Keep indicator color
                                       ),
                                     ),
                                   ),
@@ -284,12 +346,14 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
 
                               try {
                                 if (widget.isRealTimeVideo) {
-                                  await SpotifyAuth.realTimeCreateAndPopulatePlaylistWithRecommendations(
+                                  await SpotifyAuth
+                                      .realTimeCreateAndPopulatePlaylistWithRecommendations(
                                     "MoodMix",
                                     widget.moods,
                                   );
                                 } else {
-                                  await SpotifyAuth.createAndPopulatePlaylistWithRecommendations(
+                                  await SpotifyAuth
+                                      .createAndPopulatePlaylistWithRecommendations(
                                     "MoodMix",
                                     widget.moods.first,
                                   );
@@ -299,7 +363,8 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                                 Navigator.of(context).pop();
 
                                 // Navigate to the user playlist page after completion
-                                Navigator.pushReplacementNamed(context, '/userplaylist');
+                                Navigator.pushReplacementNamed(
+                                    context, '/userplaylist');
                               } catch (error) {
                                 // Handle error (show snackbar, log, etc.)
                               }
@@ -318,7 +383,6 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               ],
             ),
           ),
-
       ],
     );
   }
