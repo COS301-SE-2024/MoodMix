@@ -6,6 +6,7 @@ import '../components/confirm_pop_up.dart';
 import '../components/navbar.dart';
 import '../mood_service.dart';
 import '../neural_net/neural_net_method_channel.dart';
+import '../components/audio_service.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -30,6 +31,7 @@ class _CameraPageState extends State<CameraPage> {
   Timer? captureTimer;
   List<String> returnedMoods = [];
   List<String> imagePaths = [];
+  AudioRecorder audioRecorder = AudioRecorder();
 
 
   final List<String> modes = ["Photo", "Video", "Audio"];
@@ -263,6 +265,28 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
+  void _audioRecord() async {
+    await audioRecorder.openRecorder();
+
+    if (isAudioActive) {
+      // Stop the audio recording
+      await audioRecorder.stopRecorder();
+      setState(() {
+        innerCircleSize = 60.0;
+        innerCircleColor = Colors.white;
+        isAudioActive = false;
+      });
+    } else {
+      // Start the audio recording
+      await audioRecorder.record();
+      setState(() {
+        innerCircleSize = 60.0;
+        innerCircleColor = Colors.red;
+        isAudioActive = true;
+      });
+    }
+  }
+
 
   Future<void> _navigateToConfirmationPage() async {
     print("RETURNED MOODS");
@@ -340,6 +364,32 @@ class _CameraPageState extends State<CameraPage> {
                   icon: Icon(Icons.switch_camera_outlined),
                   color: Colors.white,
                   onPressed: _switchCamera,
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 50,
+            right: 15,
+            child: Stack(
+              children: [
+                // Shadow behind the icon
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 8,
+                        offset: Offset(0, 4), // Shadow position
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.mic),
+                  color: Colors.white,
+                  onPressed: _audioRecord, // Call _audioRecord when button is pressed
                 ),
               ],
             ),
