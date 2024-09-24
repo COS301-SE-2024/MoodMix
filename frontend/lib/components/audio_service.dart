@@ -64,7 +64,7 @@ class AudioRecorder {
     final String apiUrl = 'https://api.openai.com/v1/audio/transcriptions';
 
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl))
-      ..headers['Authorization'] = 'Bearer '
+      ..headers['Authorization'] = 'Bearer'
       ..fields['model'] = 'whisper-1'
       ..files.add(await http.MultipartFile.fromPath('file', filePath));
 
@@ -74,7 +74,24 @@ class AudioRecorder {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseJson = json.decode(responseData.body);
         String transcription = responseJson['text'];
-        print(Sentiment.analysis(transcription));
+
+        // Perform sentiment analysis on the transcription
+        Map<String, dynamic> sentimentResult = Sentiment.analysis(transcription) as Map<String, dynamic>;
+        int score = sentimentResult['score'];
+
+        // Determine emotion based on the score
+        String emotion;
+        if (score >= 2) {
+          emotion = 'Happy';
+        } else if (score <= -2) {
+          emotion = 'Angry';
+        } else {
+          emotion = 'Sad';
+        }
+
+        print('Transcription: $transcription');
+        print('Sentiment Score: $score');
+        print('Emotion: $emotion');
       } else {
         print('Error: ${responseData.body}');
       }
@@ -82,6 +99,9 @@ class AudioRecorder {
       print('Failed to transcribe audio: $e');
     }
   }
+
+
+
 
   void dispose() {
     _mPlayer!.closePlayer();
