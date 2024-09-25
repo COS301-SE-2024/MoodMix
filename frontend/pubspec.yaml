@@ -55,6 +55,9 @@ dependencies:
   sqflite: any
   intl: any
   shared_preferences: ^2.3.2
+  flutter_sound: ^9.2.13
+  permission_handler: ^10.3.0
+  sentiment_dart:
 
 
 dev_dependencies:

@@ -64,7 +64,8 @@ class _UserProfileState extends State<UserProfile> {
     if (spotifyUserDetails != null) {
       setState(() {
         _spotifyUsername = spotifyUserDetails['display_name'];
-        _spotifyProfileImage = spotifyUserDetails['images'] != null && spotifyUserDetails['images'].isNotEmpty
+        _spotifyProfileImage = spotifyUserDetails['images'] != null &&
+            spotifyUserDetails['images'].isNotEmpty
             ? spotifyUserDetails['images'][1]['url']
             : '';
       });
@@ -99,10 +100,18 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .primary,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .primary,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Stack(
@@ -113,7 +122,10 @@ class _UserProfileState extends State<UserProfile> {
                 padding: EdgeInsets.all(20),
                 child: SvgPicture.asset(
                   'assets/images/SimpleLogo.svg',
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .secondary,
                 ),
               ),
             ),
@@ -144,7 +156,8 @@ class _UserProfileState extends State<UserProfile> {
                               CircleAvatar(
                                 backgroundImage: _spotifyProfileImage != null
                                     ? NetworkImage(_spotifyProfileImage!)
-                                    : AssetImage('assets/images/images.jpeg') as ImageProvider,
+                                    : AssetImage(
+                                    'assets/images/images.jpeg') as ImageProvider,
                                 backgroundColor: Colors.transparent,
                                 radius: avatarRadius,
                               ),
@@ -153,7 +166,8 @@ class _UserProfileState extends State<UserProfile> {
                                 child: Opacity(
                                   opacity: 0.9,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: [
                                       Text(
                                         'Profile',
@@ -161,7 +175,10 @@ class _UserProfileState extends State<UserProfile> {
                                           fontSize: parentWidth * 0.1,
                                           fontFamily: 'Roboto',
                                           fontWeight: FontWeight.w700,
-                                          color: Theme.of(context).colorScheme.secondary,
+                                          color: Theme
+                                              .of(context)
+                                              .colorScheme
+                                              .secondary,
                                         ),
                                       ),
                                       Text(
@@ -170,7 +187,10 @@ class _UserProfileState extends State<UserProfile> {
                                           fontSize: parentWidth * 0.07,
                                           fontFamily: 'Roboto',
                                           fontWeight: FontWeight.w400,
-                                          color: Theme.of(context).colorScheme.secondary,
+                                          color: Theme
+                                              .of(context)
+                                              .colorScheme
+                                              .secondary,
                                         ),
                                       ),
                                     ],
@@ -179,16 +199,31 @@ class _UserProfileState extends State<UserProfile> {
                               ),
                             ],
                           ),
-                          ..._playlists.map((playlist) {
-                            return ProfileTimelineNode(
-                              title: playlist['name'],
-                              mood: playlist['mood'] ?? "Unknown",
-                              date: playlist['date'] ?? "Unknown",
-                              alignOffset: avatarCenterX,
-                              scale: parentWidth * 0.004,
-                              link: playlist['url'],
-                            );
-                          }).toList(),
+                          // Add a placeholder for the playlists
+                          if (_playlists.isNotEmpty)
+                            ..._playlists.map((playlist) {
+                              return ProfileTimelineNode(
+                                title: playlist['name'],
+                                mood: playlist['mood'] ?? "Unknown",
+                                date: playlist['date'] ?? "Unknown",
+                                alignOffset: avatarCenterX,
+                                scale: parentWidth * 0.004,
+                                link: playlist['url'],
+                              );
+                            }).toList()
+                          else
+                            SizedBox(height: screenHeight * 0.25,),
+                            Center(
+                              child: Text(
+                                'No playlists available.',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -202,7 +237,10 @@ class _UserProfileState extends State<UserProfile> {
             duration: Duration(milliseconds: 300),
             child: Center(
               child: CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .secondary,
               ),
             ),
           ),

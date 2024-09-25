@@ -6,6 +6,7 @@ import '../components/confirm_pop_up.dart';
 import '../components/navbar.dart';
 import '../mood_service.dart';
 import '../neural_net/neural_net_method_channel.dart';
+import '../components/audio_service.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -30,6 +31,7 @@ class _CameraPageState extends State<CameraPage> {
   Timer? captureTimer;
   List<String> returnedMoods = [];
   List<String> imagePaths = [];
+  AudioRecorder audioRecorder = AudioRecorder();
 
 
   final List<String> modes = ["Photo", "Video", "Audio"];
@@ -116,21 +118,7 @@ class _CameraPageState extends State<CameraPage> {
         innerCircleSize = 60.0;
       });
     } else if (mode == "Audio") {
-      if (isAudioActive) {
-        setState(() {
-          innerCircleSize = 60.0;
-          innerCircleColor = Colors.white;
-          isAudioActive = false;
-        });
-        _timer?.cancel();
-      } else {
-        setState(() {
-          innerCircleSize = 60.0;
-          innerCircleColor = Colors.red;
-          isAudioActive = true;
-        });
-        _startPulsing();
-      }
+        _audioRecord();
     }
   }
 
@@ -201,49 +189,6 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  void _recordAudio() {
-    // if (controller == null || !controller!.value.isInitialized) {
-    //   print("Camera is not initialized.");
-    //   return;
-    // }
-
-    if (isRecording) {
-      // Stop recording
-      setState(() {
-        isRecording = false; // Stop recording
-        captureTimer?.cancel(); // Stop the timer
-        print("Recording stopped. Moods: $returnedMoods");
-        _navigateToConfirmationPage();
-      });
-    } else {
-      // Start recording
-      setState(() {
-        isRecording = true; // Start recording
-        returnedMoods.clear(); // Clear previous moods
-        imagePaths.clear(); // Clear previous image paths
-      });
-
-      // // Start capturing photos at intervals
-      // captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
-      //   try {
-      //     XFile? pictureFile = await controller?.takePicture();
-      //     if (pictureFile != null) {
-      //       // Send photo to method channel and get the mood
-      //       String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
-      //       setState(() {
-      //         returnedMoods.add(mood ?? 'Unknown'); // Store the mood
-      //         imagePaths.add(pictureFile.path); // Store the image path
-      //       });
-      //       print("Captured mood: $mood");
-      //     }
-      //   } catch (e) {
-      //     print("Error during intermittent capture: $e");
-      //     timer.cancel(); // Stop the timer in case of an error
-      //   }
-      // });
-    }
-  }
-
   void _showConfirmImage() {
     showDialog(
       context: context,
@@ -263,6 +208,48 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
+  void _showConfirmText(List<String> tMood, String tText) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          moods: tMood,
+          isImage: false, // Indicate that it's a single image
+          isRealTimeVideo: false,
+          transcribedText: tText,
+        );
+      },
+    ).then((_) {
+      setState(() {
+        pictureFile = null; // Reset picture file after dialog closes
+      });
+    });
+  }
+
+  void _audioRecord() async {
+    await audioRecorder.openRecorder();
+
+    if (isAudioActive) {
+      // Stop the audio recording
+      await audioRecorder.stopRecorder();
+      setState(() {
+        innerCircleSize = 60.0;
+        innerCircleColor = Colors.white;
+        isAudioActive = false;
+      });
+      _timer?.cancel();
+      _showConfirmText(audioRecorder.mood, audioRecorder.transcription);
+    } else {
+      // Start the audio recording
+      await audioRecorder.record();
+      setState(() {
+        innerCircleSize = 60.0;
+        innerCircleColor = Colors.red;
+        isAudioActive = true;
+      });
+      _startPulsing();
+    }
+  }
 
   Future<void> _navigateToConfirmationPage() async {
     print("RETURNED MOODS");
