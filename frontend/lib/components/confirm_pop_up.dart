@@ -160,6 +160,30 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                     },
                   ),
                 )
+              : widget.transcribedText != null
+                ? PageView.builder(
+            itemCount: 1, // Only one item (for text display)
+            itemBuilder: (context, index) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    widget.transcribedText != null && widget.transcribedText!.isNotEmpty
+                        ? widget.transcribedText!
+                        : 'No transcription available',
+                    style: TextStyle(
+                      fontSize: 24, // Adjust text size
+                      color: Theme.of(context).colorScheme.secondary, // Use secondary theme color
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                      decoration: TextDecoration.none,
+                    ),
+                    textAlign: TextAlign.center, // Center the text
+                  ),
+                ),
+              );
+            },
+          )
               : widget.isImage
                   ? PageView.builder(
                       itemCount: 1, // Only one image
@@ -215,7 +239,9 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               fontSize: 40,
               fontFamily: 'Roboto',
               fontWeight: FontWeight.bold,
-              color: Colors.white, // Mood text is white
+              color: widget.transcribedText != null && widget.isRealTimeVideo == false
+                  ? Theme.of(context).colorScheme.secondary // Use secondary color if transcribed text is not null
+                  : Colors.white, // Use white if transcribed text is null
               decoration: TextDecoration.none, // Remove underline
             ),
             textAlign: TextAlign.center,

@@ -14,6 +14,8 @@ class AudioRecorder {
   bool _mPlayerIsInited = false;
   bool _mRecorderIsInited = false;
   bool _mPlaybackReady = false;
+  List<String> mood = [];
+  String transcription = '';
 
   AudioRecorder() {
     _mPlayer = FlutterSoundPlayer();
@@ -50,6 +52,8 @@ class AudioRecorder {
 
   Future<void> record() async {
     await _mRecorder!.startRecorder(toFile: _mPath, codec: _codec);
+    mood = [];
+    transcription = '';
   }
 
   Future<void> stopRecorder() async {
@@ -64,7 +68,7 @@ class AudioRecorder {
     final String apiUrl = 'https://api.openai.com/v1/audio/transcriptions';
 
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl))
-      ..headers['Authorization'] = 'Bearer'
+      ..headers['Authorization'] = 'Bearer '
       ..fields['model'] = 'whisper-1'
       ..files.add(await http.MultipartFile.fromPath('file', filePath));
 
@@ -76,8 +80,8 @@ class AudioRecorder {
         String transcription = responseJson['text'];
 
         // Perform sentiment analysis on the transcription
-        Map<String, dynamic> sentimentResult = Sentiment.analysis(transcription) as Map<String, dynamic>;
-        int score = sentimentResult['score'];
+        SentimentResult sentimentResult = Sentiment.analysis(transcription);
+        double score = sentimentResult.score;
 
         // Determine emotion based on the score
         String emotion;
@@ -90,8 +94,10 @@ class AudioRecorder {
         }
 
         print('Transcription: $transcription');
+        this.transcription = transcription;
         print('Sentiment Score: $score');
         print('Emotion: $emotion');
+        this.mood.add(emotion.toLowerCase());
       } else {
         print('Error: ${responseData.body}');
       }

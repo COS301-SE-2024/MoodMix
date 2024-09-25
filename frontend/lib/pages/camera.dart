@@ -118,21 +118,7 @@ class _CameraPageState extends State<CameraPage> {
         innerCircleSize = 60.0;
       });
     } else if (mode == "Audio") {
-      if (isAudioActive) {
-        setState(() {
-          innerCircleSize = 60.0;
-          innerCircleColor = Colors.white;
-          isAudioActive = false;
-        });
-        _timer?.cancel();
-      } else {
-        setState(() {
-          innerCircleSize = 60.0;
-          innerCircleColor = Colors.red;
-          isAudioActive = true;
-        });
-        _startPulsing();
-      }
+        _audioRecord();
     }
   }
 
@@ -203,49 +189,6 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  void _recordAudio() {
-    // if (controller == null || !controller!.value.isInitialized) {
-    //   print("Camera is not initialized.");
-    //   return;
-    // }
-
-    if (isRecording) {
-      // Stop recording
-      setState(() {
-        isRecording = false; // Stop recording
-        captureTimer?.cancel(); // Stop the timer
-        print("Recording stopped. Moods: $returnedMoods");
-        _navigateToConfirmationPage();
-      });
-    } else {
-      // Start recording
-      setState(() {
-        isRecording = true; // Start recording
-        returnedMoods.clear(); // Clear previous moods
-        imagePaths.clear(); // Clear previous image paths
-      });
-
-      // // Start capturing photos at intervals
-      // captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
-      //   try {
-      //     XFile? pictureFile = await controller?.takePicture();
-      //     if (pictureFile != null) {
-      //       // Send photo to method channel and get the mood
-      //       String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
-      //       setState(() {
-      //         returnedMoods.add(mood ?? 'Unknown'); // Store the mood
-      //         imagePaths.add(pictureFile.path); // Store the image path
-      //       });
-      //       print("Captured mood: $mood");
-      //     }
-      //   } catch (e) {
-      //     print("Error during intermittent capture: $e");
-      //     timer.cancel(); // Stop the timer in case of an error
-      //   }
-      // });
-    }
-  }
-
   void _showConfirmImage() {
     showDialog(
       context: context,
@@ -256,6 +199,24 @@ class _CameraPageState extends State<CameraPage> {
           moods: [MoodService().mood],
           isImage: true, // Indicate that it's a single image
           isRealTimeVideo: false,
+        );
+      },
+    ).then((_) {
+      setState(() {
+        pictureFile = null; // Reset picture file after dialog closes
+      });
+    });
+  }
+
+  void _showConfirmText(List<String> tMood, String tText) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          moods: tMood,
+          isImage: false, // Indicate that it's a single image
+          isRealTimeVideo: false,
+          transcribedText: tText,
         );
       },
     ).then((_) {
@@ -276,6 +237,8 @@ class _CameraPageState extends State<CameraPage> {
         innerCircleColor = Colors.white;
         isAudioActive = false;
       });
+      _timer?.cancel();
+      _showConfirmText(audioRecorder.mood, audioRecorder.transcription);
     } else {
       // Start the audio recording
       await audioRecorder.record();
@@ -284,9 +247,9 @@ class _CameraPageState extends State<CameraPage> {
         innerCircleColor = Colors.red;
         isAudioActive = true;
       });
+      _startPulsing();
     }
   }
-
 
   Future<void> _navigateToConfirmationPage() async {
     print("RETURNED MOODS");
@@ -364,32 +327,6 @@ class _CameraPageState extends State<CameraPage> {
                   icon: Icon(Icons.switch_camera_outlined),
                   color: Colors.white,
                   onPressed: _switchCamera,
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 50,
-            right: 15,
-            child: Stack(
-              children: [
-                // Shadow behind the icon
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 8,
-                        offset: Offset(0, 4), // Shadow position
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.mic),
-                  color: Colors.white,
-                  onPressed: _audioRecord, // Call _audioRecord when button is pressed
                 ),
               ],
             ),
