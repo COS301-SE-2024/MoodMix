@@ -389,10 +389,26 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                                 Navigator.of(context).pop();
 
                                 // Navigate to the user playlist page after completion
-                                Navigator.pushReplacementNamed(
-                                    context, '/userplaylist');
+                                Navigator.pushReplacementNamed(context, '/userplaylist');
                               } catch (error) {
-                                // Handle error (show snackbar, log, etc.)
+                                // Close the loading indicator if there's an error
+                                Navigator.of(context).pop();
+                                // Show error dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Error'),
+                                    content: Text('Failed to create playlist. Please try again.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  ),
+                                );
                               }
                             },
                             child: Icon(

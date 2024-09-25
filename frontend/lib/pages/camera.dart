@@ -32,6 +32,7 @@ class _CameraPageState extends State<CameraPage> {
   List<String> returnedMoods = [];
   List<String> imagePaths = [];
   AudioRecorder audioRecorder = AudioRecorder();
+  String audioMoodWeight = '';
 
 
   final List<String> modes = ["Photo", "Video", "Audio"];
@@ -93,6 +94,7 @@ class _CameraPageState extends State<CameraPage> {
       setState(() {
         innerCircleSize = innerCircleSize == 50.0 ? 60.0 : 50.0;
         innerCircleColor = innerCircleSize == 50.0 ? Colors.red : Colors.white;
+        _audioRecord(true);
         _recordRealTime(); // Toggle real-time recording
       });
     } else if (mode == "Photo") {
@@ -118,7 +120,7 @@ class _CameraPageState extends State<CameraPage> {
         innerCircleSize = 60.0;
       });
     } else if (mode == "Audio") {
-        _audioRecord();
+        _audioRecord(false);
     }
   }
 
@@ -158,6 +160,8 @@ class _CameraPageState extends State<CameraPage> {
         isRecording = false; // Stop recording
         captureTimer?.cancel(); // Stop the timer
         print("Recording stopped. Moods: $returnedMoods");
+        returnedMoods.add(audioMoodWeight);
+        audioMoodWeight = '';
         _navigateToConfirmationPage();
       });
     } else {
@@ -226,7 +230,7 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
-  void _audioRecord() async {
+  void _audioRecord(bool vid) async {
     await audioRecorder.openRecorder();
 
     if (isAudioActive) {
@@ -238,7 +242,11 @@ class _CameraPageState extends State<CameraPage> {
         isAudioActive = false;
       });
       _timer?.cancel();
-      _showConfirmText(audioRecorder.mood, audioRecorder.transcription);
+      if (!vid) {
+        _showConfirmText(audioRecorder.mood, audioRecorder.transcription);
+      } else {
+        audioMoodWeight = audioRecorder.mood[0];
+      }
     } else {
       // Start the audio recording
       await audioRecorder.record();

@@ -969,6 +969,7 @@ class SpotifyAuth {
       selectedGenres = seedGenresLimited.first;
     }
 
+    String tempMood = moods.removeLast();
     //Generate songs by the mood
     for(String m in moods){
       //If Sad
@@ -1076,6 +1077,143 @@ class SpotifyAuth {
       if(m.toLowerCase() == "neutral"){
         final Map<String, String> queryParams = {
           'limit': '15',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':"0.4",
+          'max_valence':"0.6",
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+
+      // FOR AUDIO
+
+      if(tempMood.toLowerCase() == "sad"){
+        //Query Parameters for a Sad Playlist
+        final Map<String, String> queryParams = {
+          'limit': '5',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'max_valence':"0.4",
+        };
+        //Uri
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+        print(uri.toString());
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+            //Adding the Tracks to
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+            // return [];
+          }
+        } catch (e) {
+          print('Error: $e');
+          // return [];
+        }
+      }
+      if(tempMood.toLowerCase() == "angry"){
+        final Map<String, String> queryParams = {
+          'limit': '5',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':'0.6',
+          'min_energy':'0.6',
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+      if(tempMood.toLowerCase() == "happy"){
+        final Map<String, String> queryParams = {
+          'limit': '5',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':"0.6",
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+      if(tempMood.toLowerCase() == "neutral"){
+        final Map<String, String> queryParams = {
+          'limit': '5',
           'seed_artists': seedArtistsLimited.first,
           'seed_genres': selectedGenres,
           'seed_tracks': seedTracksLimited.first,
