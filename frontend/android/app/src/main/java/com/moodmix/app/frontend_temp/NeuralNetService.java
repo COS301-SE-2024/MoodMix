@@ -74,13 +74,13 @@ public class NeuralNetService {
 
         //List<String> labelList = Arrays.asList("angry", "happy", "neutral", "sad");
 
-        String[] emotions = {"angry", "happy", "neutral", "sad"};
+        String[] emotions = {"angry", "happy", "sad"};
 
         // Load the model from assets
         MultiLayerNetwork model = null;
         try {
             AssetManager assetManager = context.getAssets();
-            InputStream modelInputStream = assetManager.open("savedNeuralNet_new.zip");
+            InputStream modelInputStream = assetManager.open("savedNeuralNet_newest.zip");
             model = ModelSerializer.restoreMultiLayerNetwork(modelInputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,6 +105,7 @@ public class NeuralNetService {
 //        }
 
         Bitmap grayscaleBitmap = convertToGrayscale(bitmap);
+        grayscaleBitmap = Bitmap.createScaledBitmap(grayscaleBitmap, image_width, image_height, false);
 
 
         try {
