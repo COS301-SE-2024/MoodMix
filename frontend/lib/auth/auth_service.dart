@@ -9,7 +9,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 
-import '/pages/camera.dart';
 
 import '/database/database.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +23,7 @@ class AuthService {
   );
 
   Future<Map<String, dynamic>?> getSpotifyUserDetails() async {
-    final String endpoint =
+    const String endpoint =
         'https://api.spotify.com/v1/me'; // Replace with your backend endpoint
     try {
       final response = await http.get(Uri.parse(endpoint));
@@ -41,7 +40,7 @@ class AuthService {
   }
 
   Future<List<Map<String, dynamic>>?> getSpotifyPlaylists() async {
-    final String endpoint =
+    const String endpoint =
         'http://localhost:5002/spotify-playlists'; // Replace with your backend endpoint
 
     try {
@@ -159,7 +158,7 @@ class AuthService {
   }
 
   Future<void> authenticateWithSpotify(BuildContext context) async {
-    final url =
+    const url =
         'https://accounts.spotify.com/authorize?client_id=4a35390dc3c74e85abfd35698529a7f8&response_type=code&redirect_uri=http://localhost:5001/callback&scope=user-read-email';
 
     final result = await FlutterWebAuth.authenticate(
@@ -300,7 +299,7 @@ class SpotifyAuth {
       return null;
     }
 
-    final String endpoint = 'https://api.spotify.com/v1/me';
+    const String endpoint = 'https://api.spotify.com/v1/me';
     try {
       final response = await http.get(
         Uri.parse(endpoint),
@@ -338,7 +337,7 @@ class SpotifyAuth {
     List<Map<String, dynamic>> localPlaylists = await DatabaseHelper.getPlaylistsByUserId(userId);
     final List<String> localPlaylistIds = localPlaylists.map((playlist) => playlist['playlistId'] as String).toList();
 
-    final String endpoint = 'https://api.spotify.com/v1/me/playlists';
+    const String endpoint = 'https://api.spotify.com/v1/me/playlists';
     try {
       final response = await http.get(
         Uri.parse(endpoint),
@@ -553,7 +552,7 @@ class SpotifyAuth {
       return {};
     }
 
-    final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
+    const String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
 
     try {
       final topArtistsResponse = await http.get(
@@ -698,7 +697,7 @@ class SpotifyAuth {
 
     List<String> trackIds = [];
 
-    final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
+    const String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
 
     try {
       final topArtistsResponse = await http.get(
@@ -825,7 +824,7 @@ class SpotifyAuth {
       return [];
     }
 
-    final String recommendationsEndpoint = 'https://api.spotify.com/v1/recommendations';
+    const String recommendationsEndpoint = 'https://api.spotify.com/v1/recommendations';
 
     // Prepare seed artists, tracks, and genres
     final List<String> seedArtists = topArtistsAndTracks['artistId'] ?? [];
@@ -946,7 +945,7 @@ class SpotifyAuth {
     final List<String> seedGenresLimited = genres.take(2).toList();
     final List<String> seedTracksLimited = seedTracks.take(2).toList();
 
-    final String recommendationsEndpoint = 'https://api.spotify.com/v1/recommendations';
+    const String recommendationsEndpoint = 'https://api.spotify.com/v1/recommendations';
     // final Map<String, dynamic> recommendationsData = {};
     final List<String> recommendedTrackIds = [];
 

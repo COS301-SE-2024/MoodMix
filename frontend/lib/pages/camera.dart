@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
-import 'dart:io';
 
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/neural_net/neural_net_method_channel.dart';
@@ -15,7 +14,7 @@ import '../mood_service.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
-  const CameraPage({Key? key, required this.cameras}) : super(key: key);
+  const CameraPage({super.key, required this.cameras});
 
   @override
   _CameraPageState createState() => _CameraPageState();
@@ -72,8 +71,8 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future<void> _initializeMethodChannel() async {
-    const MethodChannel _channel = MethodChannel('neural_net_method_channel');
-    _channel.setMethodCallHandler((call) async {
+    const MethodChannel channel = MethodChannel('neural_net_method_channel');
+    channel.setMethodCallHandler((call) async {
       switch (call.method) {
         case 'recieveMood':
           _handleSuccess(call.arguments);
@@ -104,13 +103,11 @@ class _CameraPageState extends State<CameraPage> {
   Future<void> _fetchMood() async {
     if (pictureFile != null) {
       String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
-      if (mood != null) {
-        setState(() {
-          _mood = mood;
-        });
-        _showConfirmImage(); // Show confirmation after mood fetch
-      }
-    }
+      setState(() {
+        _mood = mood;
+      });
+      _showConfirmImage(); // Show confirmation after mood fetch
+        }
   }
 
   void _showConfirmImage() {
@@ -179,13 +176,11 @@ class _CameraPageState extends State<CameraPage> {
           if (pictureFile != null) {
             // Send photo to method channel and get the mood
             String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
-            if (mood != null) {
-              setState(() {
-                returnedMoods.add(mood); // Store the mood
-              });
-              print("Captured mood: $mood");
-            }
-          }
+            setState(() {
+              returnedMoods.add(mood); // Store the mood
+            });
+            print("Captured mood: $mood");
+                    }
         } catch (e) {
           print("Error during intermittent capture: $e");
           timer.cancel(); // Stop the timer in case of an error

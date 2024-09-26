@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../components/navbar.dart';
 
 class AudioPlayerPage extends StatefulWidget {
-  const AudioPlayerPage({Key? key}) : super(key: key);
+  const AudioPlayerPage({super.key});
 
   @override
   State<AudioPlayerPage> createState() => _AudioPlayerPageState();

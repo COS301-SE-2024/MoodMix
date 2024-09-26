@@ -97,7 +97,7 @@ class AuthService {
   }
 
   Future<void> authenticateWithSpotify(BuildContext context) async {
-    final url =
+    const url =
         'https://accounts.spotify.com/authorize?client_id=4a35390dc3c74e85abfd35698529a7f8&response_type=code&redirect_uri=http://localhost:5001/callback&scope=user-read-email';
 
     final result = await FlutterWebAuth.authenticate(

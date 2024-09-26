@@ -7,7 +7,7 @@ import 'package:network_info_plus/network_info_plus.dart';
 import 'package:frontend/auth/auth_service.dart';
 
 class LinkSpotify extends StatefulWidget {
-  const LinkSpotify({Key? key}) : super(key: key);
+  const LinkSpotify({super.key});
 
   @override
   State<LinkSpotify> createState() => _LinkSpotifyState();
@@ -33,7 +33,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
 
     if (token != null && storedTimestamp != null) {
       final int currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
-      final int tokenLifetimeMillis = 60 * 60 * 1000; // 1 hour in milliseconds
+      const int tokenLifetimeMillis = 60 * 60 * 1000; // 1 hour in milliseconds
 
       if (currentTimeMillis - storedTimestamp <= tokenLifetimeMillis) {
         // Token is still valid
@@ -104,19 +104,15 @@ class _LinkSpotifyState extends State<LinkSpotify> {
   }
 
   Future<void> _onLoginSuccess(String accessToken) async {
-    if (accessToken != null) {
-      // Store the token and timestamp
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final int currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
+    // Store the token and timestamp
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
 
-      await prefs.setString('spotify_access_token', accessToken);
-      await prefs.setInt('token_timestamp', currentTimeMillis);
+    await prefs.setString('spotify_access_token', accessToken);
+    await prefs.setInt('token_timestamp', currentTimeMillis);
 
-      Navigator.pushReplacementNamed(context, '/camera');
-    } else {
-      print('Authentication failed');
+    Navigator.pushReplacementNamed(context, '/camera');
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +176,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                Container(
+                                SizedBox(
                                   width: screenWidth * 0.75,
                                   child: Text(
                                     'Link your Spotify',
@@ -193,7 +189,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                                   ),
                                 ),
                                 SizedBox(height: 35),
-                                Container(
+                                SizedBox(
                                   width: screenWidth * 0.75,
                                   child: Text(
                                     "Why do you need to link your Spotify?\n\nLinking your Spotify is necessary for the use of the MoodMix application. This application communicates directly with Spotify to create playlists, save playlists to your personal library, and more!",
@@ -206,7 +202,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                                   ),
                                 ),
                                 SizedBox(height: 35),
-                                Container(
+                                SizedBox(
                                   width: screenWidth * 0.75,
                                   child: FloatingActionButton.extended(
                                     backgroundColor: Theme.of(context).colorScheme.secondary,

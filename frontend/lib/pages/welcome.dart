@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/auth/auth_service.dart';
 
 class Welcome extends StatefulWidget {
-  const Welcome({Key? key}) : super(key: key);
+  const Welcome({super.key});
 
   @override
   State<Welcome> createState() => _WelcomeState();
@@ -107,7 +107,7 @@ class _WelcomeState extends State<Welcome> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.8,
                               child: FloatingActionButton.extended(
                                 backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -147,7 +147,7 @@ class _WelcomeState extends State<Welcome> {
                               ),
                             ),
                             SizedBox(height: 30),
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.8,
                               child: FloatingActionButton.extended(
                                 backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -167,7 +167,7 @@ class _WelcomeState extends State<Welcome> {
                               ),
                             ),
                             SizedBox(height: 30),
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.8,
                               child: FloatingActionButton.extended(
                                 backgroundColor: Theme.of(context).colorScheme.secondary,

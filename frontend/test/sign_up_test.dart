@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:frontend/pages/sing_up.dart'; // Import your SignUp widget
+import 'package:frontend/pages/signup.dart'; // Import your SignUp widget
 
 void main() {
   testWidgets('SignUp page UI test', (WidgetTester tester) async {

@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/main.dart' as app;
 import 'package:frontend/pages/log_in.dart';
-import 'package:frontend/pages/sing_up.dart';
+import 'package:frontend/pages/signup.dart';
 import 'package:frontend/pages/welcome.dart';
 
 void main() {

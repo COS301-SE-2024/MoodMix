@@ -8,12 +8,12 @@ class SongRibbon extends StatelessWidget {
   final String trackUrl;
 
   const SongRibbon({
-    Key? key,
+    super.key,
     required this.songName,
     required this.artistName,
     required this.imageUrl,
     required this.trackUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

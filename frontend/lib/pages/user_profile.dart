@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import this for SVG support
 import 'package:frontend/components/profile_timeline_node.dart';
-import 'package:frontend/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:frontend/components/navbar.dart';
 import '../auth/auth_service.dart';
-import '/database/database.dart'; // Import the database helper
+// Import the database helper
 
 class UserProfile extends StatefulWidget {
-  const UserProfile({Key? key}) : super(key: key);
+  const UserProfile({super.key});
 
   @override
   State<UserProfile> createState() => _UserProfileState();
@@ -194,7 +192,7 @@ class _UserProfileState extends State<UserProfile> {
                               alignOffset: avatarCenterX,
                               scale: parentWidth * 0.004,
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ),

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/navbar.dart';
 import 'package:frontend/components/playlist_ribon.dart';
-import 'package:frontend/mood_service.dart';
 import '../auth/auth_service.dart';
-import '../components/custom_scrollbar.dart';
-import '/database/database.dart';
 import '../components/custom_scrollbar.dart';
 
 class PlaylistPage extends StatefulWidget {
-  const PlaylistPage({Key? key}) : super(key: key);
+  const PlaylistPage({super.key});
 
   @override
   State<PlaylistPage> createState() => _PlaylistPageState();
@@ -113,7 +110,7 @@ class _PlaylistPageState extends State<PlaylistPage> {
                             playlistLink: playlist['url'],
                           ),
                         );
-                      }).toList(),
+                      }),
                     ],
                   ),
                 ),

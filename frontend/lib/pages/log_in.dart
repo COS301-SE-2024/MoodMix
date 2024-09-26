@@ -4,7 +4,7 @@ import '../auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LogIn extends StatefulWidget {
-  const LogIn({Key? key}) : super(key: key);
+  const LogIn({super.key});
 
   @override
   State<LogIn> createState() => _LogInState();
@@ -72,7 +72,7 @@ class _LogInState extends State<LogIn> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     if (_shouldNavigate) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacementNamed(context, '/linkspotify');
       });
     }
@@ -125,7 +125,7 @@ class _LogInState extends State<LogIn> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Container(
+                        SizedBox(
                           width: screenWidth * 0.75,
                           child: Text(
                             'Log in',
@@ -138,9 +138,10 @@ class _LogInState extends State<LogIn> {
                           ),
                         ),
                         SizedBox(height: 35),
-                        Container(
+                        SizedBox(
                           width: screenWidth * 0.75,
                           child: TextField(
+                            key: Key('Username Or Email'),
                             cursorColor: Theme.of(context).colorScheme.secondary,
                             style: TextStyle(
                               fontSize: 20,
@@ -173,9 +174,10 @@ class _LogInState extends State<LogIn> {
                           ),
                         ),
                         SizedBox(height: 50),
-                        Container(
+                        SizedBox(
                           width: screenWidth * 0.75,
                           child: TextField(
+                            key: Key('Password'),
                             cursorColor: Theme.of(context).colorScheme.secondary,
                             style: TextStyle(
                               fontSize: 20,
@@ -263,6 +265,7 @@ class _LogInState extends State<LogIn> {
                               Expanded(
                                 flex: 5,
                                 child: Container(
+                                  key: Key('Login Button'),
                                   height: 70,
                                   padding: EdgeInsets.fromLTRB(0, 0, screenWidth * 0.1, 0),
                                   child: FloatingActionButton.extended(

@@ -107,3 +107,6 @@ add_custom_target(flutter_assemble DEPENDS
   ${CPP_WRAPPER_SOURCES_PLUGIN}
   ${CPP_WRAPPER_SOURCES_APP}
 )
+
+# Added for Testing purposes
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)

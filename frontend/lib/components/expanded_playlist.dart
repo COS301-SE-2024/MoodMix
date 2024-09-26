@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/components/song_ribon.dart';
-import 'package:url_launcher/url_launcher.dart'; // Add this import for opening URLs
+// Add this import for opening URLs
 
 import '../auth/auth_service.dart';
 

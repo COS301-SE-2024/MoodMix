@@ -12,8 +12,8 @@ class NeuralNetMethodChannel {
       if (image != null)
         {
 
-      final image_bytes = await image.readAsBytes();
-      final result = await _channel.invokeMethod('get_mood', {'image' : image_bytes});
+      final imageBytes = await image.readAsBytes();
+      final result = await _channel.invokeMethod('get_mood', {'image' : imageBytes});
       print('neural_net method channel result: $result');
       final mood = await result;
       return result;
@@ -27,7 +27,7 @@ class NeuralNetMethodChannel {
   }
 
   String returnMood(){
-    print(mood + "EASY TO FIND");
+    print("${mood}EASY TO FIND");
     return mood;
   }
 

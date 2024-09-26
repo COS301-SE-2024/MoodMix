@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 //SideMenu to select preferences
 class PreferenceMenu extends StatelessWidget{
+  const PreferenceMenu({super.key});
+
   @override
   Widget build(BuildContext context){
 

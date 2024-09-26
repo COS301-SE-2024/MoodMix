@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../auth/auth_service.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+  const SignUp({super.key});
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -102,7 +102,7 @@ class _SignUpState extends State<SignUp> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.75,
                               child: Text(
                                 'Create your account',
@@ -115,7 +115,7 @@ class _SignUpState extends State<SignUp> {
                               ),
                             ),
                             SizedBox(height: 35),
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.75,
                               child: TextField(
                                 cursorColor: Theme.of(context).colorScheme.secondary,
@@ -150,7 +150,7 @@ class _SignUpState extends State<SignUp> {
                               ),
                             ),
                             SizedBox(height: 50),
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.75,
                               child: TextField(
                                 cursorColor: Theme.of(context).colorScheme.secondary,
@@ -185,7 +185,7 @@ class _SignUpState extends State<SignUp> {
                               ),
                             ),
                             SizedBox(height: 50),
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.75,
                               child: TextField(
                                 cursorColor: Theme.of(context).colorScheme.secondary,
@@ -221,7 +221,7 @@ class _SignUpState extends State<SignUp> {
                               ),
                             ),
                             SizedBox(height: 50),
-                            Container(
+                            SizedBox(
                               width: screenWidth * 0.75,
                               child: TextField(
                                 cursorColor: Theme.of(context).colorScheme.secondary,

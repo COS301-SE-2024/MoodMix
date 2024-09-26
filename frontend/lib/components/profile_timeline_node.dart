@@ -8,13 +8,13 @@ class ProfileTimelineNode extends StatelessWidget {
   final double scale;
 
   const ProfileTimelineNode({
-    Key? key,
+    super.key,
     required this.title,
     required this.mood,
     required this.date,
     required this.alignOffset,
     required this.scale,
-  }) : super(key: key);
+  });
 
   Color _getMoodColor(String mood) {
     switch (mood) {
@@ -33,7 +33,7 @@ class ProfileTimelineNode extends StatelessWidget {
   Widget build(BuildContext context) {
     final moodColor = _getMoodColor(mood);
     final moodCircleSize = 80.0 * scale;
-    final margin = 16.0; // Space between circle and text
+    const margin = 16.0; // Space between circle and text
 
     return Opacity(
       opacity: 0.7,

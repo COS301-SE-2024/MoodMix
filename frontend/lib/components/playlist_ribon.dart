@@ -116,7 +116,7 @@ class _PlaylistRibbonState extends State<PlaylistRibbon> {
           );
         }
       },
-      child: Container(
+      child: SizedBox(
         width: screenWidth * 0.9,
         height: screenHeight * 0.1,
         child: Stack(

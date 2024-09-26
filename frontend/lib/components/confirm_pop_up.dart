@@ -2,9 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:frontend/auth/auth_service.dart';
-import 'package:frontend/mood_service.dart';
 import 'playlist_details.dart';
-import '../mood_service.dart';
 
 class ConfirmationPopUp extends StatefulWidget {
   final String? imagePath;
@@ -15,14 +13,14 @@ class ConfirmationPopUp extends StatefulWidget {
   final bool isRealTimeVideo; // New parameter for real-time video
 
   const ConfirmationPopUp({
-    Key? key,
+    super.key,
     this.imagePath,
     this.transcribedText,
     required this.moods,
     this.isFrontCamera = false,
     this.isImage = true,
     this.isRealTimeVideo = false, // Defaults to false
-  }) : super(key: key);
+  });
 
   @override
   _ConfirmationPopUpState createState() => _ConfirmationPopUpState();
@@ -73,7 +71,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                     padding: const EdgeInsets.all(6.5),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
-                      child: Container(
+                      child: SizedBox(
                         width: double.infinity,
                         height: screenHeight * 0.63, // Dynamically adjust this to fill the container
                         child: widget.isFrontCamera

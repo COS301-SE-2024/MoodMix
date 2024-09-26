@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class FlashingScrollbarWidget extends StatefulWidget {
   final Widget child;
 
-  const FlashingScrollbarWidget({Key? key, required this.child}) : super(key: key);
+  const FlashingScrollbarWidget({super.key, required this.child});
 
   @override
   _FlashingScrollbarWidgetState createState() => _FlashingScrollbarWidgetState();

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:frontend/components/expanded_playlist.dart';
-import 'package:frontend/components/playlist_details.dart';
-import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/pages/account_help_page.dart';
 import 'package:frontend/pages/camera_voice_help_page.dart';
 import 'package:frontend/pages/help_page.dart';
@@ -14,7 +11,7 @@ import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:frontend/pages/log_in.dart';
-import 'package:frontend/pages/sing_up.dart';
+import 'package:frontend/pages/signup.dart';
 import 'package:frontend/pages/welcome.dart';
 import 'package:frontend/pages/user_playlist.dart';
 import 'package:frontend/pages/camera.dart';
@@ -49,6 +46,8 @@ Future<void> initializeCameras() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

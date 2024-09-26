@@ -8,7 +8,7 @@ import 'confirm_pop_up.dart';
 class AudioRecorder extends StatefulWidget {
   final VoidCallback onPressed;
 
-  const AudioRecorder({Key? key, required this.onPressed}) : super(key: key);
+  const AudioRecorder({super.key, required this.onPressed});
 
   @override
   _AudioRecorderState createState() => _AudioRecorderState();

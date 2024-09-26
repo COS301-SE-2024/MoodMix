@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HelpPage extends StatelessWidget {
+  const HelpPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -78,7 +80,7 @@ class HelpPage extends StatelessWidget {
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.02),
-        child: Container(
+        child: SizedBox(
           width: screenSize.width * 0.9,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
