@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
@@ -66,9 +67,10 @@ class AudioRecorder {
 
   Future<void> transcribeAudioAndAnalyze(String filePath) async {
     final String apiUrl = 'https://api.openai.com/v1/audio/transcriptions';
+    final String apiKey = dotenv.env['OPENAI_API_KEY'] ?? '';
 
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl))
-      ..headers['Authorization'] = 'Bearer '
+      ..headers['Authorization'] = 'Bearer $apiKey'
       ..fields['model'] = 'whisper-1'
       ..files.add(await http.MultipartFile.fromPath('file', filePath));
 
