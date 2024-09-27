@@ -156,13 +156,19 @@ class _CameraPageState extends State<CameraPage> {
 
     if (isRecording) {
       // Stop recording
-      setState(() {
+      setState(() async {
         isRecording = false; // Stop recording
         captureTimer?.cancel(); // Stop the timer
         print("Recording stopped. Moods: $returnedMoods");
         returnedMoods.add(audioMoodWeight);
         audioMoodWeight = '';
-        _navigateToConfirmationPage();
+
+        // Check if a picture has been taken
+        if (imagePaths.isEmpty) {
+          await _takeForcedPicture(); // Take a picture if none exists
+        } else {
+          _navigateToConfirmationPage(); // Proceed to confirmation if a picture exists
+        }
       });
     } else {
       // Start recording
@@ -285,6 +291,19 @@ class _CameraPageState extends State<CameraPage> {
         returnedMoods.clear();
       });
     });
+  }
+
+  Future<void> _takeForcedPicture() async {
+    // Capture a picture and fetch mood
+    if (controller != null && controller!.value.isInitialized) {
+      pictureFile = await controller!.takePicture();
+      if (pictureFile != null) {
+        imagePaths.add(pictureFile!.path); // Add the image path here
+        await _fetchMood(); // Fetch mood after picture is taken
+        // Proceed to confirmation after taking the forced picture
+        // _navigateToConfirmationPage();
+      }
+    }
   }
 
   @override

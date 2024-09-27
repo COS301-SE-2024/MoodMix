@@ -1,11 +1,10 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:frontend/auth/auth_service.dart';
-import 'package:frontend/mood_service.dart';
-import 'playlist_details.dart';
+
+import '../auth/auth_service.dart';
+
 
 class ConfirmationPopUp extends StatefulWidget {
   final String? imagePath;
@@ -267,7 +266,49 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                             heroTag: 'continue',
                             backgroundColor: Theme.of(context).colorScheme.primary,
                             onPressed: () async {
-                              // Continue button logic
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => Container(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary, // Full screen background
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Theme.of(context)
+                                            .colorScheme
+                                            .secondary, // Keep indicator color
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+
+                              try {
+                                if (widget.isRealTimeVideo) {
+                                  await SpotifyAuth
+                                      .realTimeCreateAndPopulatePlaylistWithRecommendations(
+                                    "MoodMix",
+                                    widget.moods,
+                                  );
+                                } else {
+                                  await SpotifyAuth
+                                      .createAndPopulatePlaylistWithRecommendations(
+                                    "MoodMix",
+                                    widget.moods.first,
+                                  );
+                                }
+
+                                // Close the loading indicator
+                                Navigator.of(context).pop();
+
+                                // Navigate to the user playlist page after completion
+                                Navigator.pushReplacementNamed(
+                                    context, '/userplaylist');
+                              } catch (error) {
+                                // Handle error (show snackbar, log, etc.)
+                              }
                             },
                             child: Icon(
                               Icons.check,
