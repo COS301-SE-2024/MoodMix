@@ -79,9 +79,8 @@ class _UserProfileState extends State<UserProfile> {
     if (playlistData != null) {
       setState(() {
         _playlists = playlistData.map((playlist) {
-          final firstImageUrl = playlist['images'].isNotEmpty
-              ? playlist['images'][0]['url']
-              : '';
+          final firstImageUrl =
+          playlist['images'].isNotEmpty ? playlist['images'][0]['url'] : '';
           return {
             'name': playlist['name'],
             'image': firstImageUrl,
@@ -100,7 +99,10 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
 
     return Scaffold(
       backgroundColor: Theme
@@ -156,8 +158,8 @@ class _UserProfileState extends State<UserProfile> {
                               CircleAvatar(
                                 backgroundImage: _spotifyProfileImage != null
                                     ? NetworkImage(_spotifyProfileImage!)
-                                    : AssetImage(
-                                    'assets/images/images.jpeg') as ImageProvider,
+                                    : AssetImage('assets/images/images.jpeg')
+                                as ImageProvider,
                                 backgroundColor: Colors.transparent,
                                 radius: avatarRadius,
                               ),
@@ -199,28 +201,40 @@ class _UserProfileState extends State<UserProfile> {
                               ),
                             ],
                           ),
-                          // Add a placeholder for the playlists
+                          // SizedBox(height: 20), // Space after profile info
+                          // Check if playlists are available
                           if (_playlists.isNotEmpty)
-                            ..._playlists.map((playlist) {
-                              return ProfileTimelineNode(
-                                title: playlist['name'],
-                                mood: playlist['mood'] ?? "Unknown",
-                                date: playlist['date'] ?? "Unknown",
-                                alignOffset: avatarCenterX,
-                                scale: parentWidth * 0.004,
-                                link: playlist['url'],
-                              );
-                            }).toList()
+                            Column(
+                              children: [
+                                ..._playlists.map((playlist) {
+                                  return ProfileTimelineNode(
+                                    title: playlist['name'],
+                                    mood: playlist['mood'] ?? "Unknown",
+                                    date: playlist['date'] ?? "Unknown",
+                                    alignOffset: avatarCenterX,
+                                    scale: parentWidth * 0.004,
+                                    link: playlist['url'],
+                                  );
+                                }).toList(),
+                                SizedBox(height: 20), // Add your desired height here
+                              ],
+                            )
                           else
-                            SizedBox(height: screenHeight * 0.25,),
                             Center(
-                              child: Text(
-                                'No playlists available.',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w400,
-                                  color: Theme.of(context).colorScheme.secondary,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: screenHeight * 0.25),
+                                child: Text(
+                                  'No playlists available.',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .secondary,
+                                  ),
                                 ),
                               ),
                             ),

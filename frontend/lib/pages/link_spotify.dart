@@ -208,6 +208,7 @@ class _LinkSpotifyState extends State<LinkSpotify> {
                                 SizedBox(height: 35),
                                 Container(
                                   width: screenWidth * 0.75,
+                                  height: 70,
                                   child: FloatingActionButton.extended(
                                     backgroundColor: Theme.of(context).colorScheme.secondary,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),

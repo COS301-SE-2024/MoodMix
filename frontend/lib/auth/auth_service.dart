@@ -1355,17 +1355,17 @@ class SpotifyAuth {
     List<String> moodsCopy = List.from(moods);
 
     // Fetch top artists and tracks for seeds
-    fetchUserTopArtistsAndTracks().then((topArtistsAndTracks) {
+    await fetchUserTopArtistsAndTracks().then((topArtistsAndTracks) async {
       if (topArtistsAndTracks.isEmpty) {
         print('No seeds available for recommendations');
         return;
       }
 
       // Generate recommendations based on mood
-      realTimeGetSpotifyRecommendations(
+      await realTimeGetSpotifyRecommendations(
         moods: moodsCopy, // Pass the copy instead
         topArtistsTracksGenres: topArtistsAndTracks,
-      ).then((recommendedTracks) {
+      ).then((recommendedTracks) async {
         if (recommendedTracks.isEmpty) {
           print('No recommendations found.');
           return;
@@ -1373,7 +1373,7 @@ class SpotifyAuth {
 
         // Create and populate the playlist
         print(recommendedTracks.toString());
-        createAndPopulatePlaylist(playlistName, "mixed", recommendedTracks).then((_) {
+        await createAndPopulatePlaylist(playlistName, "mixed", recommendedTracks).then((_) {
           print('Playlist created and populated successfully.');
         }).catchError((error) {
           print('Error creating or populating playlist: $error');

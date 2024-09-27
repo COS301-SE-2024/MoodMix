@@ -33,6 +33,7 @@ class _CameraPageState extends State<CameraPage> {
   List<String> imagePaths = [];
   AudioRecorder audioRecorder = AudioRecorder();
   String audioMoodWeight = '';
+  bool audioReady = false;
 
 
   final List<String> modes = ["Photo", "Video", "Audio"];
@@ -148,7 +149,7 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  void _recordRealTime() {
+  void _recordRealTime() async {
     if (controller == null || !controller!.value.isInitialized) {
       print("Camera is not initialized.");
       return;
@@ -156,13 +157,24 @@ class _CameraPageState extends State<CameraPage> {
 
     if (isRecording) {
       // Stop recording
-      setState(() {
+      setState(() async {
         isRecording = false; // Stop recording
         captureTimer?.cancel(); // Stop the timer
         print("Recording stopped. Moods: $returnedMoods");
         returnedMoods.add(audioMoodWeight);
         audioMoodWeight = '';
-        _navigateToConfirmationPage();
+
+        // Check if a picture has been taken
+        if (imagePaths.isEmpty) {
+          await _takeForcedPicture(); // Take a picture if none exists
+        } else {
+          int count = 0;
+          while (!audioReady && count < 100) {
+            await Future.delayed(Duration(milliseconds: 100)); // Check every 100ms
+            count += 1;
+          }
+          await _navigateToConfirmationPage(); // Proceed to confirmation if a picture exists
+        }
       });
     } else {
       // Start recording
@@ -173,7 +185,7 @@ class _CameraPageState extends State<CameraPage> {
       });
 
       // Start capturing photos at intervals
-      captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
+      captureTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
         try {
           XFile? pictureFile = await controller?.takePicture();
           if (pictureFile != null) {
@@ -230,7 +242,7 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
-  void _audioRecord(bool vid) async {
+  Future<void> _audioRecord(bool vid) async {
     await audioRecorder.openRecorder();
 
     if (isAudioActive) {
@@ -246,10 +258,12 @@ class _CameraPageState extends State<CameraPage> {
         _showConfirmText(audioRecorder.mood, audioRecorder.transcription);
       } else {
         audioMoodWeight = audioRecorder.mood[0];
+        audioReady = true;
       }
     } else {
       // Start the audio recording
       await audioRecorder.record();
+      audioReady = false;
       setState(() {
         innerCircleSize = 60.0;
         innerCircleColor = Colors.red;
@@ -263,7 +277,7 @@ class _CameraPageState extends State<CameraPage> {
     print("RETURNED MOODS");
     print(returnedMoods.toString());
 
-    // Delay to give a visual feedback
+    // Delay to give visual feedback
     await Future.delayed(Duration(milliseconds: 200));
 
     // Send all the captured images during real-time video as a list
@@ -271,9 +285,9 @@ class _CameraPageState extends State<CameraPage> {
       context,
       MaterialPageRoute(
         builder: (context) => ConfirmationPopUp(
-          imagePaths: imagePaths,  // Pass the list of all captured images
-          transcribedText: returnedMoods.toString(),
-          moods: returnedMoods,
+          imagePaths: imagePaths, // Pass the list of all captured images
+          transcribedText: audioRecorder.transcription,
+          moods: returnedMoods, // Use the calculated moods
           isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front,
           isImage: false,
           isRealTimeVideo: true,
@@ -283,8 +297,22 @@ class _CameraPageState extends State<CameraPage> {
       setState(() {
         pictureFile = null;
         returnedMoods.clear();
+        imagePaths.clear(); // Clear image paths after confirmation
       });
     });
+  }
+
+  Future<void> _takeForcedPicture() async {
+    // Capture a picture and fetch mood
+    if (controller != null && controller!.value.isInitialized) {
+      pictureFile = await controller!.takePicture();
+      if (pictureFile != null) {
+        imagePaths.add(pictureFile!.path); // Add the image path here
+        await _fetchMood(); // Fetch mood after picture is taken
+        // Proceed to confirmation after taking the forced picture
+        // _navigateToConfirmationPage();
+      }
+    }
   }
 
   @override
@@ -459,6 +487,13 @@ class _CameraPageState extends State<CameraPage> {
         },
       ),
       drawer: Drawer(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+          topRight: Radius.circular(50), // Adjust the radius as needed
+          bottomRight: Radius.circular(50), // Adjust the radius as needed
+          ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: ListView(
           children: <Widget>[
             DrawerHeader(
@@ -493,8 +528,8 @@ class _CameraPageState extends State<CameraPage> {
         return CheckboxListTile(
           title: Text(genres[index]),
           value: isChecked[index],
-          activeColor: Colors.black,
-          checkColor: Colors.green,
+          activeColor: Theme.of(context).colorScheme.secondary,
+          checkColor: Theme.of(context).colorScheme.primary,
           onChanged: (bool? newValue) {
             setState(() {
               if (newValue == true) {

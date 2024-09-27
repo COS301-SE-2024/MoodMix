@@ -35,9 +35,9 @@ class NavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.person_outline,
+            Icons.history_outlined,
             color: Theme.of(context).colorScheme.secondary,
-            size: 30,
+            size: 27,
           ),
           label: "PROFILE",
         ),
