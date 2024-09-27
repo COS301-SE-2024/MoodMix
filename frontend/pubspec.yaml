@@ -58,6 +58,8 @@ dependencies:
   flutter_sound: ^9.2.13
   permission_handler: ^10.3.0
   sentiment_dart:
+  google_mlkit_face_detection: ^0.11.1
+
 
 
 dev_dependencies:

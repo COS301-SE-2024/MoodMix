@@ -7,6 +7,7 @@ import '../components/navbar.dart';
 import '../mood_service.dart';
 import '../neural_net/neural_net_method_channel.dart';
 import '../components/audio_service.dart';
+import '../components/faceDetection.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -250,6 +251,21 @@ class _CameraPageState extends State<CameraPage> {
       _startPulsing();
     }
   }
+
+  Future<bool> detectFace() async {
+    FaceDetectionHelper faceDetectionHelper = FaceDetectionHelper();
+    bool isFaceFound = await faceDetectionHelper.isFacePresent('path/to/your/image.jpg');
+
+    if (isFaceFound) {
+      faceDetectionHelper.dispose();
+      return true;
+    } else {
+      faceDetectionHelper.dispose();
+      return false;
+    }
+  }
+
+
 
   Future<void> _navigateToConfirmationPage() async {
     print("RETURNED MOODS");
