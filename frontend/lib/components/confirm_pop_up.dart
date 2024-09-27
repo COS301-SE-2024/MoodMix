@@ -57,6 +57,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
 
     if (widget.isRealTimeVideo) {
       // Ensure index is within bounds of the moods list
+
       return widget.moods.length > _currentIndex
           ? widget.moods[_currentIndex][0].toUpperCase() + widget.moods[_currentIndex].substring(1)
           : 'No mood detected';
@@ -83,7 +84,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
-        // Image display logic
+        // Image and text display logic
         Positioned.fill(
           child: widget.isRealTimeVideo && widget.imagePaths != null && widget.imagePaths!.isNotEmpty
               ? Column(
@@ -91,40 +92,63 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
-                  itemCount: widget.imagePaths!.length,
+                  itemCount: widget.imagePaths!.length + 1, // Add one for transcribed text page
                   onPageChanged: (index) {
                     setState(() {
                       _currentIndex = index;
                     });
                   },
                   itemBuilder: (context, index) {
-                    final imagePath = widget.imagePaths![index];
-                    final file = File(imagePath);
-                    if (!file.existsSync()) {
-                      return Center(
-                        child: Icon(Icons.error, color: Colors.red, size: 100),
-                      );
-                    }
-                    return Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(math.pi * 2), // Flip the image horizontally
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(0.0), // No rounding for full-screen image
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: Image.file(
-                            file,
-                            fit: BoxFit.cover, // Ensure the image fills the screen
-                            errorBuilder: (context, error, stackTrace) {
-                              return Center(
-                                child: Icon(Icons.error, color: Colors.red, size: 100),
-                              ); // Fallback image if there's an error loading the image
-                            },
+                    if (index < widget.imagePaths!.length) {
+                      // Display images
+                      final imagePath = widget.imagePaths![index];
+                      final file = File(imagePath);
+                      if (!file.existsSync()) {
+                        return Center(
+                          child: Icon(Icons.error, color: Colors.red, size: 100),
+                        );
+                      }
+                      return Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(math.pi), // Flip the image horizontally
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(0.0),
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Image.file(
+                              file,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Center(
+                                  child: Icon(Icons.error, color: Colors.red, size: 100),
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      // Display transcribed text on the last page
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(
+                            widget.transcribedText != null && widget.transcribedText!.isNotEmpty
+                                ? widget.transcribedText!
+                                : 'No transcription available',
+                            style: TextStyle(
+                              fontSize: 24, // Adjust text size
+                              color: Theme.of(context).colorScheme.secondary, // Use secondary theme color
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto',
+                              decoration: TextDecoration.none,
+                            ),
+                            textAlign: TextAlign.center, // Center the text
+                          ),
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
@@ -132,7 +156,9 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Image ${_currentIndex + 1} of ${widget.imagePaths!.length}',
+                  _currentIndex < widget.imagePaths!.length
+                      ? 'Image ${_currentIndex + 1} of ${widget.imagePaths!.length}' // Show image count for images
+                      : 'Transcription Page', // Show special label for transcription page
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.secondary,
                     fontSize: 16,
@@ -179,7 +205,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               }
               return Transform(
                 alignment: Alignment.center,
-                transform: Matrix4.rotationY(math.pi * 2), // Flip the image horizontally
+                transform: Matrix4.rotationY(math.pi), // Flip the image horizontally
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(0.0), // No rounding for full-screen image
                   child: Container(
@@ -213,7 +239,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               fontSize: 40,
               fontFamily: 'Roboto',
               fontWeight: FontWeight.bold,
-              color: widget.transcribedText != null && widget.isRealTimeVideo == false
+              color: (widget.transcribedText != null && widget.isRealTimeVideo == false) || (widget.transcribedText != null && _currentIndex == widget.moods.length-1)
                   ? Theme.of(context).colorScheme.secondary // Use secondary color if transcribed text is not null
                   : Colors.white, // Use white if transcribed text is null
               decoration: TextDecoration.none, // Remove underline
