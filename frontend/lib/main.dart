@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:frontend/components/expanded_playlist.dart';
-import 'package:frontend/components/playlist_details.dart';
-import 'package:frontend/components/playlist_ribon.dart';
+// import 'package:frontend/components/expanded_playlist.dart';
+// import 'package:frontend/components/playlist_details.dart';
+// import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/pages/account_help_page.dart';
 import 'package:frontend/pages/camera_voice_help_page.dart';
 import 'package:frontend/pages/help_page.dart';

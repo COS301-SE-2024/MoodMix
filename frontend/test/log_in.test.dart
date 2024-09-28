@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/pages/log_in.dart';
-import 'package:mockito/mockito.dart';
+//import 'package:mockito/mockito.dart';
 // import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 
 void main() {

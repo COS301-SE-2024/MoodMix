@@ -52,17 +52,17 @@ class _LogInState extends State<LogIn> {
     }
   }
 
-  Future<bool> _checkCredentials() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('email') ?? '';
-    final password = prefs.getString('password') ?? '';
-
-    if (email.isNotEmpty && password.isNotEmpty) {
-      await _authService.login(email: email, password: password);
-      return true;
-    }
-    return false;
-  }
+  // Future<bool> _checkCredentials() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final email = prefs.getString('email') ?? '';
+  //   final password = prefs.getString('password') ?? '';
+  //
+  //   if (email.isNotEmpty && password.isNotEmpty) {
+  //     await _authService.login(email: email, password: password);
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   Future<void> _handleForgotPassword() async {
     setState(() {
@@ -108,7 +108,7 @@ class _LogInState extends State<LogIn> {
         .width;
 
     if (_shouldNavigate) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacementNamed(context, '/linkspotify');
       });
     }
