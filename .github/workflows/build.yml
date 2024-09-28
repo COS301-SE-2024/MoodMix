@@ -20,6 +20,15 @@ jobs:
         uses: subosito/flutter-action@v1
         with:
           channel: stable
+
+      - name: Create .env file
+        run: |
+          echo "SPOTIFY_CLIENT=${{ secrets.SPOTIFY_CLIENT }}" >> ./frontend/assets/.env
+          echo "SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }}" >> ./frontend/assets/.env
+          echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> ./frontend/assets/.env
+          echo "SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }}" >> ./frontend/assets/.env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> ./frontend/assets/.env
+          
       - run: flutter build apk --debug
         working-directory: ./frontend
  
