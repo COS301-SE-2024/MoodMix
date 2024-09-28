@@ -1,19 +1,25 @@
-name: Flutter Lint
+name: Flutter Linting
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - development
+  pull_request:
+    branches:
+      - master
+      - development
 
 jobs:
-  lint:
+  main:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
+      - name: Clone repository
+        uses: actions/checkout@v4
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v1
         with:
-          flutter-version: 'latest'
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
@@ -22,3 +28,4 @@ jobs:
       - name: Run Linter
         run: flutter analyze
         working-directory: ./frontend  # Specify the working directory
+
