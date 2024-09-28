@@ -8,9 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
-
-import '/pages/camera.dart';
-
 import '/database/database.dart';
 import 'package:intl/intl.dart';
 
@@ -108,13 +105,13 @@ class AuthService {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
       if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication =
+       // final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
 
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken,
-        );
+        // final AuthCredential credential = GoogleAuthProvider.credential(
+        //   accessToken: googleSignInAuthentication.accessToken,
+        //   idToken: googleSignInAuthentication.idToken,
+        // );
 
         return 'Success';
       } else {
@@ -572,15 +569,14 @@ class SpotifyAuth {
 
     try {
       final topArtistsResponse = await http.get(
-        Uri.parse(topArtistsEndpoint),
+        Uri.parse('$topArtistsEndpoint?limit=10'),
         headers: {'Authorization': 'Bearer $_accessToken'},
       );
 
       if (topArtistsResponse.statusCode == 200) {
         // Parse the top artists
         final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
-        print(artistsData);
-        print("////////////////////////////////");
+
         final List<dynamic> artists = artistsData['items'];
 
         // If no genre is selected, pick a random artist
@@ -705,80 +701,80 @@ class SpotifyAuth {
   //then also add the spotify Recommendations
 
   //Fetches Top Tracks of Artists from a Specific Genre
-  static Future<List<String>> fetchTopTracks() async{
-    if (_accessToken == null) {
-      print('Access token is not available');
-      return [];
-    }
-
-    List<String> trackIds = [];
-
-    final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
-
-    try {
-      final topArtistsResponse = await http.get(
-        Uri.parse(topArtistsEndpoint),
-        headers: {'Authorization': 'Bearer $_accessToken'},
-      );
-
-      if (topArtistsResponse.statusCode == 200) {
-        // Parse the top artists
-        final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
-
-        //If Users does not listen to that Genre
-        bool flag = false;
-
-        // Finding your most listened to artists of that genre
-        List<String> artistC = [];
-        int i = 0;
-        final Map<String, dynamic> chosenArtist = {};
-        if(selectedGenres != ''){
-          for(Map<String, dynamic> g in artistsData['items']){
-            if(g['genres'].contains(selectedGenres.toLowerCase())){
-              chosenArtist.addAll(g);
-              artistC[i] = g['id'];
-              i++;
-              flag = true;
-            }
-          }
-        }
-
-        //Pulling Multiple Artists Top Tracks and adding it to the List
-        for(int j = 0; j < i; j++){
-
-          String artistID = artistC[j];
-          final String artistsTopEndpoint = "https://api.spotify.com/v1/artists/$artistID/top-tracks";
-
-          final topTracksResponse = await http.get(
-            Uri.parse(artistsTopEndpoint),
-            headers: {'Authorization': 'Bearer $_accessToken'},
-          );
-
-          if (topTracksResponse.statusCode == 200) {
-            // Parse the top tracks
-            final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
-            for (var track in tracksData['tracks']) {
-              trackIds.add(track['id']);
-            }
-
-            // Return the combined object
-            return trackIds;
-          } else {
-            print('Failed to fetch top tracks for artist');
-            return [];
-          }
-        }
-
-      } else {
-        print('Failed to fetch top artists');
-        return [];
-      }
-    } catch (e) {
-      print('Error occurred: $e');
-      return [];
-    }
-    return trackIds;
-  }
+  // static Future<List<String>> fetchTopTracks() async{
+  //   if (_accessToken == null) {
+  //     print('Access token is not available');
+  //     return [];
+  //   }
+  //
+  //   List<String> trackIds = [];
+  //
+  //   final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
+  //
+  //   try {
+  //     final topArtistsResponse = await http.get(
+  //       Uri.parse(topArtistsEndpoint),
+  //       headers: {'Authorization': 'Bearer $_accessToken'},
+  //     );
+  //
+  //     if (topArtistsResponse.statusCode == 200) {
+  //       // Parse the top artists
+  //       final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
+  //
+  //       //If Users does not listen to that Genre
+  //     //  bool flag = false;
+  //
+  //       // Finding your most listened to artists of that genre
+  //       List<String> artistC = [];
+  //       int i = 0;
+  //       final Map<String, dynamic> chosenArtist = {};
+  //       if(selectedGenres != ''){
+  //         for(Map<String, dynamic> g in artistsData['items']){
+  //           if(g['genres'].contains(selectedGenres.toLowerCase())){
+  //             chosenArtist.addAll(g);
+  //             artistC[i] = g['id'];
+  //             i++;
+  //            // flag = true;
+  //           }
+  //         }
+  //       }
+  //
+  //       //Pulling Multiple Artists Top Tracks and adding it to the List
+  //       for(int j = 0; j < i; j++){
+  //
+  //         String artistID = artistC[j];
+  //         final String artistsTopEndpoint = "https://api.spotify.com/v1/artists/$artistID/top-tracks";
+  //
+  //         final topTracksResponse = await http.get(
+  //           Uri.parse(artistsTopEndpoint),
+  //           headers: {'Authorization': 'Bearer $_accessToken'},
+  //         );
+  //
+  //         if (topTracksResponse.statusCode == 200) {
+  //           // Parse the top tracks
+  //           final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
+  //           for (var track in tracksData['tracks']) {
+  //             trackIds.add(track['id']);
+  //           }
+  //
+  //           // Return the combined object
+  //           return trackIds;
+  //         } else {
+  //           print('Failed to fetch top tracks for artist');
+  //           return [];
+  //         }
+  //       }
+  //
+  //     } else {
+  //       print('Failed to fetch top artists');
+  //       return [];
+  //     }
+  //   } catch (e) {
+  //     print('Error occurred: $e');
+  //     return [];
+  //   }
+  //   return trackIds;
+  // }
 
   //Filter the Top Artists Tracks based on the mood
   static Future<List<String>> moodOfTrackIDs({
@@ -898,8 +894,8 @@ class SpotifyAuth {
       double maxV = valence + 0.1;
 
 
-      double minE = energy - 0.1;
-      double maxE = energy + 0.1;
+     // double minE = energy - 0.1;
+     // double maxE = energy + 0.1;
 
 
       Map<String, String> queryParamsNeutral  = {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/playlist_ribon.dart';
-import 'package:frontend/components/song_ribon.dart';
-import 'package:spotify/spotify.dart' as spotify;
+// import 'package:frontend/components/playlist_ribon.dart';
+// import 'package:frontend/components/song_ribon.dart';
+// import 'package:spotify/spotify.dart' as spotify;
 
 class PlaylistDetails extends StatefulWidget {
   final String playlistName;
