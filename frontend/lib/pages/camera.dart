@@ -360,6 +360,7 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                 ),
                 IconButton(
+                  key: Key('flipCamButton'),
                   icon: Icon(Icons.switch_camera_outlined),
                   color: Colors.white,
                   onPressed: _switchCamera,
@@ -388,6 +389,7 @@ class _CameraPageState extends State<CameraPage> {
                       ),
                     ),
                     IconButton(
+                      key: Key('drawerButton'),
                       icon: Icon(Icons.tune_rounded),
                       color: Colors.white,
                       onPressed: () => Scaffold.of(context).openDrawer(), // Open the drawer

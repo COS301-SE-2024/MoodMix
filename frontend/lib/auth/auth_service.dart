@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
@@ -11,65 +10,16 @@ import 'dart:math';
 import '/database/database.dart';
 import 'package:intl/intl.dart';
 
-
-
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId:
-        '717450671046-s8e21c4eu14ebejnnc3varjpues2g2s2.apps.googleusercontent.com',
-  );
+  final FirebaseAuth _auth;
+  final GoogleSignIn _googleSignIn;
 
-  Future<Map<String, dynamic>?> getSpotifyUserDetails() async {
-    final String endpoint =
-        'https://api.spotify.com/v1/me'; // Replace with your backend endpoint
-    try {
-      final response = await http.get(Uri.parse(endpoint));
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        print('Failed to load user details');
-        return null;
-      }
-    } catch (e) {
-      print('Error: $e');
-      return null;
-    }
-  }
-
-  Future<List<Map<String, dynamic>>?> getSpotifyPlaylists() async {
-    final String endpoint =
-        'http://localhost:5002/spotify-playlists'; // Replace with your backend endpoint
-
-    try {
-      final response = await http.get(Uri.parse(endpoint));
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-        List<dynamic> playlists = jsonResponse['items'];
-        List<Map<String, dynamic>> formattedPlaylists = playlists
-            .map((playlist) => {
-                  'id': playlist['id'],
-                  'name': playlist['name'],
-                  'description': playlist['description'],
-                  'image': playlist['images'].isNotEmpty
-                      ? playlist['images'][0]['url']
-                      : null,
-                  'owner': playlist['owner']['display_name'],
-                  'tracks': playlist['tracks']['total'],
-                  'public': playlist['public'],
-                  'href': playlist['external_urls']['spotify'],
-                })
-            .toList();
-        return formattedPlaylists;
-      } else {
-        print('Failed to load Spotify playlists: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error: $e');
-      return null;
-    }
-  }
+  // Constructor for dependency injection
+  AuthService({FirebaseAuth? auth, GoogleSignIn? googleSignIn})
+      : _auth = auth ?? FirebaseAuth.instance,
+        _googleSignIn = googleSignIn ?? GoogleSignIn(
+          clientId: '717450671046-s8e21c4eu14ebejnnc3varjpues2g2s2.apps.googleusercontent.com',
+        );
 
   Future<String?> registration({
     required String email,
@@ -78,50 +28,17 @@ class AuthService {
   }) async {
     try {
       UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
-      await userCredential.user?.updateProfile(displayName: username);
-      await userCredential.user?.reload();
-
+      await _updateProfile(userCredential.user, username);
       return 'Success';
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
-      } else {
-        return e.message;
-      }
+      return _handleAuthException(e);
     } catch (e) {
       return e.toString();
     }
   }
 
-  Future<String?> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await googleSignIn.signIn();
-      if (googleSignInAccount != null) {
-       // final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
-
-        // final AuthCredential credential = GoogleAuthProvider.credential(
-        //   accessToken: googleSignInAuthentication.accessToken,
-        //   idToken: googleSignInAuthentication.idToken,
-        // );
-
-        return 'Success';
-      } else {
-        // User cancelled Google sign-in
-        return 'Google sign-in cancelled.';
-      }
-    } catch (error) {
-      return error.toString();
-    }
-  }
 
   Future<String?> login({
     required String email,
@@ -170,39 +87,28 @@ class AuthService {
     }
   }
 
-  Future<void> authenticateWithSpotify(BuildContext context) async {
-    final url =
-        'https://accounts.spotify.com/authorize?client_id=4a35390dc3c74e85abfd35698529a7f8&response_type=code&redirect_uri=http://localhost:5001/callback&scope=user-read-email';
-
-    final result = await FlutterWebAuth.authenticate(
-      url: url,
-      callbackUrlScheme: 'myapp',
-    );
-
-    final code = Uri.parse(result).queryParameters['code'];
-
-    if (code != null) {
-      await _linkSpotifyAccountToFirebase(code);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Spotify account linked successfully!'),
-      ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to link Spotify account.'),
-      ));
+  Future<void> _updateProfile(User? user, String username) async {
+    if (user != null) {
+      await user.updateProfile(displayName: username);
+      await user.reload();
     }
   }
 
-  Future<void> _linkSpotifyAccountToFirebase(String code) async {
-    final User? user = FirebaseAuth.instance.currentUser;
-    final OAuthCredential credential = OAuthProvider('spotify.com').credential(
-      accessToken: code,
-    );
-    await user?.linkWithCredential(credential);
+  String? _handleAuthException(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'weak-password':
+        return 'The password provided is too weak.';
+      case 'email-already-in-use':
+        return 'The account already exists for that email.';
+      case 'user-not-found':
+        return 'No user found for that email.';
+      case 'wrong-password':
+        return 'Wrong password provided for that user.';
+      default:
+        return e.message;
+    }
   }
 }
-
-
 
 class SpotifyUser {
   final String id;
