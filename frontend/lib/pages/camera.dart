@@ -34,6 +34,7 @@ class _CameraPageState extends State<CameraPage> {
   AudioRecorder audioRecorder = AudioRecorder();
   String audioMoodWeight = '';
   bool audioReady = false;
+  int photoCount = 0;
 
 
   final List<String> modes = ["Photo", "Video", "Audio"];
@@ -92,7 +93,7 @@ class _CameraPageState extends State<CameraPage> {
 
   void _handleButtonPress() async {
     if (mode == "Video") {
-      setState(() {
+      setState(() async {
         innerCircleSize = innerCircleSize == 50.0 ? 60.0 : 50.0;
         innerCircleColor = innerCircleSize == 50.0 ? Colors.red : Colors.white;
         _audioRecord(true);
@@ -120,7 +121,7 @@ class _CameraPageState extends State<CameraPage> {
         innerCircleSize = 60.0;
       });
     } else if (mode == "Audio") {
-        _audioRecord(false);
+      _audioRecord(false);
     }
   }
 
@@ -160,7 +161,10 @@ class _CameraPageState extends State<CameraPage> {
         isRecording = false; // Stop recording
         captureTimer?.cancel(); // Stop the timer
         print("Recording stopped. Moods: $returnedMoods");
-        returnedMoods.add(audioMoodWeight);
+        if(audioMoodWeight != ''){
+          returnedMoods.add(audioMoodWeight);
+        }
+        print("Recording stopped. Moods: $returnedMoods");
         audioMoodWeight = '';
 
         // Check if a picture has been taken
@@ -168,7 +172,7 @@ class _CameraPageState extends State<CameraPage> {
           await _takeForcedPicture(); // Take a picture if none exists
         } else {
           int count = 0;
-          while (!audioReady && count < 100) {
+          while (!audioReady && count < 10000000000) {
             await Future.delayed(Duration(milliseconds: 100)); // Check every 100ms
             count += 1;
           }
@@ -191,8 +195,11 @@ class _CameraPageState extends State<CameraPage> {
             // Send photo to method channel and get the mood
             String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
             setState(() {
-              returnedMoods.add(mood); // Store the mood
-              imagePaths.add(pictureFile.path); // Store the image path
+
+              if(mood != "") {
+                returnedMoods.add(mood); // Store the mood
+                imagePaths.add(pictureFile.path); // Store the image path
+              }
             });
             print("Captured mood: $mood");
           }
@@ -276,8 +283,12 @@ class _CameraPageState extends State<CameraPage> {
     print("RETURNED MOODS");
     print(returnedMoods.toString());
 
+    if(returnedMoods.length == imagePaths.length) {
+      returnedMoods.add(audioMoodWeight);
+    }
+
     // Delay to give visual feedback
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(Duration(milliseconds: 100));
 
     // Send all the captured images during real-time video as a list
     Navigator.push(
@@ -490,8 +501,8 @@ class _CameraPageState extends State<CameraPage> {
       drawer: Drawer(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-          topRight: Radius.circular(50), // Adjust the radius as needed
-          bottomRight: Radius.circular(50), // Adjust the radius as needed
+            topRight: Radius.circular(50), // Adjust the radius as needed
+            bottomRight: Radius.circular(50), // Adjust the radius as needed
           ),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
