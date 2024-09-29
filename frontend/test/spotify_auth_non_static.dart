@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'dart:math';
 import 'package:intl/intl.dart';
 
-class SpotifyAuth {
+class SpotifyAuthNonStatic {
   MethodChannel _channel = MethodChannel('spotify_auth');
    String? _accessToken; //  variable to hold the access token
    Function(String)? _onSuccessCallback; // Callback function
