@@ -12,6 +12,7 @@ import 'package:frontend/pages/user_profile.dart';
 import 'package:frontend/pages/link_spotify.dart';
 import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'auth/auth_service.dart';
 import 'firebase_options.dart';
 import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => const Welcome(),
           '/signup': (context) => const SignUp(),
-          '/login': (context) => const LogIn(),
+          '/login': (context) => LogIn(authService: AuthService(),),
           '/userprofile': (context) => const UserProfile(),
           '/linkspotify': (context) => const LinkSpotify(),
           '/userplaylist': (context) => const PlaylistPage(),

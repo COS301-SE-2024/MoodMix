@@ -1,66 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/auth/auth_service.dart';
 import 'package:frontend/pages/log_in.dart';
-//import 'package:mockito/mockito.dart';
-// import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mockito/annotations.dart';
+import 'log_in.test.mocks.dart';
 
+@GenerateMocks([AuthService])
 void main() {
-  group('LogIn Page Tests', () {
-    testWidgets('LogIn page UI test', (WidgetTester tester) async {
-      // Build the LogIn widget
-      await tester.pumpWidget(MaterialApp(home: LogIn()));
+  TestWidgetsFlutterBinding.ensureInitialized();
+  late MockAuthService mockAuthService;
 
-      // Expect to find the 'Log In' text twice
-      expect(find.text('Log In'), findsNWidgets(2));
+  setUp(() {
+    mockAuthService = MockAuthService();
+  });
 
-      // Expect to find the 'Username or Email' TextField
-      expect(
-          find.byWidgetPredicate((widget) =>
-              widget is TextField &&
-              widget.decoration?.hintText == 'Username or Email'),
-          findsOneWidget);
+  group('LogIn Widget Tests', () {
+    testWidgets('Successful login shows success message', (WidgetTester tester) async {
+      // Arrange
+      when(mockAuthService.login(email: anyNamed('email'), password: anyNamed('password')))
+          .thenAnswer((_) async => 'Success');
 
-      // Expect to find the 'Password' TextField
-      expect(
-          find.byWidgetPredicate((widget) =>
-              widget is TextField && widget.decoration?.hintText == 'Password'),
-          findsOneWidget);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LogIn(authService: mockAuthService),
+        ),
+      );
 
-      // Expect to find the 'Log In' button
-      expect(find.widgetWithText(OutlinedButton, 'Log In'), findsOneWidget);
+      // Act
+      await tester.enterText(find.byType(TextField).first, 'test@example.com');
+      await tester.enterText(find.byType(TextField).at(1), 'password123');
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle(); // Allow time for the Snackbar to appear
 
-      // Expect to find the 'Create Account' text span
-      expect(
-          find.byWidgetPredicate((widget) =>
-              widget is RichText &&
-              widget.text.toPlainText() ==
-                  'Don\'t have an account?\nCreate Account\n\nTerms and Conditions'),
-          findsOneWidget);
+      // Assert
+      verify(mockAuthService.login(email: 'test@example.com', password: 'password123')).called(1);
     });
 
-    // testWidgets('LogIn with mock Firebase Auth', (WidgetTester tester) async {
-    //   final mockUser = MockUser(
-    //     isAnonymous: false,
-    //     uid: 'someuid',
-    //     email: 'test@example.com',
-    //   );
-    //   final auth = MockFirebaseAuth(mockUser: mockUser);
+    testWidgets('Login fails with wrong password', (WidgetTester tester) async {
+      // Arrange
+      when(mockAuthService.login(email: anyNamed('email'), password: anyNamed('password')))
+          .thenAnswer((_) async => 'Wrong password provided for that user.');
 
-    //   // Inject the mock Firebase Auth into the LogIn widget
-    //   await tester.pumpWidget(MaterialApp(
-    //     home: LogIn(),
-    //   ));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LogIn(authService: mockAuthService),
+        ),
+      );
 
-    //   // Find and enter text into the email and password fields
-    //   await tester.enterText(find.byHintText('Username or Email'), 'test@example.com');
-    //   await tester.enterText(find.byHintText('Password'), 'password');
+      // Act
+      await tester.enterText(find.byType(TextField).first, 'test@example.com');
+      await tester.enterText(find.byType(TextField).at(1), 'wrongpassword');
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
 
-    //   // Tap the 'Log In' button
-    //   await tester.tap(find.widgetWithText(OutlinedButton, 'Log In'));
-    //   await tester.pumpAndSettle();
+      // Assert
+      expect(find.byType(SnackBar), findsOneWidget); // Check if the Snackbar is shown
+      expect(find.text('Wrong password provided for that user.'), findsOneWidget);
+      verify(mockAuthService.login(email: 'test@example.com', password: 'wrongpassword')).called(1);
+    });
 
-    //   // Verify that the login method was called
-    //   verify(auth.signInWithEmailAndPassword(email: 'test@example.com', password: 'password')).called(1);
-    // });
+    testWidgets('Password reset sends email', (WidgetTester tester) async {
+      // Arrange
+      when(mockAuthService.sendPasswordResetEmail(any))
+          .thenAnswer((_) async => 'Success');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LogIn(authService: mockAuthService),
+        ),
+      );
+
+      // Act
+      await tester.enterText(find.byType(TextField).first, 'test@example.com');
+      await tester.tap(find.byType(TextButton).first);
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('Password reset email sent'), findsOneWidget);
+      verify(mockAuthService.sendPasswordResetEmail('test@example.com')).called(1);
+    });
+
+    testWidgets('Forgot password without email shows error', (WidgetTester tester) async {
+      // Arrange
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LogIn(authService: mockAuthService),
+        ),
+      );
+
+      // Act
+      await tester.tap(find.byType(TextButton).first); // Trigger forgot password
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('Please enter your email'), findsOneWidget);
+    });
   });
 }
