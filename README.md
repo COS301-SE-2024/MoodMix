@@ -166,6 +166,7 @@ I am a dedicated third-year computer science student with a strong passion for b
 ### [User Manual](https://docs.google.com/document/d/1PkPDF9-MBdbb2HuwG-MHBuKvUYR4KeZKHMFj8wQJOh4/edit?usp=sharing)
 ### [Coding Standards](https://docs.google.com/document/d/1IbX4rgB84IaW2q_jtdrftmaUzSJtHxRVy9X0AykNLLo/edit?usp=sharing)
 ### [List of Contributions](https://docs.google.com/document/d/1QJBmAijUjG0CW4sEqz5YA2BgVcqFmoG37d2O7HAGUks/edit?usp=sharing)
+### [Testing Policy](https://docs.google.com/document/d/1eVNpHh-ax7VEW91fdW-dv3vBO_h32rzTNy3qGLf8pHw/edit?usp=sharing)
 
 ## Project Boards
 
