@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import '../auth/auth_service.dart';
 
-
 class ConfirmationPopUp extends StatefulWidget {
   final String? imagePath;
   final String? transcribedText;
@@ -136,7 +135,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Text(
-                            widget.transcribedText != null && widget.transcribedText!.isNotEmpty && widget.transcribedText.toString().toUpperCase() != 'YOU' && widget.transcribedText.toString().toUpperCase() != '..'
+                            widget.transcribedText != null && widget.transcribedText!.isNotEmpty && widget.transcribedText.toString().toUpperCase() != 'YOU' && widget.transcribedText.toString().toUpperCase() != '. .'
                                 ? widget.transcribedText!
                                 : 'No transcription available',
                             style: TextStyle(
