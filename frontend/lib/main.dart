@@ -12,6 +12,7 @@ import 'package:frontend/pages/user_profile.dart';
 import 'package:frontend/pages/link_spotify.dart';
 import 'package:frontend/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'auth/auth_service.dart';
 import 'firebase_options.dart';
 import 'package:frontend/pages/log_in.dart';
 import 'package:frontend/pages/sing_up.dart';
@@ -21,6 +22,8 @@ import 'package:frontend/pages/camera.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/audio_player_page.dart';
+import 'package:frontend/NonFuncTesting/NonFuncTestingPage.dart';
+
 
 List<CameraDescription> cameras = <CameraDescription>[];
 
@@ -61,8 +64,8 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const Welcome(),
-          '/signup': (context) => const SignUp(),
-          '/login': (context) => const LogIn(),
+          '/signup': (context) => SignUp(authService: AuthService(),),
+          '/login': (context) => LogIn(authService: AuthService(),),
           '/userprofile': (context) => const UserProfile(),
           '/linkspotify': (context) => const LinkSpotify(),
           '/userplaylist': (context) => const PlaylistPage(),
@@ -73,6 +76,8 @@ class MyApp extends StatelessWidget {
           '/camerahelp': (context) => CameraVoiceHelpPage(),
           '/settings': (context) => SettingsPage(),
           '/audio': (context) => AudioPlayerPage(),
+          '/NonFunc': (context) => ImageProcessingPage()
+
         },
         theme: Provider.of<ThemeProvider>(context).themeData,
       ),

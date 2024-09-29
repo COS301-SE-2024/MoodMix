@@ -7,7 +7,6 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -16,17 +15,6 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import org.deeplearning4j.util.ModelSerializer;
-import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
-import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.datavec.image.loader.NativeImageLoader;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-//import javax.swing.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -35,102 +23,153 @@ import java.io.IOException;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+//import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+
+import android.util.Log;
+
+
+
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import org.tensorflow.lite.Interpreter;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import org.tensorflow.lite.Interpreter;
+
+
+
+
+
 public class NeuralNetService {
     private Context context;
+    private Interpreter tflite;
 
     public NeuralNetService(Context context) {
         this.context = context;
+  //      loadModel();
     }
 
 
-    public Bitmap convertToGrayscale(Bitmap originalBitmap) {
-        int width, height;
-        height = originalBitmap.getHeight();
-        width = originalBitmap.getWidth();
 
-        Bitmap grayscaleBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(grayscaleBitmap);
-        Paint paint = new Paint();
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setSaturation(0);
-        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-        paint.setColorFilter(colorFilter);
-        canvas.drawBitmap(originalBitmap, 0, 0, paint);
+    public byte[] convertInputStreamToByteArray(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[16384]; // 16KB buffer
 
-        return grayscaleBitmap;
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        buffer.flush();
+        return buffer.toByteArray();
     }
+
+
+
+
+    private MappedByteBuffer loadModelFile(AssetManager assetManager, String modelPath) throws IOException {
+        try (AssetFileDescriptor fileDescriptor = assetManager.openFd(modelPath)) {
+            FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+            FileChannel fileChannel = inputStream.getChannel();
+            long startOffset = fileDescriptor.getStartOffset();
+            long declaredLength = fileDescriptor.getDeclaredLength();
+            return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+        }
+    }
+
+
 
 
     public String getMood(byte[] imageBytes) {
-        InputStream inputStream = new ByteArrayInputStream(imageBytes);
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-
-        int image_height = 48; // pixel size
-        int image_width = 48;  // pixel size
-        int color_channels = 1; // 1 means grayscale
-
-        //List<String> labelList = Arrays.asList("angry", "happy", "neutral", "sad");
-
-        String[] emotions = {"angry", "happy", "neutral", "sad"};
-
-        // Load the model from assets
-        MultiLayerNetwork model = null;
-        try {
-            AssetManager assetManager = context.getAssets();
-            InputStream modelInputStream = assetManager.open("savedNeuralNet_new.zip");
-            model = ModelSerializer.restoreMultiLayerNetwork(modelInputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Error loading model";
-        }
 
 
-        NativeImageLoader loader = new NativeImageLoader(image_height, image_width, color_channels);
-        INDArray image = null;
 
-//        Bitmap grayscaleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-//
-//        for (int y = 0; y < bitmap.getHeight(); y++) {
-//            for (int x = 0; x < bitmap.getWidth(); x++) {
-//                int pixel = bitmap.getPixel(x, y);
-//                int red = (pixel >> 16) & 0xff;
-//                int green = (pixel >> 8) & 0xff;
-//                int blue = pixel & 0xff;
-//                int gray = (red + green + blue) / 3;
-//                grayscaleBitmap.setPixel(x, y, Color.rgb(gray, gray, gray));
-//            }
-//        }
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 
-        Bitmap grayscaleBitmap = convertToGrayscale(bitmap);
+        // Step 2: Preprocess the Bitmap
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 48, 48, true);
 
+        // Convert to grayscale if necessary
+        int width = resizedBitmap.getWidth();
+        int height = resizedBitmap.getHeight();
+        float[][][][] inputData = new float[1][48][48][1]; // 1 sample, 48x48 image, 1 channel
 
-        try {
-            // Load the image as INDArray
-            image = loader.asMatrix(bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Error loading image";
-        }
-
-        DataNormalization scaler = new ImagePreProcessingScaler(0, 1);
-        scaler.transform(image);
-
-        INDArray output = model.output(image);  // Pass image to neural net
-
-        float highestProbability = Float.MIN_VALUE;
-        int highestProbabilityIndex = -1;
-
-        for (int i = 0; i < output.length(); i++) {
-            float currentProbability = output.getFloat(i);
-            if (currentProbability > highestProbability) {
-                highestProbability = currentProbability;
-                highestProbabilityIndex = i;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                // Get pixel value and convert to grayscale
+                int pixel = resizedBitmap.getPixel(i, j);
+                int grayValue = (int) (0.299 * Color.red(pixel) + 0.587 * Color.green(pixel) + 0.114 * Color.blue(pixel));
+                inputData[0][i][j][0] = grayValue / 255.0f; // Normalize to [0, 1]
             }
         }
 
-        return emotions[highestProbabilityIndex];
+
+
+
+        try{
+
+            AssetManager assetManager = context.getAssets();
+            MappedByteBuffer modelBuffer = loadModelFile(assetManager, "new_model_9_modified_newest.tflite");
+
+
+            tflite = new Interpreter(modelBuffer);
+
+            Log.d("NeuralNetService", "MODEL LOADED!!!!!!!!!!!!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+
+
+        float[][] outputData = new float[1][3];
+
+
+        try {
+            tflite.run(inputData, outputData); // run the model with the input data
+
+            // output the results
+            Log.d("NeuralNetService", "Inference Output: " + Arrays.toString(outputData[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //[0.32354924, 0.35912168, 0.3173291]
+
+        String[] emotions = {"angry", "happy", "sad"};
+
+        int current_highest_index = 0;
+        float current_highest_value = 0;
+
+        for(int i = 0; i < 3; i++){
+            if(outputData[0][i] > current_highest_value){
+                current_highest_index = i;
+                current_highest_value = outputData[0][i];
+            }
+        }
+
+
+        return emotions[current_highest_index];
     }
 }

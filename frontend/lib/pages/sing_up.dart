@@ -4,14 +4,14 @@ import 'package:url_launcher/url_launcher.dart';
 import '../auth/auth_service.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+  final AuthService authService;
+  const SignUp({Key? key, required this.authService}) : super(key: key);
 
   @override
   State<SignUp> createState() => _SignUpState();
 }
 
 class _SignUpState extends State<SignUp> {
-  final AuthService _authService = AuthService();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -39,7 +39,7 @@ class _SignUpState extends State<SignUp> {
       return;
     }
 
-    final result = await _authService.registration(
+    final result = await widget.authService.registration(
       email: email,
       password: password,
       username: username,
@@ -260,9 +260,8 @@ class _SignUpState extends State<SignUp> {
                           ],
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
+
+                    Container(
                           color: Theme.of(context).colorScheme.primary,
                           height: 180,
                           child: Column(
@@ -327,6 +326,7 @@ class _SignUpState extends State<SignUp> {
                                       height: 70,
                                       padding: EdgeInsets.fromLTRB(0, 0, screenWidth * 0.1, 0),
                                       child: FloatingActionButton.extended(
+                                          key: Key('createAccountButton'),
                                         backgroundColor: Theme.of(context).colorScheme.secondary,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                                         onPressed: _createAccount,
@@ -347,7 +347,7 @@ class _SignUpState extends State<SignUp> {
                             ],
                           ),
                         ),
-                      ),
+
                     ],
                   ),
                 ),
