@@ -71,11 +71,11 @@ import org.tensorflow.lite.Interpreter;
 
 
 
-public class NeuralNetService {
+public class NeuralNetService_old {
     private Context context;
     private Interpreter tflite;
 
-    public NeuralNetService(Context context) {
+    public NeuralNetService_old(Context context) {
         this.context = context;
   //      loadModel();
     }
