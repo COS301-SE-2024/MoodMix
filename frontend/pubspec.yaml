@@ -58,11 +58,17 @@ dependencies:
   flutter_sound: ^9.2.13
   permission_handler: ^10.3.0
   sentiment_dart:
+  sqflite_common_ffi:
+
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^5.0.0
+  rxdart:
+  build_runner:
+  mocktail:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

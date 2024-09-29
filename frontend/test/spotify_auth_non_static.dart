@@ -4,149 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/auth/auth_service.dart';
+import 'package:frontend/database/database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
-import '/database/database.dart';
 import 'package:intl/intl.dart';
 
-class AuthService {
-  final FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn;
+class SpotifyAuthNonStatic {
+  MethodChannel _channel = MethodChannel('spotify_auth');
+   String? _accessToken; //  variable to hold the access token
+   Function(String)? _onSuccessCallback; // Callback function
+   SpotifyUser? currentUser;
+   String selectedGenres = '';
+   List<String> realtimeArtists = [];
 
-  // Constructor for dependency injection
-  AuthService({FirebaseAuth? auth, GoogleSignIn? googleSignIn})
-      : _auth = auth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn(
-          clientId: '717450671046-s8e21c4eu14ebejnnc3varjpues2g2s2.apps.googleusercontent.com',
-        );
-
-  Future<String?> registration({
-    required String email,
-    required String password,
-    required String username,
-  }) async {
-    try {
-      UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
-
-      await _updateProfile(userCredential.user, username);
-      return 'Success';
-    } on FirebaseAuthException catch (e) {
-      return _handleAuthException(e);
-    } catch (e) {
-      return e.toString();
-    }
-  }
-
-
-  Future<String?> login({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return 'Success';
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
-        return 'Wrong password provided for that user.';
-      } else {
-        return e.message;
-      }
-    } catch (e) {
-      return e.toString();
-    }
-  }
-
-  Future<String?> sendPasswordResetEmail(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-      return 'Success';
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
-      } else {
-        return e.message;
-      }
-    } catch (e) {
-      return e.toString();
-    }
-  }
-
-  Future<User?> getCurrentUser() async {
-    try {
-      return _auth.currentUser;
-    } catch (e) {
-      print('Error getting current user: $e');
-      return null;
-    }
-  }
-
-  Future<void> _updateProfile(User? user, String username) async {
-    if (user != null) {
-      await user.updateProfile(displayName: username);
-      await user.reload();
-    }
-  }
-
-  String? _handleAuthException(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'weak-password':
-        return 'The password provided is too weak.';
-      case 'email-already-in-use':
-        return 'The account already exists for that email.';
-      case 'user-not-found':
-        return 'No user found for that email.';
-      case 'wrong-password':
-        return 'Wrong password provided for that user.';
-      default:
-        return e.message;
-    }
-  }
-}
-
-class SpotifyUser {
-  final String id;
-  final String displayName;
-  final String email;
-  final String country;
-  final String profileImageUrl;
-
-  SpotifyUser({
-    required this.id,
-    required this.displayName,
-    required this.email,
-    required this.country,
-    required this.profileImageUrl,
-  });
-
-  factory SpotifyUser.fromJson(Map<String, dynamic> json) {
-    return SpotifyUser(
-      id: json['id'] as String,
-      displayName: json['display_name'] as String,
-      email: json['email'] as String,
-      country: json['country'] as String,
-      profileImageUrl: json['images'] != null && json['images'].isNotEmpty
-          ? json['images'][0]['url'] as String
-          : '', // Handle case where there are no images
-    );
-  }
-}
-
-class SpotifyAuth {
-  static const MethodChannel _channel = MethodChannel('spotify_auth');
-  static String? _accessToken; // Static variable to hold the access token
-  static Function(String)? _onSuccessCallback; // Callback function
-  static SpotifyUser? currentUser;
-  static String selectedGenres = '';
-  static List<String> realtimeArtists = [];
-
-  static Future<String?> authenticate() async {
+   Future<String?> authenticate() async {
     try {
       final String? accessToken = await _channel.invokeMethod(
           'authenticate'); // Calls native method
@@ -158,13 +31,13 @@ class SpotifyAuth {
   }
 
   // Initialize the service and set the method call handler
-  static void initialize(Function(String) onSuccessCallback) {
+   void initialize(Function(String) onSuccessCallback) {
     _onSuccessCallback = onSuccessCallback;
     _channel.setMethodCallHandler(_handleMethodCall);
   }
 
   // Method to handle method calls from native code
-  static Future<void> _handleMethodCall(MethodCall call) async {
+   Future<void> _handleMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onSuccess':
         String accessToken = call.arguments;
@@ -179,7 +52,7 @@ class SpotifyAuth {
     }
   }
 
-  static void _handleSuccess(String accessToken) {
+   void _handleSuccess(String accessToken) {
     // Handle the access token (e.g., save it, use it for API calls, etc.)
     print('Login was a success and flutter has the recieved the token:');
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
@@ -190,20 +63,20 @@ class SpotifyAuth {
     }
   }
 
-  static void _handleError(String error) {
+   void _handleError(String error) {
     // Handle the error (e.g., show an error message to the user)
     print('Error: $error');
   }
 
-  static String? getAccessToken() {
+   String? getAccessToken() {
     return _accessToken;
   }
 
-  static void setAccessToken(String a) {
+   void setAccessToken(String a) {
     _accessToken = a;
   }
 
-  static String? getUserId(){
+   String? getUserId(){
 
     if (currentUser == null) {
       return "User not found";
@@ -212,7 +85,7 @@ class SpotifyAuth {
     }
   }
 
-  static Future<Map<String, dynamic>?> fetchUserDetails() async {
+   Future<Map<String, dynamic>?> fetchUserDetails() async {
     if (_accessToken == null) {
       print('Access token is not available');
       return null;
@@ -246,7 +119,7 @@ class SpotifyAuth {
     }
   }
 
-  static Future<List<Map<String, dynamic>>?> fetchUserPlaylists(String? userId) async {
+   Future<List<Map<String, dynamic>>?> fetchUserPlaylists(String? userId) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return null;
@@ -299,7 +172,7 @@ class SpotifyAuth {
     }
   }
 
-  static Future<Map<String, dynamic>?> fetchPlaylistTracks(
+   Future<Map<String, dynamic>?> fetchPlaylistTracks(
       String playlistId) async {
     if (_accessToken == null) {
       print('Access token is not available');
@@ -328,7 +201,7 @@ class SpotifyAuth {
     }
   }
 
-  static Future<List<Map<String, dynamic>>?> fetchTrackAudioFeatures(
+   Future<List<Map<String, dynamic>>?> fetchTrackAudioFeatures(
       List<String> trackIds) async {
     if (_accessToken == null) {
       print('Access token is not available');
@@ -358,7 +231,7 @@ class SpotifyAuth {
     }
   }
 
-  static Future<String> calculateAggregateMood(String playlistId) async {
+   Future<String> calculateAggregateMood(String playlistId) async {
     final playlistTracks = await fetchPlaylistTracks(playlistId);
     if (playlistTracks == null || playlistTracks['items'] == null) {
       return 'Neutral';
@@ -433,7 +306,7 @@ class SpotifyAuth {
   }
 
 // Helper function to classify based on closest mood
-  static String _classifyMood(double valence, double energy, double danceability,
+   String _classifyMood(double valence, double energy, double danceability,
       double acousticness) {
     if (valence > 0.7 && energy > 0.7 && danceability > 0.7 &&
         acousticness < 0.5) {
@@ -465,7 +338,7 @@ class SpotifyAuth {
   }
 
 
-  static Future<Map<String, List<String>>> fetchUserTopArtistsAndTracks() async {
+   Future<Map<String, List<String>>> fetchUserTopArtistsAndTracks() async {
     if (_accessToken == null) {
       print('Access token is not available');
       return {};
@@ -596,14 +469,14 @@ class SpotifyAuth {
     }
   }
 
-   static void addArtist( String artist) async{
+   void addArtist( String artist) async{
     realtimeArtists.add(artist);
 
 
   }
 
   //Filter the Top Artists Tracks based on the mood
-  static Future<List<String>> moodOfTrackIDs({
+   Future<List<String>> moodOfTrackIDs({
     required List<String> tracks,
     required String mood,
   }) async{
@@ -651,7 +524,7 @@ class SpotifyAuth {
   }
 
   // Non-RealTime Picture Upload Playlist Recommendations
-  static Future<List<String>> getSpotifyRecommendations({
+   Future<List<String>> getSpotifyRecommendations({
     required Map<String, List<String>> topArtistsAndTracks,
     required double valence,
     required double energy,
@@ -699,8 +572,8 @@ class SpotifyAuth {
     //Setting Min/Max for Moods
     if(mood.toLowerCase() == "happy"){
       Map<String, String> queryParamsHappy = {
-          'min_valence':valence.toString(),
-        };
+        'min_valence':valence.toString(),
+      };
       queryParams.addAll(queryParamsHappy);
     }
     if(mood.toLowerCase() == "sad"){
@@ -720,8 +593,8 @@ class SpotifyAuth {
       double maxV = valence + 0.1;
 
 
-     // double minE = energy - 0.1;
-     // double maxE = energy + 0.1;
+      // double minE = energy - 0.1;
+      // double maxE = energy + 0.1;
 
 
       Map<String, String> queryParamsNeutral  = {
@@ -768,10 +641,10 @@ class SpotifyAuth {
   }
 
   //RealTime Recommendations
-  static Future<List<String>> realTimeGetSpotifyRecommendations({
-      required List<String> moods,
-      required Map<String, List<String>> topArtistsTracksGenres,
-    }) async{
+   Future<List<String>> realTimeGetSpotifyRecommendations({
+    required List<String> moods,
+    required Map<String, List<String>> topArtistsTracksGenres,
+  }) async{
     Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
     print(topArtistsAndTracks.toString());
     print(moods.toString());
@@ -1071,7 +944,7 @@ class SpotifyAuth {
   }
 
   // Convert mood to a valence value
-  static double moodToValence(String mood) {
+   double moodToValence(String mood) {
     switch (mood.toLowerCase()) {
       case 'happy':
         return 0.8;
@@ -1088,7 +961,7 @@ class SpotifyAuth {
     }
   }
 
-  static Map<String, double> songParameters(String mood/*, String genres*/){
+   Map<String, double> songParameters(String mood/*, String genres*/){
     double valence = 0.5;
     double energy = 0.5;
 
@@ -1121,7 +994,7 @@ class SpotifyAuth {
   }
 
   // Function to create and populate playlist with recommendations
-  static Future<void> createAndPopulatePlaylistWithRecommendations(
+   Future<void> createAndPopulatePlaylistWithRecommendations(
       String playlistName,
       String mood
       ) async {
@@ -1164,7 +1037,7 @@ class SpotifyAuth {
     await createAndPopulatePlaylist(playlistName, mood, recommendedTracks);
   }
 
-  static Future<void> realTimeCreateAndPopulatePlaylistWithRecommendations(
+   Future<void> realTimeCreateAndPopulatePlaylistWithRecommendations(
       String playlistName,
       List<String> moods,
       ) async {
@@ -1211,7 +1084,7 @@ class SpotifyAuth {
 
 
   // Function to create and populate playlist
-  static Future<void> createAndPopulatePlaylist(
+   Future<void> createAndPopulatePlaylist(
       String playlistName,
       String mood,
       List<String> trackUris
@@ -1278,7 +1151,7 @@ class SpotifyAuth {
   }
 
   // Function to add tracks to a playlist
-  static Future<void> addTracksToPlaylist(String playlistId, List<String> trackUris) async {
+   Future<void> addTracksToPlaylist(String playlistId, List<String> trackUris) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return;
@@ -1313,7 +1186,3 @@ class SpotifyAuth {
     }
   }
 }
-
-
-
-
