@@ -12,9 +12,9 @@ class AudioRecorder {
   String _mPath = 'tau_file.mp4';
   FlutterSoundPlayer? _mPlayer;
   FlutterSoundRecorder? _mRecorder;
-  bool _mPlayerIsInited = false;
-  bool _mRecorderIsInited = false;
-  bool _mPlaybackReady = false;
+ // bool _mPlayerIsInited = false;
+ // bool _mRecorderIsInited = false;
+ // bool _mPlaybackReady = false;
   List<String> mood = [];
   String transcription = '';
 
@@ -25,7 +25,7 @@ class AudioRecorder {
 
   Future<void> init() async {
     await _mPlayer!.openPlayer();
-    _mPlayerIsInited = true;
+   // _mPlayerIsInited = true;
     await openRecorder();
   }
 
@@ -48,7 +48,7 @@ class AudioRecorder {
         usage: AndroidAudioUsage.voiceCommunication,
       ),
     ));
-    _mRecorderIsInited = true;
+   // _mRecorderIsInited = true;
   }
 
   Future<void> record() async {
@@ -60,7 +60,7 @@ class AudioRecorder {
   Future<void> stopRecorder() async {
     String? recordedFilePath = await _mRecorder!.stopRecorder();
     if (recordedFilePath != null) {
-      _mPlaybackReady = true;
+      //_mPlaybackReady = true;
       await transcribeAudioAndAnalyze(recordedFilePath);
     }
   }

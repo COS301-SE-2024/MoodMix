@@ -44,16 +44,15 @@ class AuthService {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
       if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
+        // final GoogleSignInAuthentication googleSignInAuthentication =
+        //     await googleSignInAccount.authentication;
 
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken,
-        );
+        // final AuthCredential credential = GoogleAuthProvider.credential(
+        //   accessToken: googleSignInAuthentication.accessToken,
+        //   idToken: googleSignInAuthentication.idToken,
+        // );
 
-        final UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
+      //  final UserCredential userCredential = await _auth.signInWithCredential(credential);
         return 'Success';
       } else {
         // User cancelled Google sign-in

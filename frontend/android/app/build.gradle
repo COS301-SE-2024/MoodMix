@@ -42,8 +42,8 @@ android {
 
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     defaultConfig {
@@ -76,6 +76,7 @@ android {
             dirs 'libs'
         }
     }
+
 
 
     packagingOptions {
@@ -123,6 +124,11 @@ android {
     }
 
     dependencies {
+
+        implementation 'org.tensorflow:tensorflow-lite:2.12.0' // Use the latest version
+
+
+
         implementation (group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '1.0.0-beta6') {
             exclude group: 'org.bytedeco', module: 'opencv-platform'
             exclude group: 'org.bytedeco', module: 'leptonica-platform'

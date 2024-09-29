@@ -26,7 +26,7 @@ class _CameraPageState extends State<CameraPage> {
   bool isAudioActive = false;
   Timer? _timer;
   XFile? pictureFile;
-  String? _mood;
+ // String? _mood;
   bool isRecording = false;
   Timer? captureTimer;
   List<String> returnedMoods = [];
@@ -142,7 +142,7 @@ class _CameraPageState extends State<CameraPage> {
     if (pictureFile != null) {
       String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
       setState(() {
-        _mood = mood;
+        //_mood = mood;
       });
       MoodService().setMood(mood);
       _showConfirmImage(); // Show confirmation after mood fetch
@@ -195,6 +195,7 @@ class _CameraPageState extends State<CameraPage> {
             // Send photo to method channel and get the mood
             String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
             setState(() {
+
               if(mood != "") {
                 returnedMoods.add(mood); // Store the mood
                 imagePaths.add(pictureFile.path); // Store the image path
@@ -369,6 +370,7 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                 ),
                 IconButton(
+                  key: Key('flipCamButton'),
                   icon: Icon(Icons.switch_camera_outlined),
                   color: Colors.white,
                   onPressed: _switchCamera,
@@ -397,6 +399,7 @@ class _CameraPageState extends State<CameraPage> {
                       ),
                     ),
                     IconButton(
+                      key: Key('drawerButton'),
                       icon: Icon(Icons.tune_rounded),
                       color: Colors.white,
                       onPressed: () => Scaffold.of(context).openDrawer(), // Open the drawer
