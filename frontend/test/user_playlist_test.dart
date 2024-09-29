@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/auth/auth_service.dart';
-import 'package:frontend/pages/user_profile.dart';
+//import 'package:frontend/pages/user_profile.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'model/auth_service_test.mocks.dart';
 import 'spotify_auth_non_static.dart';
-import 'package:provider/provider.dart'; // Assuming you use Provider for AuthService
+//import 'package:provider/provider.dart'; // Assuming you use Provider for AuthService
 
 import 'user_profile_test.mocks.dart'; // Generated mock class for SpotifyAuth
 
