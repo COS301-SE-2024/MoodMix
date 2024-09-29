@@ -58,7 +58,9 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
     if (widget.isRealTimeVideo) {
       // Ensure index is within bounds of the moods list
 
-      return widget.moods.length > _currentIndex
+      return (widget.moods.isNotEmpty &&
+          widget.moods.length > _currentIndex &&
+          widget.moods[_currentIndex].isNotEmpty)
           ? widget.moods[_currentIndex][0].toUpperCase() + widget.moods[_currentIndex].substring(1)
           : 'No mood detected';
     } else {
@@ -134,7 +136,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Text(
-                            widget.transcribedText != null && widget.transcribedText!.isNotEmpty
+                            widget.transcribedText != null && widget.transcribedText!.isNotEmpty && widget.transcribedText.toString().toUpperCase() != 'YOU' && widget.transcribedText.toString().toUpperCase() != '..'
                                 ? widget.transcribedText!
                                 : 'No transcription available',
                             style: TextStyle(

@@ -116,7 +116,6 @@ class _CameraPageState extends State<CameraPage> {
         }
       }
 
-
       setState(() {
         innerCircleSize = 60.0;
       });
@@ -185,7 +184,7 @@ class _CameraPageState extends State<CameraPage> {
       });
 
       // Start capturing photos at intervals
-      captureTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
         try {
           XFile? pictureFile = await controller?.takePicture();
           if (pictureFile != null) {
