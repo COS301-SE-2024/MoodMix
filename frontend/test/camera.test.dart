@@ -6,7 +6,7 @@ import 'package:frontend/components/audio_service.dart';
 import 'package:frontend/pages/camera.dart';
 import 'package:mockito/mockito.dart';
 import 'package:camera/camera.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mockito/annotations.dart';
 import 'camera.test.mocks.dart';
 
@@ -66,6 +66,7 @@ void main() {
 
       await tester.pump();
       expect(find.byType(CameraPage), findsOneWidget);
+      print("Camera inits succesfully");
     });
 
     testWidgets('Switching camera updates the controller with valid token', (WidgetTester tester) async {
@@ -96,6 +97,7 @@ void main() {
       await tester.pump();
       expect(find.byType(CameraPage), findsOneWidget);
       verifyNever(mockCameraController.dispose()).called(0);
+      print("Camera switching works");
     });
 
     testWidgets('Taking a photo triggers the mood detection with valid token', (WidgetTester tester) async {
@@ -126,6 +128,7 @@ void main() {
       await tester.pump();
       expect(find.byType(CameraPage), findsOneWidget);
       verifyNever(mockCameraController.takePicture()).called(0);
+      print("Taking photo triggering mood detection with valid token works");
     });
 
     testWidgets('Audio recording starts and stops correctly with valid token', (WidgetTester tester) async {
