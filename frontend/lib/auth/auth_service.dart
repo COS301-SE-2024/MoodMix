@@ -1,13 +1,16 @@
 
 import 'dart:convert';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/pages/link_spotify.dart';
 import 'dart:math';
+import '/database/database.dart';
+import 'package:intl/intl.dart';
+
 
 
 class AuthService {
@@ -102,16 +105,14 @@ class AuthService {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
       if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication =
+       // final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
 
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleSignInAuthentication.accessToken,
-          idToken: googleSignInAuthentication.idToken,
-        );
+        // final AuthCredential credential = GoogleAuthProvider.credential(
+        //   accessToken: googleSignInAuthentication.accessToken,
+        //   idToken: googleSignInAuthentication.idToken,
+        // );
 
-        final UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
         return 'Success';
       } else {
         // User cancelled Google sign-in
@@ -137,6 +138,21 @@ class AuthService {
         return 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
         return 'Wrong password provided for that user.';
+      } else {
+        return e.message;
+      }
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<String?> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return 'Success';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return 'No user found for that email.';
       } else {
         return e.message;
       }
@@ -221,7 +237,8 @@ class SpotifyAuth {
   static String? _accessToken; // Static variable to hold the access token
   static Function(String)? _onSuccessCallback; // Callback function
   static SpotifyUser? currentUser;
-
+  static String selectedGenres = '';
+  static List<String> realtimeArtists = [];
 
   static Future<String?> authenticate() async {
     try {
@@ -276,6 +293,19 @@ class SpotifyAuth {
     return _accessToken;
   }
 
+  static void setAccessToken(String a) {
+    _accessToken = a;
+  }
+
+  static String? getUserId(){
+
+    if (currentUser == null) {
+      return "User not found";
+    }else{
+      return currentUser?.id;
+    }
+  }
+
   static Future<Map<String, dynamic>?> fetchUserDetails() async {
     if (_accessToken == null) {
       print('Access token is not available');
@@ -310,11 +340,15 @@ class SpotifyAuth {
     }
   }
 
-  static Future<List<dynamic>?> fetchUserPlaylists() async {
+  static Future<List<Map<String, dynamic>>?> fetchUserPlaylists(String? userId) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return null;
     }
+
+    // Fetch playlists from the local database
+    List<Map<String, dynamic>> localPlaylists = await DatabaseHelper.getPlaylistsByUserId(userId);
+    final List<String> localPlaylistIds = localPlaylists.map((playlist) => playlist['playlistId'] as String).toList();
 
     final String endpoint = 'https://api.spotify.com/v1/me/playlists';
     try {
@@ -322,11 +356,32 @@ class SpotifyAuth {
         Uri.parse(endpoint),
         headers: {'Authorization': 'Bearer $_accessToken'},
       );
+
       if (response.statusCode == 200) {
         final playlistDetails = jsonDecode(response.body);
-        print('User playlists fetched and stored:');
-       // print(playlistDetails); // Debug print the entire response
-        return playlistDetails['items'];
+        final List<dynamic> fetchedPlaylists = playlistDetails['items'];
+        final List<Map<String, dynamic>> matchingPlaylists = [];
+
+        // Loop through fetched playlists and compare with local database
+        for (var playlist in fetchedPlaylists) {
+          final String playlistId = playlist['id'];
+
+          // Check if the fetched playlist ID matches any in the local database
+          if (localPlaylistIds.contains(playlistId)) {
+            // Find the corresponding local playlist entry
+            final matchingLocalPlaylist = localPlaylists.firstWhere(
+                  (localPlaylist) => localPlaylist['playlistId'] == playlistId,
+            );
+
+            // Add the mood from the local database to the playlist object
+            playlist['mood'] = matchingLocalPlaylist['mood'];
+            playlist['dateCreated'] = matchingLocalPlaylist['dateCreated'];
+            matchingPlaylists.add(playlist);
+          }
+        }
+        print("matching playlists are as follows:");
+        print(matchingPlaylists);
+        return matchingPlaylists;
       } else {
         print('Failed to fetch user playlists: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -511,53 +566,271 @@ class SpotifyAuth {
     }
 
     final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
-    final String topTracksEndpoint = 'https://api.spotify.com/v1/me/top/tracks';
 
     try {
       final topArtistsResponse = await http.get(
-        Uri.parse(topArtistsEndpoint),
+        Uri.parse('$topArtistsEndpoint?limit=10'),
         headers: {'Authorization': 'Bearer $_accessToken'},
       );
 
-      final topTracksResponse = await http.get(
-        Uri.parse(topTracksEndpoint),
-        headers: {'Authorization': 'Bearer $_accessToken'},
-      );
-
-      if (topArtistsResponse.statusCode == 200 && topTracksResponse.statusCode == 200) {
-        final List<String> artistIds = [];
-        final List<String> trackIds = [];
-
-        // Parse top artists
+      if (topArtistsResponse.statusCode == 200) {
+        // Parse the top artists
         final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
-        print("Got top artist and tracks info");
-        print(artistsData);
-        for (var artist in artistsData['items']) {
-          artistIds.add(artist['id']);
+
+        final List<dynamic> artists = artistsData['items'];
+
+        // If no genre is selected, pick a random artist
+        final Random random = Random();
+        final int randomIndex = random.nextInt(artists.length);
+        final Map<String, dynamic> randomArtist = artists[randomIndex];
+
+        // If user does not listen to that Genre
+        bool flag = false;
+
+        // Store the chosen artist data
+        Map<String, dynamic> chosenArtist = {};
+
+        // Handle genre selection logic
+        if (selectedGenres.isNotEmpty) {
+          for (Map<String, dynamic> artist in artists) {
+            if (artist['genres'].contains(selectedGenres.toLowerCase())) {
+              chosenArtist = artist;
+              flag = true; // Will be true if a genre match is found
+              break;
+            }
+          }
         }
 
-        // Parse top tracks
-        final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
-        for (var track in tracksData['items']) {
-          trackIds.add(track['id']);
+        // If no genre was selected or no match was found, pick the random artist
+        if (!flag) {
+          chosenArtist = randomArtist;
         }
-        print(artistIds);
-        print(trackIds);
-        return {'artists': artistIds, 'tracks': trackIds};
+
+        // Determine artistId based on selected genre or chosen artist
+        String artistId;
+        if (selectedGenres.isNotEmpty && !flag) {
+          // Use the base seed for specific genres if no matching artist is found
+          switch (selectedGenres.toLowerCase()) {
+            case "alternative":
+              artistId = "3AA28KZvwAUcZuOKwyblJQ";
+              break;
+            case "classical":
+              artistId = "4NJhFmfw43RLBLjQvxDuRS";
+              break;
+            case "country":
+              artistId = "40ZNYROS4zLfyyBSs2PGe2";
+              break;
+            case "hip hop":
+              artistId = "3TVXtAsR1Inumwj472S9r4";
+              break;
+            case "jazz":
+              artistId = "19eLuQmk9aCobbVDHc6eek";
+              break;
+            case "pop":
+              artistId = "6jJ0s89eD6GaHleKKya26X";
+              break;
+            case "r&b":
+              artistId = "23zg3TcAtWQy7J6upgbUnj";
+              break;
+            case "reggae":
+              artistId = "2QsynagSdAqZj3U9HgDzjD";
+              break;
+            case "rock":
+              artistId = "36QJpDe2go2KgaRleHCDTp";
+              break;
+            default:
+              artistId = randomArtist['id'];
+          }
+        } else {
+          // Use the chosen artist's ID
+          artistId = chosenArtist['id'];
+        }
+
+        addArtist(chosenArtist['name']);
+
+        print("Artist ID:");
+        print(artistId);
+
+        // Fetch the artist's top tracks
+        final String topTracksEndpoint = 'https://api.spotify.com/v1/artists/$artistId/top-tracks';
+
+        print("After Endpoint");
+
+        final topTracksResponse = await http.get(
+          Uri.parse(topTracksEndpoint),
+          headers: {'Authorization': 'Bearer $_accessToken'},
+        );
+
+        if (topTracksResponse.statusCode == 200) {
+          // Parse the top tracks
+          final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
+          final List<String> trackIds = [];
+          for (var track in tracksData['tracks']) {
+            trackIds.add(track['id']);
+          }
+
+          // Return the combined object
+          return {
+            'artistId': [artistId], // Wrapping artistId in a List to maintain consistency
+            'genres': [selectedGenres],
+            'topTracks': trackIds,
+          };
+        } else {
+          print('Failed to fetch top tracks for artist');
+          print(topTracksResponse.statusCode);
+          return {};
+        }
       } else {
-        print('Failed to fetch top artists or tracks');
+        print('Failed to fetch top artists');
         return {};
       }
     } catch (e) {
-      print('Error: $e');
+      print('Error occurred: $e');
       return {};
     }
   }
 
-  // Function to generate recommendations
-  static Future<List<String>> getSpotifyRecommendations(
-      {required Map<String, List<String>> topArtistsAndTracks,
-        required double valence}) async {
+   static void addArtist( String artist) async{
+    realtimeArtists.add(artist);
+
+
+  }
+
+
+  //My Idea for PlaylistGeneration is to get a Users most listened to Artists and add their songs to the playlist
+  //then also add the spotify Recommendations
+
+  //Fetches Top Tracks of Artists from a Specific Genre
+  // static Future<List<String>> fetchTopTracks() async{
+  //   if (_accessToken == null) {
+  //     print('Access token is not available');
+  //     return [];
+  //   }
+  //
+  //   List<String> trackIds = [];
+  //
+  //   final String topArtistsEndpoint = 'https://api.spotify.com/v1/me/top/artists';
+  //
+  //   try {
+  //     final topArtistsResponse = await http.get(
+  //       Uri.parse(topArtistsEndpoint),
+  //       headers: {'Authorization': 'Bearer $_accessToken'},
+  //     );
+  //
+  //     if (topArtistsResponse.statusCode == 200) {
+  //       // Parse the top artists
+  //       final Map<String, dynamic> artistsData = jsonDecode(topArtistsResponse.body);
+  //
+  //       //If Users does not listen to that Genre
+  //     //  bool flag = false;
+  //
+  //       // Finding your most listened to artists of that genre
+  //       List<String> artistC = [];
+  //       int i = 0;
+  //       final Map<String, dynamic> chosenArtist = {};
+  //       if(selectedGenres != ''){
+  //         for(Map<String, dynamic> g in artistsData['items']){
+  //           if(g['genres'].contains(selectedGenres.toLowerCase())){
+  //             chosenArtist.addAll(g);
+  //             artistC[i] = g['id'];
+  //             i++;
+  //            // flag = true;
+  //           }
+  //         }
+  //       }
+  //
+  //       //Pulling Multiple Artists Top Tracks and adding it to the List
+  //       for(int j = 0; j < i; j++){
+  //
+  //         String artistID = artistC[j];
+  //         final String artistsTopEndpoint = "https://api.spotify.com/v1/artists/$artistID/top-tracks";
+  //
+  //         final topTracksResponse = await http.get(
+  //           Uri.parse(artistsTopEndpoint),
+  //           headers: {'Authorization': 'Bearer $_accessToken'},
+  //         );
+  //
+  //         if (topTracksResponse.statusCode == 200) {
+  //           // Parse the top tracks
+  //           final Map<String, dynamic> tracksData = jsonDecode(topTracksResponse.body);
+  //           for (var track in tracksData['tracks']) {
+  //             trackIds.add(track['id']);
+  //           }
+  //
+  //           // Return the combined object
+  //           return trackIds;
+  //         } else {
+  //           print('Failed to fetch top tracks for artist');
+  //           return [];
+  //         }
+  //       }
+  //
+  //     } else {
+  //       print('Failed to fetch top artists');
+  //       return [];
+  //     }
+  //   } catch (e) {
+  //     print('Error occurred: $e');
+  //     return [];
+  //   }
+  //   return trackIds;
+  // }
+
+  //Filter the Top Artists Tracks based on the mood
+  static Future<List<String>> moodOfTrackIDs({
+    required List<String> tracks,
+    required String mood,
+  }) async{
+    List<String> moodCheckedTracks = [];
+
+    try{
+
+      for(String track in tracks){
+        String trackID = track;
+        final String audioFeaturesEndpoint = "https://api.spotify.com/v1/audio-features/$trackID";
+
+        final audioFeaturesResponse = await http.get(
+          Uri.parse(audioFeaturesEndpoint),
+          headers: {'Authorization': 'Bearer $_accessToken'},
+        );
+
+        if (audioFeaturesResponse.statusCode == 200) {
+          final Map<String, dynamic> tracksData = jsonDecode(audioFeaturesResponse.body);
+
+          if(tracksData['valence'] < 0.4 && mood.toLowerCase() == "sad"){
+            moodCheckedTracks.add(trackID);
+          }
+
+          if(tracksData['valence'] > 0.6 && mood.toLowerCase() == "happy"){
+            moodCheckedTracks.add(trackID);
+          }
+
+          if(mood.toLowerCase() == "angry" && tracksData['energy'] > 0.6){
+            moodCheckedTracks.add(trackID);
+          }
+
+          else if(mood.toLowerCase() == "neutral" && tracksData['valence'] > 0.4 && tracksData['valence'] < 0.6){
+            moodCheckedTracks.add(trackID);
+          }
+        }
+        else{
+          break;
+        }
+      }
+    }catch(e){
+      print('Error Occurred $e');
+    }
+
+    return moodCheckedTracks;
+  }
+
+  // Non-RealTime Picture Upload Playlist Recommendations
+  static Future<List<String>> getSpotifyRecommendations({
+    required Map<String, List<String>> topArtistsAndTracks,
+    required double valence,
+    required double energy,
+    required String mood,
+  }) async {
     if (_accessToken == null) {
       print('Access token is not available');
       return [];
@@ -565,32 +838,75 @@ class SpotifyAuth {
 
     final String recommendationsEndpoint = 'https://api.spotify.com/v1/recommendations';
 
-    // Prepare seed artists and tracks
-    final List<String> seedArtists = topArtistsAndTracks['artists'] ?? [];
-    final List<String> seedTracks = topArtistsAndTracks['tracks'] ?? [];
-    seedArtists.shuffle();
+    // Prepare seed artists, tracks, and genres
+    final List<String> seedArtists = topArtistsAndTracks['artistId'] ?? [];
+    final List<String> seedTracks = topArtistsAndTracks['topTracks'] ?? [];
+    final List<String> genres = topArtistsAndTracks['genres'] ?? [];
+
+    if (seedArtists.isEmpty || genres.isEmpty || seedTracks.isEmpty) {
+      print('Insufficient data to fetch recommendations');
+      return [];
+    }
+
+    // Shuffle and select necessary items
+    genres.shuffle();
     seedTracks.shuffle();
 
-    final Random random = Random();
-    int numOfTracksToPick = random.nextInt(5); // 0 to 4
-    int rando2 = 4-numOfTracksToPick;
+    // Take only 1 artist, 2 genres, and 2 tracks
+    final List<String> seedArtistsLimited = seedArtists.take(1).toList();
+    final List<String> seedGenresLimited = genres.take(2).toList();
+    final List<String> seedTracksLimited = seedTracks.take(2).toList();
 
-    final List<String> seedArtistslimited = seedArtists.take(rando2).toList();
-    final List<String> seedTrackslimited = seedTracks.take(numOfTracksToPick).toList();
-
+    if(selectedGenres == ''){
+      selectedGenres = seedGenresLimited.first;
+    }
 
     // Construct the query parameters
-    final Map<String,String> queryParams = {
-      'limit' : '50',
-      'seed_artists': seedArtistslimited.join(','),
-      'seed_genres' : 'south african metal',
-      'seed_tracks': seedTrackslimited.join(','),
-      'target_valence': valence.toString(),
+    final Map<String, String> queryParams = {
+      'limit': '50',
+      'market':'ZA',
+      'seed_artists': seedArtistsLimited.first,  // We only have one artist
+      'seed_genres': selectedGenres.toLowerCase(),
+      'seed_tracks': seedTracksLimited.join(','),
     };
 
-    print("query params for fetching recommendations");
-    print(seedTrackslimited);
-    print(seedArtistslimited);
+    //Setting Min/Max for Moods
+    if(mood.toLowerCase() == "happy"){
+      Map<String, String> queryParamsHappy = {
+          'min_valence':valence.toString(),
+        };
+      queryParams.addAll(queryParamsHappy);
+    }
+    if(mood.toLowerCase() == "sad"){
+      Map<String, String> queryParamsSad  = {
+        'max_valence': valence.toString(),
+      };
+      queryParams.addAll(queryParamsSad);
+    }
+    if(mood.toLowerCase() == "angry"){
+      Map<String, String> queryParamsAngry = {
+        'min_energy':energy.toString(),
+      };
+      queryParams.addAll(queryParamsAngry);
+    }
+    if(mood.toLowerCase() == "neutral"){
+      double minV = valence - 0.1;
+      double maxV = valence + 0.1;
+
+
+     // double minE = energy - 0.1;
+     // double maxE = energy + 0.1;
+
+
+      Map<String, String> queryParamsNeutral  = {
+        'min_valence':minV.toString(),
+        'max_valence': maxV.toString(),
+      };
+      queryParams.addAll(queryParamsNeutral);
+    }
+
+    print("Query parameters for fetching recommendations:");
+    print(queryParams);
 
     final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
 
@@ -607,7 +923,6 @@ class SpotifyAuth {
         for (var track in recommendationsData['tracks']) {
           recommendedTrackIds.add(track['id']);
         }
-
         return recommendedTrackIds;
       } else {
         print(response.reasonPhrase);
@@ -618,6 +933,315 @@ class SpotifyAuth {
       print('Error: $e');
       return [];
     }
+  }
+
+  void setSelectedGenres(List<String> genres){
+    print('Set the Selected Genres');
+    print(genres);
+    selectedGenres = genres.first;
+  }
+
+  //RealTime Recommendations
+  static Future<List<String>> realTimeGetSpotifyRecommendations({
+      required List<String> moods,
+      required Map<String, List<String>> topArtistsTracksGenres,
+    }) async{
+    Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
+    print(topArtistsAndTracks.toString());
+    print(moods.toString());
+    final List<String> seedArtists = topArtistsAndTracks['artistId'] ?? [];
+    final List<String> seedTracks = topArtistsAndTracks['topTracks'] ?? [];
+    final List<String> genres = topArtistsAndTracks['genres'] ?? [];
+
+    final List<String> seedArtistsLimited = seedArtists.take(1).toList();
+    final List<String> seedGenresLimited = genres.take(2).toList();
+    final List<String> seedTracksLimited = seedTracks.take(2).toList();
+
+    final String recommendationsEndpoint = 'https://api.spotify.com/v1/recommendations';
+    // final Map<String, dynamic> recommendationsData = {};
+    final List<String> recommendedTrackIds = [];
+
+    if(selectedGenres == ''){
+      selectedGenres = seedGenresLimited.first;
+    }
+
+    String tempMood = moods.removeLast();
+    //Generate songs by the mood
+    for(String m in moods){
+      //If Sad
+      if(m.toLowerCase() == "sad"){
+        //Query Parameters for a Sad Playlist
+        final Map<String, String> queryParams = {
+          'limit': '15',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'max_valence':"0.4",
+        };
+        //Uri
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+        print(uri.toString());
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+            //Adding the Tracks to
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+            // return [];
+          }
+        } catch (e) {
+          print('Error: $e');
+          // return [];
+        }
+      }
+      if(m.toLowerCase() == "angry"){
+        final Map<String, String> queryParams = {
+          'limit': '15',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':'0.6',
+          'min_energy':'0.6',
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+      if(m.toLowerCase() == "happy"){
+        final Map<String, String> queryParams = {
+          'limit': '15',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':"0.6",
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+      if(m.toLowerCase() == "neutral"){
+        final Map<String, String> queryParams = {
+          'limit': '15',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':"0.4",
+          'max_valence':"0.6",
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+
+      // FOR AUDIO
+
+      if(tempMood.toLowerCase() == "sad"){
+        //Query Parameters for a Sad Playlist
+        final Map<String, String> queryParams = {
+          'limit': '5',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'max_valence':"0.4",
+        };
+        //Uri
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+        print(uri.toString());
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+            //Adding the Tracks to
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+            // return [];
+          }
+        } catch (e) {
+          print('Error: $e');
+          // return [];
+        }
+      }
+      if(tempMood.toLowerCase() == "angry"){
+        final Map<String, String> queryParams = {
+          'limit': '5',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':'0.6',
+          'min_energy':'0.6',
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+      if(tempMood.toLowerCase() == "happy"){
+        final Map<String, String> queryParams = {
+          'limit': '5',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':"0.6",
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+      if(tempMood.toLowerCase() == "neutral"){
+        final Map<String, String> queryParams = {
+          'limit': '5',
+          'seed_artists': seedArtistsLimited.first,
+          'seed_genres': selectedGenres,
+          'seed_tracks': seedTracksLimited.first,
+          'min_valence':"0.4",
+          'max_valence':"0.6",
+        };
+
+        final Uri uri = Uri.parse(recommendationsEndpoint).replace(queryParameters: queryParams);
+
+        try {
+          final response = await http.get(
+            uri,
+            headers: {'Authorization': 'Bearer $_accessToken'},
+          );
+
+          if (response.statusCode == 200) {
+            final Map<String, dynamic> recommendationsData = jsonDecode(response.body);
+
+            for (var track in recommendationsData['tracks']) {
+              recommendedTrackIds.add(track['id']);
+            }
+
+          } else {
+            print(response.reasonPhrase);
+            print('Failed to fetch recommendations');
+          }
+        } catch (e) {
+          print('Error: $e');
+        }
+      }
+    }
+    return recommendedTrackIds;
   }
 
   // Convert mood to a valence value
@@ -638,6 +1262,38 @@ class SpotifyAuth {
     }
   }
 
+  static Map<String, double> songParameters(String mood/*, String genres*/){
+    double valence = 0.5;
+    double energy = 0.5;
+
+    if(mood.toLowerCase() == "happy"){
+      //All Min's
+      valence = 0.6;
+      energy = 0.6;
+
+    }
+    if(mood.toLowerCase() == "sad"){
+      //All Max's
+      valence = 0.4;
+      energy = 0.4;
+    }
+    if(mood.toLowerCase() == "angry"){
+      //All Minimums
+      valence = 0.3;
+      energy = 0.6;
+    }
+    if(mood.toLowerCase() == "Neutral"){
+      valence = 0.5;
+      energy = 0.5;
+    }
+
+    return {
+      'valence': valence,
+      'energy': energy,
+    };
+
+  }
+
   // Function to create and populate playlist with recommendations
   static Future<void> createAndPopulatePlaylistWithRecommendations(
       String playlistName,
@@ -648,28 +1304,85 @@ class SpotifyAuth {
       return;
     }
 
+    //Commented this out to Reduce Calls to fetchUserTopArtistAndTracks()
     // Fetch top artists and tracks for seeds
-    final seeds = await fetchUserTopArtistsAndTracks();
 
-    if (seeds.isEmpty) {
+    // final seeds = await fetchUserTopArtistsAndTracks();
+    //
+    // if (seeds.isEmpty) {
+    //   print('No seeds available for recommendations');
+    //   return;
+    // }
+
+    // Generate recommendations based on mood
+    Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
+    if(topArtistsAndTracks.isEmpty){
       print('No seeds available for recommendations');
       return;
     }
 
-    // Generate recommendations based on mood
-    Map<String, List<String>> topArtistsAndTracks = await fetchUserTopArtistsAndTracks();
-    double valenceInput = moodToValence(mood);
+
+    Map<String, double> params = songParameters(mood);
+    double? valence = params['valence'];
+    double? energy = params['energy'];
 
     List<String> recommendedTracks = await getSpotifyRecommendations(
       topArtistsAndTracks: topArtistsAndTracks,
-      valence: valenceInput,
+      valence: valence!,
+      energy: energy!,
+      mood: mood,
     );
 
-    print("Track IDS for recommended tracks gotten and it should work?");
-    print(recommendedTracks);
+
     // Create and populate the playlist
     await createAndPopulatePlaylist(playlistName, mood, recommendedTracks);
   }
+
+  static Future<void> realTimeCreateAndPopulatePlaylistWithRecommendations(
+      String playlistName,
+      List<String> moods,
+      ) async {
+    if (_accessToken == null) {
+      print('Access token is not available');
+      return;
+    }
+
+    // Make a copy of moods to avoid potential mutation issues
+    List<String> moodsCopy = List.from(moods);
+
+    // Fetch top artists and tracks for seeds
+    await fetchUserTopArtistsAndTracks().then((topArtistsAndTracks) async {
+      if (topArtistsAndTracks.isEmpty) {
+        print('No seeds available for recommendations');
+        return;
+      }
+
+      // Generate recommendations based on mood
+      await realTimeGetSpotifyRecommendations(
+        moods: moodsCopy, // Pass the copy instead
+        topArtistsTracksGenres: topArtistsAndTracks,
+      ).then((recommendedTracks) async {
+        if (recommendedTracks.isEmpty) {
+          print('No recommendations found.');
+          return;
+        }
+
+        // Create and populate the playlist
+        print(recommendedTracks.toString());
+        await createAndPopulatePlaylist(playlistName, "mixed", recommendedTracks).then((_) {
+          print('Playlist created and populated successfully.');
+        }).catchError((error) {
+          print('Error creating or populating playlist: $error');
+        });
+      }).catchError((error) {
+        print('Error fetching recommendations: $error');
+      });
+    }).catchError((error) {
+      print('Error fetching top artists and tracks: $error');
+    });
+  }
+
+
 
   // Function to create and populate playlist
   static Future<void> createAndPopulatePlaylist(
@@ -690,9 +1403,10 @@ class SpotifyAuth {
     final String userId = currentUser!.id;
     final String createPlaylistEndpoint = 'https://api.spotify.com/v1/users/$userId/playlists';
     final String userName = currentUser!.displayName;
+    final String artistsNames = realtimeArtists.join(" , ");
     final Map<String, dynamic> requestBody = {
-      'name': '$playlistName for $userName - $mood',
-      'description': 'a $mood made and curated by MoodMix',
+      'name': '$userName - $mood',
+      'description': 'a $mood playlist made and curated by MoodMix based off the Artist : $artistsNames ',
       'public': true,
     };
 
@@ -708,13 +1422,25 @@ class SpotifyAuth {
 
       if (createPlaylistResponse.statusCode == 201) {
         print('Playlist created successfully');
+        realtimeArtists.clear();
         final Map<String, dynamic> playlistDetails = jsonDecode(createPlaylistResponse.body);
         final String playlistId = playlistDetails['id'];
 
-        print('Playlist ID: $playlistId');
-        print('Playlist details: $playlistDetails');
+        String now() {
+          return DateFormat('yyyy-MM-dd').format(DateTime.now());
+        }
 
-        // Add tracks to the playlist
+        Map<String, dynamic> playlistData = {
+          'playlistId': playlistId,
+          'mood': mood,
+          'userId': userId,
+          'dateCreated': now(),
+        };
+        await instance.insertPlaylist(playlistData);
+
+
+
+
         await addTracksToPlaylist(playlistId, trackUris);
       } else {
         print('Failed to create playlist: ${createPlaylistResponse.statusCode}');

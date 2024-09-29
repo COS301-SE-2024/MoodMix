@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/playlist_ribon.dart';
-import 'package:frontend/components/song_ribon.dart';
-import 'package:spotify/spotify.dart' as spotify;
+// import 'package:frontend/components/playlist_ribon.dart';
+// import 'package:frontend/components/song_ribon.dart';
+// import 'package:spotify/spotify.dart' as spotify;
 
 class PlaylistDetails extends StatefulWidget {
   final String playlistName;
@@ -23,19 +23,12 @@ class _PlaylistDetailsState extends State<PlaylistDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SafeArea(
-        child: PlaylistRibbon(
-          onTap: (playlistIcon) {
-            // Handle onTap action if needed
-            print('Tapped on playlist: ${widget.playlistName}');
-          },
-          songCount: widget.songCount,
-          playlistLink: widget.playlistLink,
-          playlistName: widget.playlistName,
-          isFullSize: true,
-        ),
-      ),
+      // backgroundColor: Theme.of(context).colorScheme.primary,
+      // body: SafeArea(
+      //
+      //
+      //   ),
+      // ),
     );
   }
 }

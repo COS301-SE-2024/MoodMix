@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import this for SVG support
 import 'package:frontend/components/profile_timeline_node.dart';
-import 'package:frontend/theme/theme_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:frontend/components/navbar.dart';
 import '../auth/auth_service.dart';
 
@@ -15,17 +13,41 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   String? _displayName = '';
-  String? _spotifyUsername = '';
+  //String? _spotifyUsername = '';
   String? _spotifyProfileImage = '';
-  List<String> _playlistNames = [];
-  bool isLoading = true;
-  bool isFadeOut = false;
+  List<Map<String, dynamic>> _playlists = [];
+  bool isLoading = true; // Loading indicator control
+  bool isFadeOut = false; // For fade effect on loading spinner
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-    _fetchSpotifyUserDetails();
+    _loadAllData();
+  }
+
+  Future<void> _loadAllData() async {
+    try {
+      await Future.wait([
+        _loadUserData(),
+        _fetchSpotifyUserDetails(),
+        _fetchSpotifyPlaylists(),
+      ]);
+      // Wait for the profile image to be loaded
+      if (_spotifyProfileImage != null) {
+        await precacheImage(NetworkImage(_spotifyProfileImage!), context);
+      }
+    } finally {
+      Future.delayed(Duration(milliseconds: 300), () {
+        setState(() {
+          isFadeOut = true;
+        });
+        Future.delayed(Duration(milliseconds: 500), () {
+          setState(() {
+            isLoading = false;
+          });
+        });
+      });
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -41,40 +63,59 @@ class _UserProfileState extends State<UserProfile> {
     final spotifyUserDetails = await SpotifyAuth.fetchUserDetails();
     if (spotifyUserDetails != null) {
       setState(() {
-        _spotifyUsername = spotifyUserDetails['display_name'];
-        _spotifyProfileImage = spotifyUserDetails['images'] != null && spotifyUserDetails['images'].isNotEmpty
+        //_spotifyUsername = spotifyUserDetails['display_name'];
+        _spotifyProfileImage = spotifyUserDetails['images'] != null &&
+            spotifyUserDetails['images'].isNotEmpty
             ? spotifyUserDetails['images'][1]['url']
             : '';
-        _playlistNames = spotifyUserDetails['playlists'] != null
-            ? List<String>.from(spotifyUserDetails['playlists'].map((playlist) => playlist['name']))
-            : [];
       });
     }
-    Future.delayed(Duration(milliseconds: 300), () {
-      setState(() {
-        isFadeOut = true;
-      });
-      Future.delayed(Duration(milliseconds: 500), () {
-        setState(() {
-          isLoading = false;
-        });
-      });
-    });
   }
 
-  void _onOptionsPressed() {
-    // Implement options button functionality here
-    print('Options button pressed');
+  Future<void> _fetchSpotifyPlaylists() async {
+    String? userId = SpotifyAuth.getUserId();
+    final playlistData = await SpotifyAuth.fetchUserPlaylists(userId);
+
+    if (playlistData != null) {
+      setState(() {
+        _playlists = playlistData.map((playlist) {
+          final firstImageUrl =
+          playlist['images'].isNotEmpty ? playlist['images'][0]['url'] : '';
+          return {
+            'name': playlist['name'],
+            'image': firstImageUrl,
+            'url': playlist['external_urls']['spotify'],
+            'mood': playlist['mood'],
+            'date': playlist['dateCreated'],
+          };
+        }).toList();
+      });
+    } else {
+      setState(() {
+        _playlists = [];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .primary,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .primary,
         elevation: 0,
-        automaticallyImplyLeading: false, // Ensures no back button
+        automaticallyImplyLeading: false,
         title: Stack(
           children: [
             Align(
@@ -83,7 +124,10 @@ class _UserProfileState extends State<UserProfile> {
                 padding: EdgeInsets.all(20),
                 child: SvgPicture.asset(
                   'assets/images/SimpleLogo.svg',
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .secondary,
                 ),
               ),
             ),
@@ -93,7 +137,6 @@ class _UserProfileState extends State<UserProfile> {
       ),
       body: Stack(
         children: [
-          // Content of the page
           Visibility(
             visible: !isLoading,
             child: SafeArea(
@@ -115,78 +158,86 @@ class _UserProfileState extends State<UserProfile> {
                               CircleAvatar(
                                 backgroundImage: _spotifyProfileImage != null
                                     ? NetworkImage(_spotifyProfileImage!)
-                                    : AssetImage('assets/images/images.jpeg') as ImageProvider,
+                                    : AssetImage('assets/images/images.jpeg')
+                                as ImageProvider,
                                 backgroundColor: Colors.transparent,
                                 radius: avatarRadius,
                               ),
                               SizedBox(width: 30),
                               Flexible(
-                                  child: Opacity(
-                                    opacity: 0.8,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Your Profile',
-                                          style: TextStyle(
-                                            fontSize: parentWidth * 0.09,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w700,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
+                                child: Opacity(
+                                  opacity: 0.9,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      Text(
+                                        'Profile',
+                                        style: TextStyle(
+                                          fontSize: parentWidth * 0.1,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w700,
+                                          color: Theme
+                                              .of(context)
+                                              .colorScheme
+                                              .secondary,
                                         ),
-                                        Text(
-                                          '$_displayName',
-                                          style: TextStyle(
-                                            fontSize: parentWidth * 0.07,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
+                                      ),
+                                      Text(
+                                        '$_displayName',
+                                        style: TextStyle(
+                                          fontSize: parentWidth * 0.07,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w400,
+                                          color: Theme
+                                              .of(context)
+                                              .colorScheme
+                                              .secondary,
                                         ),
-                                        Text(
-                                          '$_spotifyUsername',
-                                          style: TextStyle(
-                                            fontSize: parentWidth * 0.07,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist One",
-                            mood: "Happy",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist Two",
-                            mood: "Sad",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist Three",
-                            mood: "Angry",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
-                          ProfileTimelineNode(
-                            title: "Test Playlist Three",
-                            mood: "Angry",
-                            date: "12/02/2024",
-                            alignOffset: avatarCenterX,
-                            scale: parentWidth * 0.004,
-                          ),
+                          // SizedBox(height: 20), // Space after profile info
+                          // Check if playlists are available
+                          if (_playlists.isNotEmpty)
+                            Column(
+                              children: [
+                                ..._playlists.map((playlist) {
+                                  return ProfileTimelineNode(
+                                    title: playlist['name'],
+                                    mood: playlist['mood'] ?? "Unknown",
+                                    date: playlist['date'] ?? "Unknown",
+                                    alignOffset: avatarCenterX,
+                                    scale: parentWidth * 0.004,
+                                    link: playlist['url'],
+                                  );
+                                }).toList(),
+                                SizedBox(height: 20), // Add your desired height here
+                              ],
+                            )
+                          else
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: screenHeight * 0.25),
+                                child: Text(
+                                  'No playlists available.',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .secondary,
+                                  ),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -195,13 +246,15 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
           ),
-          // Loading indicator
           AnimatedOpacity(
             opacity: isLoading ? 1.0 : isFadeOut ? 0.0 : 1.0,
             duration: Duration(milliseconds: 300),
             child: Center(
               child: CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .secondary,
               ),
             ),
           ),

@@ -1,4 +1,4 @@
-name: Lint
+name: Flutter Linting
 
 on:
   push:
@@ -11,20 +11,29 @@ on:
       - development
 
 jobs:
-  lint:
+  main:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
 
-    - name: Run Super Linter
-      uses: github/super-linter@v5
-      env:
-        DEFAULT_BRANCH: master
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VALIDATE_ALL_CODEBASE: false  # Only validate changed files
-        VALIDATE_FLUTTER: true  # Enable Flutter validation
-        VALIDATE_DART: true  # Enable Dart validation
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ./frontend  # Specify the working directory
 
- 
+      - name: Create .env file
+        run: |
+          echo "SPOTIFY_CLIENT=${{ secrets.SPOTIFY_CLIENT }}" >> ./frontend/assets/.env
+          echo "SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }}" >> ./frontend/assets/.env
+          echo "REDIRECT_URI=${{ secrets.REDIRECT_URI }}" >> ./frontend/assets/.env
+          echo "SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }}" >> ./frontend/assets/.env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> ./frontend/assets/.env
+
+      - name: Run Linter
+        run: flutter analyze
+        working-directory: ./frontend  # Specify the working directory
+

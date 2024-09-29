@@ -1,86 +1,144 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class ProfileTimelineNode extends StatefulWidget {
+class ProfileTimelineNode extends StatelessWidget {
   final String title;
   final String mood;
   final String date;
-  final double alignOffset; // Add this parameter
+  final double alignOffset;
   final double scale;
+  final String link;
 
   const ProfileTimelineNode({
     Key? key,
     required this.title,
     required this.mood,
     required this.date,
-    required this.alignOffset, // Add this parameter
+    required this.alignOffset,
     required this.scale,
+    required this.link,
   }) : super(key: key);
 
-  @override
-  _ProfileTimelineNodeState createState() => _ProfileTimelineNodeState();
-}
+  BoxDecoration _getMoodDecoration(String mood) {
+    return BoxDecoration(
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.3), // Shadow color
+          blurRadius: 8.0, // Amount of blur
+          offset: Offset(4, 4), // Shadow offset
+        ),
+      ],
+      gradient: LinearGradient(
+        colors: _getMoodColors(mood),
+        stops: _getMoodStops(mood),
+      ),
+    );
+  }
 
-class _ProfileTimelineNodeState extends State<ProfileTimelineNode> {
+  List<Color> _getMoodColors(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'happy':
+        return [Colors.yellow.shade300, Colors.yellow.shade800];
+      case 'sad':
+        return [Colors.blue.shade300, Colors.blue.shade800];
+      case 'angry':
+        return [Colors.red.shade300, Colors.red.shade800];
+      case 'mixed':
+        return [
+          Colors.red,
+          Colors.orange,
+          Colors.yellow,
+          Colors.green,
+          Colors.blue,
+          Colors.indigo,
+          Colors.purple,
+        ];
+      default:
+        return [Colors.grey.shade300, Colors.grey.shade800];
+    }
+  }
+
+  List<double> _getMoodStops(String mood) {
+    if (mood.toLowerCase() == 'mixed') {
+      return [0.0, 0.17, 0.33, 0.5, 0.67, 0.83, 1.0];
+    } else {
+      return [0.0, 1.0];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final moodDecoration = _getMoodDecoration(mood);
+    final moodCircleSize = 80.0 * scale;
+    final margin = 16.0; // Space between circle and text
 
-    late IconData iconMood;
-    if (widget.mood == 'Happy') {
-      iconMood = Icons.mood;
-    } else if (widget.mood == 'Sad') {
-      iconMood = Icons.mood_bad;
-    } else if (widget.mood == 'Angry') {
-      iconMood = Icons.block;
-    } else {
-      iconMood = Icons.block;
-    }
-
-    return Opacity(
-      opacity: 0.7,
-      child: Container(
-        margin: EdgeInsets.only(left: widget.alignOffset), // Use the alignOffset to set the left margin
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center, // Center align the row contents
-          children: [
-            Column(
-              children: [
-                Container(
-                  // height: 120.0 * widget.scale, // Adjust the height as needed
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 2.0 * widget.scale,
-                        height: 40.0 * widget.scale, // Height from the top to the icon
-                        color: Colors.grey, // Line color
-                      ),
-                      Icon(
-                        iconMood, // Replace with your desired icon
-                        size: 80.0 * widget.scale, // Adjust the size as needed
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ],
+    return GestureDetector(
+      onTap: () async {
+        Uri _url = Uri.parse(link);
+        if (!await launchUrl(_url)) {
+          throw 'Could not launch $_url';
+        }
+      },
+      child: Opacity(
+        opacity: 0.9,
+        child: Container(
+          margin: EdgeInsets.only(left: alignOffset),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Divider line
+              Padding(
+                padding: EdgeInsets.only(left: 80.0 * scale / 2),
+                child: Container(
+                  width: 2.0 * scale,
+                  height: 40.0 * scale,
+                  color: Colors.grey, // Line color
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Mood circle with shadow
+                  Container(
+                    width: moodCircleSize,
+                    height: moodCircleSize,
+                    decoration: moodDecoration,
                   ),
-                ),
-              ],
-            ),
-            SizedBox(width: 16.0), // Space between icon/line and text
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 37.0 * widget.scale), // Space between icon/line and text
-                Text(
-                  widget.title,
-                  style: TextStyle(fontSize: 16.0 * widget.scale / 2), // Adjust the style as needed
-                ),
-                SizedBox(height: 8.0), // Space between the text boxes
-                Text(
-                  widget.date,
-                  style: TextStyle(fontSize: 16.0 * widget.scale / 2), // Adjust the style as needed
-                ),
-              ],
-            ),
-          ],
+                  SizedBox(width: margin),
+                  // Text column
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title text
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 30.0 * scale / 2,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 8.0),
+                        // Date text
+                        Text(
+                          date,
+                          style: TextStyle(
+                            fontSize: 25.0 * scale / 2,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

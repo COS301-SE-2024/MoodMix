@@ -52,6 +52,12 @@ dependencies:
   url_launcher: ^6.3.0
   flutter_svg: ^2.0.10+1
   network_info_plus: ^5.0.3 # Check for the latest version
+  sqflite: any
+  intl: any
+  shared_preferences: ^2.3.2
+  flutter_sound: ^9.2.13
+  permission_handler: ^10.3.0
+  sentiment_dart:
 
 
 dev_dependencies:

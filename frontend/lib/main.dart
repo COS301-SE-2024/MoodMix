@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:frontend/components/playlist_details.dart';
+// import 'package:frontend/components/expanded_playlist.dart';
+// import 'package:frontend/components/playlist_details.dart';
+// import 'package:frontend/components/playlist_ribon.dart';
 import 'package:frontend/pages/account_help_page.dart';
 import 'package:frontend/pages/camera_voice_help_page.dart';
 import 'package:frontend/pages/help_page.dart';
@@ -29,12 +31,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-    await dotenv.load(fileName: "assets/.env");
+  await dotenv.load(fileName: "assets/.env");
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
       child: MyApp(),
-    )
+    ),
   );
 }
 
@@ -49,24 +51,31 @@ Future<void> initializeCameras() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/linkspotify',
-      routes: {
-        '/': (context) => const Welcome(),
-        '/signup': (context) => const SignUp(),
-        '/login': (context) => const LogIn(),
-        '/userprofile': (context) => const UserProfile(),
-        '/linkspotify': (context) => const LinkSpotify(),
-        '/userplaylist': (context) => const PlaylistPage(),
-        '/camera': (context) => CameraPage(cameras: cameras), // Pass the actual cameras list here
-        '/help': (context) => HelpPage(),
-        '/accounthelp': (context) => AccountHelpPage(),
-        '/playlisthelp': (context) => PlaylistHelpPage(),
-        '/camerahelp': (context) => CameraVoiceHelpPage(),
-        '/settings': (context) => SettingsPage(),
-        '/audio': (context) => AudioPlayerPage(),
+    return WillPopScope(
+      onWillPop: () async {
+        // Force navigation to the /camera page when back is pressed
+        Navigator.pushNamedAndRemoveUntil(context, '/camera', (route) => false);
+        return false; // Prevent default back action
       },
-      theme: Provider.of<ThemeProvider>(context).themeData,
+      child: MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const Welcome(),
+          '/signup': (context) => const SignUp(),
+          '/login': (context) => const LogIn(),
+          '/userprofile': (context) => const UserProfile(),
+          '/linkspotify': (context) => const LinkSpotify(),
+          '/userplaylist': (context) => const PlaylistPage(),
+          '/camera': (context) => CameraPage(cameras: cameras), // Pass the actual cameras list here
+          '/help': (context) => HelpPage(),
+          '/accounthelp': (context) => AccountHelpPage(),
+          '/playlisthelp': (context) => PlaylistHelpPage(),
+          '/camerahelp': (context) => CameraVoiceHelpPage(),
+          '/settings': (context) => SettingsPage(),
+          '/audio': (context) => AudioPlayerPage(),
+        },
+        theme: Provider.of<ThemeProvider>(context).themeData,
+      ),
     );
   }
 }

@@ -21,28 +21,29 @@ class NavBar extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.house,
+            Icons.camera_alt_outlined,
             color: Theme.of(context).colorScheme.secondary,
           ),
           label: "HOME",
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.library_music,
+            Icons.my_library_music_outlined,
             color: Theme.of(context).colorScheme.secondary,
           ),
           label: "PLAYLISTS",
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.person,
+            Icons.history_outlined,
             color: Theme.of(context).colorScheme.secondary,
+            size: 27,
           ),
           label: "PROFILE",
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.settings,
+            Icons.settings_outlined,
             color: Theme.of(context).colorScheme.secondary,
           ),
           label: "HELP",

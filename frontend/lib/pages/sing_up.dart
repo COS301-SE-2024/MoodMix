@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../auth/auth_service.dart';
 
 class SignUp extends StatefulWidget {
@@ -78,7 +79,7 @@ class _SignUpState extends State<SignUp> {
                               child: IconButton(
                                 iconSize: 35,
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/welcome');
+                                  Navigator.pushNamed(context, '/');
                                   dispose();
                                 },
                                 icon: Icon(
@@ -278,31 +279,43 @@ class _SignUpState extends State<SignUp> {
                                   Expanded(
                                     flex: 6,
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            "Already have an account? Log In",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Theme.of(context).colorScheme.secondary,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w400,
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/login');
+                                            },
+                                            child: Text(
+                                              "Already have an account?",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              textAlign: TextAlign.left,
                                             ),
-                                            textAlign: TextAlign.left,
                                           ),
-                                          SizedBox(height: 20),
-                                          Text(
-                                            "Terms and Conditions",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Theme.of(context).colorScheme.secondary,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w400,
+                                          TextButton(
+                                            onPressed: () async {
+                                              Uri _url = Uri.parse("https://github.com/COS301-SE-2024/MoodMix");
+                                              if (!await launchUrl(_url)) {
+                                                throw 'Could not launch $_url';
+                                              }
+                                            },
+                                            child: Text(
+                                              "Terms and Conditions",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              textAlign: TextAlign.left,
                                             ),
-                                            textAlign: TextAlign.left,
                                           ),
                                         ],
                                       ),

@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
-import 'dart:io';
-
-import 'package:frontend/components/navbar.dart';
-import 'package:frontend/components/playlist_ribon.dart';
-import 'package:frontend/neural_net/neural_net_method_channel.dart';
-import 'package:frontend/components/confirm_pop_up.dart'; // Import ConfirmationPopUp
-import '../components/audio_recorder.dart'; // Import AudioRecorder
+import 'dart:async';
 import '../auth/auth_service.dart';
+import '../components/confirm_pop_up.dart';
+import '../components/navbar.dart';
 import '../mood_service.dart';
-
+import '../neural_net/neural_net_method_channel.dart';
+import '../components/audio_service.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
   const CameraPage({Key? key, required this.cameras}) : super(key: key);
-
 
   @override
   _CameraPageState createState() => _CameraPageState();
@@ -23,82 +18,189 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
-  XFile? pictureFile;
   int selectedCameraIndex = 0;
-  String? _mood;
+  bool isCameraReady = false;
+  double innerCircleSize = 60.0;
+  Color innerCircleColor = Colors.white;
+  String mode = "Photo";
+  bool isAudioActive = false;
+  Timer? _timer;
+  XFile? pictureFile;
+ // String? _mood;
+  bool isRecording = false;
+  Timer? captureTimer;
+  List<String> returnedMoods = [];
+  List<String> imagePaths = [];
+  AudioRecorder audioRecorder = AudioRecorder();
+  String audioMoodWeight = '';
+  bool audioReady = false;
 
-  static String playlistMood = "";
+
+  final List<String> modes = ["Photo", "Video", "Audio"];
+  final List<String> selectedGenres = [];
+  final List<bool> isChecked = List<bool>.generate(9, (_) => false); // To manage checkboxes for genres
+
   final NeuralNetMethodChannel _neuralNetMethodChannel = NeuralNetMethodChannel();
 
   @override
   void initState() {
     super.initState();
-    if (widget.cameras.isNotEmpty) {
-      controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
-      controller?.initialize().then((_) {
-        if (!mounted) return;
-        setState(() {});
-      }).catchError((error) {
-        print('Camera initialization error: $error');
-      });
-    }
-    _initializeMethodChannel();
+    isRecording = false; // Initialize recording state
+    _initializeCamera();
     SpotifyAuth.fetchUserDetails();
   }
 
+  Future<void> _initializeCamera() async {
+    if (widget.cameras.isNotEmpty) {
+      setState(() => isCameraReady = false);
 
+      if (controller != null) {
+        await controller!.dispose();
+        controller = null;
+      }
 
+      controller = CameraController(
+        widget.cameras[selectedCameraIndex],
+        ResolutionPreset.high,
+      );
 
-  void _initializeMethodChannel() {
-    const MethodChannel _channel = MethodChannel('neural_net_method_channel');
-    _channel.setMethodCallHandler(_handleMethodCall);
-  }
-
-  static Future<void> _handleMethodCall(MethodCall call) async {
-    switch (call.method) {
-      case 'recieveMood':
-        String mood = call.arguments;
-        _handleSuccess(mood);
-        break;
-      case 'onError':
-        String error = call.arguments;
-        _handleError(error);
-        break;
-      default:
-        throw MissingPluginException('Not implemented: ${call.method}');
+      try {
+        await controller?.initialize();
+        if (mounted) {
+          setState(() => isCameraReady = true);
+        }
+      } catch (e) {
+        print('Camera initialization error: $e');
+      }
     }
   }
 
-  static void _handleSuccess(String mood) {
-    print("Received mood from AI: $mood");
-    MoodService().setMood(mood);
-    // Update UI or do other things with mood if needed
+  Future<void> _switchCamera() async {
+    setState(() {
+      selectedCameraIndex = (selectedCameraIndex + 1) % widget.cameras.length;
+    });
+    await _initializeCamera();
   }
-
-  static void _handleError(String error) {
-    print('Error: $error');
-  }
-
-  String sendMood() {
-    return playlistMood;
-  }
-
 
   @override
   void dispose() {
     controller?.dispose();
+    _timer?.cancel();
+    captureTimer?.cancel(); // Cancel capture timer if exists
     super.dispose();
   }
 
-  void _switchCamera() {
-    if (widget.cameras.length > 1) {
-      selectedCameraIndex = (selectedCameraIndex + 1) % widget.cameras.length;
-      controller = CameraController(widget.cameras[selectedCameraIndex], ResolutionPreset.high);
-      controller?.initialize().then((_) {
-        if (!mounted) return;
-        setState(() {});
-      }).catchError((error) {
-        print('Camera initialization error: $error');
+  void _handleButtonPress() async {
+    if (mode == "Video") {
+      setState(() {
+        innerCircleSize = innerCircleSize == 50.0 ? 60.0 : 50.0;
+        innerCircleColor = innerCircleSize == 50.0 ? Colors.red : Colors.white;
+        _audioRecord(true);
+        _recordRealTime(); // Toggle real-time recording
+      });
+    } else if (mode == "Photo") {
+      setState(() {
+        innerCircleSize = 50.0;
+        innerCircleColor = Colors.white;
+      });
+
+      // Delay to give a visual feedback
+      await Future.delayed(Duration(milliseconds: 200));
+
+      // Capture picture and fetch mood
+      if (controller != null && controller!.value.isInitialized) {
+        pictureFile = await controller!.takePicture();
+        imagePaths.add(pictureFile!.path); // Add the image path here
+        if (pictureFile != null) {
+          await _fetchMood(); // Fetch mood after picture is taken
+        }
+      }
+
+
+      setState(() {
+        innerCircleSize = 60.0;
+      });
+    } else if (mode == "Audio") {
+        _audioRecord(false);
+    }
+  }
+
+  void _startPulsing() {
+    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+      setState(() {
+        innerCircleSize = innerCircleSize == 53.0 ? 50.0 : 53.0;
+        innerCircleColor = Colors.red;
+      });
+    });
+  }
+
+  void _setGenres() {
+    print('Selected genres: $selectedGenres');
+  }
+
+  Future<void> _fetchMood() async {
+    if (pictureFile != null) {
+      String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+      setState(() {
+        //_mood = mood;
+      });
+      MoodService().setMood(mood);
+      _showConfirmImage(); // Show confirmation after mood fetch
+    }
+  }
+
+  void _recordRealTime() async {
+    if (controller == null || !controller!.value.isInitialized) {
+      print("Camera is not initialized.");
+      return;
+    }
+
+    if (isRecording) {
+      // Stop recording
+      setState(() async {
+        isRecording = false; // Stop recording
+        captureTimer?.cancel(); // Stop the timer
+        print("Recording stopped. Moods: $returnedMoods");
+        returnedMoods.add(audioMoodWeight);
+        audioMoodWeight = '';
+
+        // Check if a picture has been taken
+        if (imagePaths.isEmpty) {
+          await _takeForcedPicture(); // Take a picture if none exists
+        } else {
+          int count = 0;
+          while (!audioReady && count < 100) {
+            await Future.delayed(Duration(milliseconds: 100)); // Check every 100ms
+            count += 1;
+          }
+          await _navigateToConfirmationPage(); // Proceed to confirmation if a picture exists
+        }
+      });
+    } else {
+      // Start recording
+      setState(() {
+        isRecording = true; // Start recording
+        returnedMoods.clear(); // Clear previous moods
+        imagePaths.clear(); // Clear previous image paths
+      });
+
+      // Start capturing photos at intervals
+      captureTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
+        try {
+          XFile? pictureFile = await controller?.takePicture();
+          if (pictureFile != null) {
+            // Send photo to method channel and get the mood
+            String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+            setState(() {
+              returnedMoods.add(mood); // Store the mood
+              imagePaths.add(pictureFile.path); // Store the image path
+            });
+            print("Captured mood: $mood");
+          }
+        } catch (e) {
+          print("Error during intermittent capture: $e");
+          timer.cancel(); // Stop the timer in case of an error
+        }
       });
     }
   }
@@ -108,152 +210,275 @@ class _CameraPageState extends State<CameraPage> {
       context: context,
       builder: (BuildContext context) {
         return ConfirmationPopUp(
-          imagePath: pictureFile!.path,
-          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front, mood: MoodService().mood, // Check if the front camera was used
+          imagePaths: pictureFile != null ? [pictureFile!.path] : [], // Send a list with a single image
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front,
+          moods: [MoodService().mood],
+          isImage: true, // Indicate that it's a single image
+          isRealTimeVideo: false,
         );
       },
     ).then((_) {
-      // Reset pictureFile after dialog is closed
       setState(() {
-        pictureFile = null;
+        pictureFile = null; // Reset picture file after dialog closes
       });
     });
   }
 
-  void _fetchMood() async {
-    String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
-    if (mood != null) {
+  void _showConfirmText(List<String> tMood, String tText) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationPopUp(
+          moods: tMood,
+          isImage: false, // Indicate that it's a single image
+          isRealTimeVideo: false,
+          transcribedText: tText,
+        );
+      },
+    ).then((_) {
       setState(() {
-        _mood = mood;
+        pictureFile = null; // Reset picture file after dialog closes
       });
-      _showConfirmImage();
+    });
+  }
+
+  Future<void> _audioRecord(bool vid) async {
+    await audioRecorder.openRecorder();
+
+    if (isAudioActive) {
+      // Stop the audio recording
+      await audioRecorder.stopRecorder();
+      setState(() {
+        innerCircleSize = 60.0;
+        innerCircleColor = Colors.white;
+        isAudioActive = false;
+      });
+      _timer?.cancel();
+      if (!vid) {
+        _showConfirmText(audioRecorder.mood, audioRecorder.transcription);
+      } else {
+        audioMoodWeight = audioRecorder.mood[0];
+        audioReady = true;
+      }
+    } else {
+      // Start the audio recording
+      await audioRecorder.record();
+      audioReady = false;
+      setState(() {
+        innerCircleSize = 60.0;
+        innerCircleColor = Colors.red;
+        isAudioActive = true;
+      });
+      _startPulsing();
+    }
+  }
+
+  Future<void> _navigateToConfirmationPage() async {
+    print("RETURNED MOODS");
+    print(returnedMoods.toString());
+
+    // Delay to give visual feedback
+    await Future.delayed(Duration(milliseconds: 200));
+
+    // Send all the captured images during real-time video as a list
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ConfirmationPopUp(
+          imagePaths: imagePaths, // Pass the list of all captured images
+          transcribedText: audioRecorder.transcription,
+          moods: returnedMoods, // Use the calculated moods
+          isFrontCamera: widget.cameras[selectedCameraIndex].lensDirection == CameraLensDirection.front,
+          isImage: false,
+          isRealTimeVideo: true,
+        ),
+      ),
+    ).then((_) {
+      setState(() {
+        pictureFile = null;
+        returnedMoods.clear();
+        imagePaths.clear(); // Clear image paths after confirmation
+      });
+    });
+  }
+
+  Future<void> _takeForcedPicture() async {
+    // Capture a picture and fetch mood
+    if (controller != null && controller!.value.isInitialized) {
+      pictureFile = await controller!.takePicture();
+      if (pictureFile != null) {
+        imagePaths.add(pictureFile!.path); // Add the image path here
+        await _fetchMood(); // Fetch mood after picture is taken
+        // Proceed to confirmation after taking the forced picture
+        // _navigateToConfirmationPage();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null || !controller!.value.isInitialized) {
-      return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 5,
-                        child: Container(
-                          width: screenWidth * 0.8,
-                          margin: const EdgeInsets.only(top: 20),
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20.0),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: controller!.value.aspectRatio,
-                                  child: CameraPreview(controller!),
-                                ),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 16.0),
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Positioned(
-                                          bottom: 0.0,
-                                          child: IconButton(
-                                            onPressed: () async {
-                                              pictureFile = await controller?.takePicture();
-                                              await _neuralNetMethodChannel.get_mood(pictureFile);
-                                              setState(() {});
-                                              if (pictureFile != null) {
-                                                _showConfirmImage(); // Show ConfirmImage after taking the picture
-                                              }
-                                            },
-                                            icon: Icon(
-                                              Icons.camera_alt,
-                                              color: Color.fromARGB(255, 200, 200, 200),
-                                              size: 40.0,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          bottom: 0.0,
-                                          right: 16.0,
-                                          child: IconButton(
-                                            onPressed: _switchCamera,
-                                            icon: Icon(
-                                              Icons.swap_horiz,
-                                              color: Color.fromARGB(255, 200, 200, 200),
-                                              size: 30.0,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                          alignment: Alignment.center,
-                          child: AudioRecorder(
-                            onPressed: () {
-                              // Handle the recording state change here
-                              print('Audio recording toggled');
-                            },
-                          ),
-                        ),
+      body: Stack(
+        children: [
+          Center(
+            child: isCameraReady && controller != null && controller!.value.isInitialized
+                ? ClipRect(
+              child: OverflowBox(
+                maxWidth: screenSize.width + 1000,
+                maxHeight: screenSize.height,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: screenSize.height,
+                    height: screenSize.height *
+                        (controller!.value.previewSize!.width / controller!.value.previewSize!.height),
+                    child: CameraPreview(controller!),
+                  ),
+                ),
+              ),
+            )
+                : Center(child: CircularProgressIndicator()),
+          ),
+          Positioned(
+            top: 30,
+            right: 20,
+            child: Stack(
+              children: [
+                // Shadow behind the icon
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 8,
+                        offset: Offset(0, 4), // Shadow position
                       ),
                     ],
                   ),
                 ),
+                IconButton(
+                  icon: Icon(Icons.switch_camera_outlined),
+                  color: Colors.white,
+                  onPressed: _switchCamera,
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 30,
+            left: 20,
+            child: Builder(
+              builder: (BuildContext context) {
+                return Stack(
+                  children: [
+                    // Shadow behind the icon
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: Offset(0, 4), // Shadow position
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.tune_rounded),
+                      color: Colors.white,
+                      onPressed: () => Scaffold.of(context).openDrawer(), // Open the drawer
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 100),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 4,
+                      ),
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 100),
+                    width: innerCircleSize,
+                    height: innerCircleSize,
+                    decoration: BoxDecoration(
+                      color: innerCircleColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: RawMaterialButton(
+                      onPressed: _handleButtonPress,
+                      shape: CircleBorder(),
+                      elevation: 2.0,
+                      child: null,
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          ),
+          Positioned(
+            bottom: 18,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 80,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: modes.map((String modeItem) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (!isRecording && !isAudioActive) {  // Check if not recording before switching mode
+                        setState(() => mode = modeItem);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Cannot switch modes while recording.')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      modeItem,
+                      style: TextStyle(
+                        color: mode == modeItem ? Colors.green : Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: NavBar(
-
         currentIndex: 1,
-
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushReplacementNamed(context, '/camera');
               break;
             case 1:
               Navigator.pushReplacementNamed(context, '/userplaylist');
               break;
             case 2:
-
               Navigator.pushReplacementNamed(context, '/userprofile');
-
               break;
             case 3:
               Navigator.pushReplacementNamed(context, '/settings');
@@ -261,6 +486,66 @@ class _CameraPageState extends State<CameraPage> {
           }
         },
       ),
+      drawer: Drawer(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+          topRight: Radius.circular(50), // Adjust the radius as needed
+          bottomRight: Radius.circular(50), // Adjust the radius as needed
+          ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              child: Text(
+                'Select your genre of preference',
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+            ..._buildGenreCheckboxes(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildGenreCheckboxes() {
+    final genres = [
+      'Classical',
+      'Country',
+      'Hip Hop',
+      'Jazz',
+      'Alternative',
+      'Pop',
+      'R&B',
+      'Reggae',
+      'Rock'
+    ];
+
+    return List<Widget>.generate(
+      genres.length,
+          (index) {
+        return CheckboxListTile(
+          title: Text(genres[index]),
+          value: isChecked[index],
+          activeColor: Theme.of(context).colorScheme.secondary,
+          checkColor: Theme.of(context).colorScheme.primary,
+          onChanged: (bool? newValue) {
+            setState(() {
+              if (newValue == true) {
+                isChecked.fillRange(0, isChecked.length, false);
+                selectedGenres.clear();
+                selectedGenres.add(genres[index]);
+                isChecked[index] = true;
+                _setGenres();
+              } else {
+                selectedGenres.remove(genres[index]);
+                isChecked[index] = false;
+              }
+            });
+          },
+        );
+      },
     );
   }
 }
