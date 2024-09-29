@@ -113,46 +113,6 @@ class _WelcomeState extends State<Welcome> {
                               child: FloatingActionButton.extended(
                                 backgroundColor: Theme.of(context).colorScheme.secondary,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-                                onPressed: () async {
-                                  String? signInResult =
-                                  await AuthService().signInWithGoogle();
-                                  if (signInResult == 'Success') {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Sign-in successful!'),
-                                        duration: Duration(seconds: 2),
-                                      ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Sign-in failed: $signInResult'),
-                                        duration: Duration(seconds: 3),
-                                      ),
-                                    );
-                                  }
-                                },
-                                icon: Image.asset(
-                                  "assets/icons/GoogleLogo.png",
-                                  width: 30,
-                                ),
-                                label: Text(
-                                  'Continue with Google',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Theme.of(context).colorScheme.tertiary,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 30),
-                            Container(
-                              width: screenWidth * 0.8,
-                              child: FloatingActionButton.extended(
-                                backgroundColor: Theme.of(context).colorScheme.secondary,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                                 onPressed: () {
                                   Navigator.pushNamed(context, '/signup');
                                 },
