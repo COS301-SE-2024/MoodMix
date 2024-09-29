@@ -125,7 +125,7 @@ everywhere. MoodMix allows us to do just that.
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">James Hardy</b></h2>
       <b style="font-size: 16px;"> Backend , Middleware </b><br>
-    I possess a solid foundation in various programming languages and web technologies, allowing me to create efficient and innovative solutions. My analytical mindset and keen eye for detail enable me to tackle complex challenges with precision and creativity.Additionally, I am a collaborative team player who values open communication and is committed to delivering high-quality results. My dedication to excellence and passion for technology make me an ideal fit for your project.
+I am a dedicated third-year computer science student with a strong passion for backend development and working with databases. My academic journey has led me to explore a wide range of technical concepts, and I thrive in environments where I can dive deep into the logic and structure of systems. From managing data to implementing complex server-side functionalities, I enjoy the challenge of working on backend technologies and love solving problems that require innovative and efficient solutions.
     </td>
   </tr>
 </table>
