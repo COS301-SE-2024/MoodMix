@@ -40,7 +40,7 @@ void main() {
     var tables = await db.rawQuery(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='playlists';");
     expect(tables.isNotEmpty, true, reason: 'playlists table should exist');
-    print("Playlist table does exist");
+    //print("Playlist table does exist");
   });
 
   test('Insert playlist into database', () async {
@@ -51,7 +51,7 @@ void main() {
       'dateCreated': '2024-09-30',
     };
     int result = await db.insert('playlists', playlist);
-    print("Playlists inserted into database");
+    //print("Playlists inserted into database");
     expect(result, isNonZero, reason: 'Playlist should be inserted');
   });
 
@@ -73,7 +73,7 @@ void main() {
 
     // Debugging step: Print out all playlists to verify data
     List<Map<String, dynamic>> allPlaylists = await db.query('playlists');
-    print("All Playlists in DB: $allPlaylists");
+    //print("All Playlists in DB: $allPlaylists");
 
     // Now query by userId
     String testUserId = 'user1';
@@ -84,7 +84,7 @@ void main() {
     );
 
     // Debugging step: Print the result of the query by userId
-    print("Playlists for userId = $testUserId: $result");
+   // print("Playlists for userId = $testUserId: $result");
 
     expect(result.isNotEmpty, true, reason: 'Should return playlists for the given user');
   });
