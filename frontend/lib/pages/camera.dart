@@ -34,7 +34,7 @@ class _CameraPageState extends State<CameraPage> {
   AudioRecorder audioRecorder = AudioRecorder();
   String audioMoodWeight = '';
   bool audioReady = false;
-  int photoCount = 0;
+  bool disabledButton = false;
 
 
   final List<String> modes = ["Photo", "Video", "Audio"];
@@ -94,10 +94,13 @@ class _CameraPageState extends State<CameraPage> {
   void _handleButtonPress() async {
     if (mode == "Video") {
       setState(() async {
-        innerCircleSize = innerCircleSize == 50.0 ? 60.0 : 50.0;
-        innerCircleColor = innerCircleSize == 50.0 ? Colors.red : Colors.white;
-        _audioRecord(true);
-        _recordRealTime(); // Toggle real-time recording
+        if(!disabledButton) {
+          innerCircleSize = innerCircleSize == 50.0 ? 60.0 : 50.0;
+          innerCircleColor =
+          innerCircleSize == 50.0 ? Colors.red : Colors.white;
+          _audioRecord(true);
+          _recordRealTime(); // Toggle real-time recording
+        }
       });
     } else if (mode == "Photo") {
       setState(() {
@@ -158,6 +161,7 @@ class _CameraPageState extends State<CameraPage> {
     if (isRecording) {
       // Stop recording
       setState(() async {
+        disabledButton = true;
         isRecording = false; // Stop recording
         captureTimer?.cancel(); // Stop the timer
         print("Recording stopped. Moods: $returnedMoods");
@@ -176,6 +180,7 @@ class _CameraPageState extends State<CameraPage> {
             await Future.delayed(Duration(milliseconds: 100)); // Check every 100ms
             count += 1;
           }
+          disabledButton = false;
           await _navigateToConfirmationPage(); // Proceed to confirmation if a picture exists
         }
       });
