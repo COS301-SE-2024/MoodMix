@@ -81,104 +81,13 @@ android {
 
     packagingOptions {
 
-        exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json'
-        exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/jni-config.json'
-        exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/proxy-config.json'
-        exclude 'META-INF/native-image/ios-x86_64/jnijavacpp/resource-config.json'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/ASL2.0'
-        pickFirst 'META-INF/ASL2.0'
-        pickFirst 'META-INF/native-image/**/jnijavacpp/reflect-config.json'
-        pickFirst 'META-INF/native-image/**/jnijavacpp/jni-config.json'
-        pickFirst 'META-INF/native-image/**/jnijavacpp/resource-config.json'
-        pickFirst 'nd4j-native.properties'
-
-        //     resources.excludes += [
-        //      pickFirst    'META-INF/native-image/**/jnijavacpp/reflect-config.json'
-        //              pickFirst   'META-INF/native-image/**/jnijavacpp/jni-config.json'
-        //       ]
-//        pickFirst 'META-INF/native-image/ios-x86_64/jnijavacpp/reflect-config.json'
-//        pickFirst 'META-INF/native-image/linux-x86_64/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/windows-x86/jnijavacpp/reflect-config.json'
-//        pickFirst 'META-INF/native-image/android-x86_64/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/android-x86/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/ios-arm64/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/windows-x86_64/jnijavacpp/reflect-config.json'
-//        pickFirst 'META-INF/native-image/windows-x86_64/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json'
-//        pickFirst 'META-INF/native-image/linux-ppc64le/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/linux-x86_64/jnijavacpp/reflect-config.json'
-//        pickFirst 'META-INF/native-image/linux-arm64/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json'
-//        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/ios-x86_64/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/windows-x86/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/macosx-x86_64/jnijavacpp/reflect-config.json'
-//        pickFirst 'META-INF/native-image/linux-x86/jnijavacpp/jni-config.json'
-//        pickFirst 'META-INF/native-image/ios-arm64/jnijavacpp/reflect-config.json'
     }
 
     dependencies {
 
         implementation 'org.tensorflow:tensorflow-lite:2.12.0' // Use the latest version
-
-
-
-        implementation (group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '1.0.0-beta6') {
-            exclude group: 'org.bytedeco', module: 'opencv-platform'
-            exclude group: 'org.bytedeco', module: 'leptonica-platform'
-            exclude group: 'org.bytedeco', module: 'hdf5-platform'
-            exclude group: 'com.google.guava', module: 'guava'
-            exclude group: 'org.nd4j', module: 'protobuf'
-            exclude group: 'com.google.code.findbugs', module: 'jsr305'
-        }
-        implementation (group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6') {
-            exclude group: 'com.google.code.findbugs', module: 'jsr305'
-            exclude group: 'com.google.guava', module: 'guava'
-        }
-        implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-arm"
-        implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-arm64"
-        implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-x86"
-        implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-x86_64"
-        implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2'
-        implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-arm"
-        implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-arm64"
-        implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-x86"
-        implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-x86_64"
-        implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2'
-        implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-arm"
-        implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-arm64"
-        implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-x86"
-        implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-x86_64"
-        implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2'
-        implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-arm"
-        implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-arm64"
-        implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86"
-        implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86_64"
-        testImplementation 'junit:junit:4.12'
         implementation 'com.spotify.android:auth:1.2.3'
-//
-//        implementation 'org.nd4j:nd4j-native:1.0.0-M1:android-x86'
-//
-//        implementation group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '1.0.0-M1'
-//
-        implementation(group: 'org.nd4j', name: 'guava', version: '1.0.0-beta6') {
-            exclude group: 'com.google.code.findbugs', module: 'jsr305'
-        }
 
-        implementation(group: 'org.nd4j', name: 'protobuf', version: '1.0.0-beta6') {
-            exclude group: 'com.google.guava', module: 'guava'
-        }
-//
-//        configurations.all {
-//            exclude group: 'com.google.code.findbugs', module: 'jsr305'
-//            exclude group: 'com.google.guava', module: 'guava'
-//        }
 
     }
 }
@@ -187,7 +96,7 @@ flutter {
     source = "../.."
 }
 
-configurations.all {
-    exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    exclude group: 'com.google.guava', module: 'guava'
-}
+//configurations.all {
+//    exclude group: 'com.google.code.findbugs', module: 'jsr305'
+//    exclude group: 'com.google.guava', module: 'guava'
+//}
