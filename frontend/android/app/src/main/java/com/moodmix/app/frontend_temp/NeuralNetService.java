@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-//import javax.swing.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -85,54 +84,6 @@ public class NeuralNetService {
 
 
 
-    public Bitmap convertToGrayscale(Bitmap originalBitmap) {
-        int width, height;
-        height = originalBitmap.getHeight();
-        width = originalBitmap.getWidth();
-
-        Bitmap grayscaleBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(grayscaleBitmap);
-        Paint paint = new Paint();
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setSaturation(0);
-        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-        paint.setColorFilter(colorFilter);
-        canvas.drawBitmap(originalBitmap, 0, 0, paint);
-
-        return grayscaleBitmap;
-    }
-
-
-
-    public INDArray bitmapToINDArray(Bitmap grayscaleBitmap) {
-        int height = grayscaleBitmap.getHeight();
-        int width = grayscaleBitmap.getWidth();
-
-        // Create a float array to hold the pixel values
-        float[] pixelValues = new float[height * width];
-
-        // Extract the pixel values
-        int index = 0;
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = grayscaleBitmap.getPixel(x, y);
-                // Bitmap is already grayscale, so red, green, and blue values are the same
-                // Use the red component, as it's equal to green and blue in grayscale
-                float grayscaleValue = Color.red(pixel);
-                // Store the grayscale value in the array
-                pixelValues[index++] = grayscaleValue / 255.0f;  // Normalize to [0, 1] if needed
-            }
-        }
-
-        // Create an INDArray from the pixel values
-        INDArray indArray = Nd4j.create(pixelValues, new int[]{1, 1, height, width});
-        return indArray;
-    }
-
-
-
-
-
     private MappedByteBuffer loadModelFile(AssetManager assetManager, String modelPath) throws IOException {
         try (AssetFileDescriptor fileDescriptor = assetManager.openFd(modelPath)) {
             FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
@@ -177,39 +128,28 @@ public class NeuralNetService {
             AssetManager assetManager = context.getAssets();
             MappedByteBuffer modelBuffer = loadModelFile(assetManager, "new_model_9_modified_newest.tflite");
 
-            // Create the TFLite interpreter with the MappedByteBuffer
+
             tflite = new Interpreter(modelBuffer);
 
             Log.d("NeuralNetService", "MODEL LOADED!!!!!!!!!!!!");
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle exceptions here (e.g., model file not found)
+
         } catch (Exception e) {
             e.printStackTrace();
-            // Handle other potential exceptions
+
         }
 
-
-//        float[][][][] inputData = new float[1][48][48][1]; // 1 sample, 48x48 image, 1 channel
-//
-//// Fill inputData with random values or your actual test data
-//        for (int i = 0; i < 48; i++) {
-//            for (int j = 0; j < 48; j++) {
-//                inputData[0][i][j][0] = (float) Math.random(); // Replace with actual data if needed
-//            }
-//        }
-//
-//// Prepare output data array
 
 
         float[][] outputData = new float[1][3];
 
 
         try {
-            tflite.run(inputData, outputData); // Run the model with the input data
+            tflite.run(inputData, outputData); // run the model with the input data
 
-            // Output the results
+            // output the results
             Log.d("NeuralNetService", "Inference Output: " + Arrays.toString(outputData[0]));
         } catch (Exception e) {
             e.printStackTrace();
@@ -233,7 +173,3 @@ public class NeuralNetService {
         return emotions[current_highest_index];
     }
 }
-
-// red error screen is caused when an exception is thrown in this class, as the
-// confirmation_pop_up page's mood list never gets any data, so trying to access
-// any of its elements (as in the fetchMood function) will result in the red error screen
