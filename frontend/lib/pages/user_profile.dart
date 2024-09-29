@@ -13,7 +13,7 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   String? _displayName = '';
-  String? _spotifyUsername = '';
+  //String? _spotifyUsername = '';
   String? _spotifyProfileImage = '';
   List<Map<String, dynamic>> _playlists = [];
   bool isLoading = true; // Loading indicator control
@@ -63,7 +63,7 @@ class _UserProfileState extends State<UserProfile> {
     final spotifyUserDetails = await SpotifyAuth.fetchUserDetails();
     if (spotifyUserDetails != null) {
       setState(() {
-        _spotifyUsername = spotifyUserDetails['display_name'];
+        //_spotifyUsername = spotifyUserDetails['display_name'];
         _spotifyProfileImage = spotifyUserDetails['images'] != null &&
             spotifyUserDetails['images'].isNotEmpty
             ? spotifyUserDetails['images'][1]['url']

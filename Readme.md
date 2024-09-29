@@ -159,8 +159,6 @@ everywhere. MoodMix allows us to do just that.
 
 ### [Architecure Specification](https://docs.google.com/document/d/1Hi7V8hVkYe0L3wJGn5eS4Etq8IF3EUGZHm_d-UjCNpI/edit#heading=h.128bbm5i2zl8)
 ### [Architecture Diagram](https://github.com/user-attachments/assets/e569e046-2967-4aff-b6ff-ef2367074c0f)
-
-
 ### [User Manual](https://docs.google.com/document/d/1PkPDF9-MBdbb2HuwG-MHBuKvUYR4KeZKHMFj8wQJOh4/edit?usp=sharing)
 ### [Coding Standards](https://docs.google.com/document/d/1IbX4rgB84IaW2q_jtdrftmaUzSJtHxRVy9X0AykNLLo/edit?usp=sharing)
 ### [List of Contributions](https://docs.google.com/document/d/1QJBmAijUjG0CW4sEqz5YA2BgVcqFmoG37d2O7HAGUks/edit?usp=sharing)
@@ -175,6 +173,9 @@ everywhere. MoodMix allows us to do just that.
 ### [FiveDudes Demo1 - Video](https://drive.google.com/file/d/1R8_xJtMMwkNQBzKfzGCe3dQ-h7kFv6oP/view?usp=sharing)
 ### [FiveDudes Demo2 - Video](https://drive.google.com/file/d/10mGXSPh1HnOlnOBChIk5n_7b_jYJxM8m/view?usp=sharing)
 ### [FiveDudes Demo2 - Presentation](https://drive.google.com/file/d/1XD5HbM2SeHzq8POv9kWPFaLgjE00eVKU/view?usp=sharing)
+### [FiveDudes Demo3 - Video](https://drive.google.com/file/d/1woSAn3ruE7dNOLrIjZVPr_5M6C3a82Y3/view?usp=sharing)
+### [FiveDudes Demo3 - Presentation](https://drive.google.com/file/d/1vl7fNnv2O6iYVtco9Je34NYsqRhIVQfy/view?usp=sharing)
+
 
 
 

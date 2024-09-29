@@ -15,7 +15,7 @@ class NeuralNetMethodChannel {
       final image_bytes = await image.readAsBytes();
       final result = await _channel.invokeMethod('get_mood', {'image' : image_bytes});
       print('neural_net method channel result: $result');
-      final mood = await result;
+      //final mood = await result;
       return result;
         } else {
         return "";

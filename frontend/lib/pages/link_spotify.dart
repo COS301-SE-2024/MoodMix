@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:frontend/auth/auth_service.dart';
 
@@ -84,27 +84,27 @@ class _LinkSpotifyState extends State<LinkSpotify> {
     }
   }
 
-  void _linkSpotify2() async { // This is the method for web, which we are not going to currently use
-    if (backendUrl.isEmpty) {
-      print('Backend URL is not initialized');
-      return;
-    }
-    final Uri uri = Uri.parse(backendUrl);
-
-    try {
-      // Open the backend /login endpoint in the user's browser
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        print('Could not launch $backendUrl');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // void _linkSpotify2() async { // This is the method for web, which we are not going to currently use
+  //   if (backendUrl.isEmpty) {
+  //     print('Backend URL is not initialized');
+  //     return;
+  //   }
+  //   final Uri uri = Uri.parse(backendUrl);
+  //
+  //   try {
+  //     // Open the backend /login endpoint in the user's browser
+  //     if (await canLaunchUrl(uri)) {
+  //       await launchUrl(uri);
+  //     } else {
+  //       print('Could not launch $backendUrl');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
   Future<void> _onLoginSuccess(String accessToken) async {
-    if (accessToken != null) {
+    if (accessToken != "") {
       // Store the token and timestamp
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final int currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
