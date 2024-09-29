@@ -22,6 +22,8 @@ import 'package:frontend/pages/camera.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/audio_player_page.dart';
+import 'package:frontend/NonFuncTesting/NonFuncTestingPage.dart';
+
 
 List<CameraDescription> cameras = <CameraDescription>[];
 
@@ -74,6 +76,8 @@ class MyApp extends StatelessWidget {
           '/camerahelp': (context) => CameraVoiceHelpPage(),
           '/settings': (context) => SettingsPage(),
           '/audio': (context) => AudioPlayerPage(),
+          '/NonFunc': (context) => ImageProcessingPage()
+
         },
         theme: Provider.of<ThemeProvider>(context).themeData,
       ),
