@@ -47,7 +47,7 @@ Our goal is to harness the use of artificial intelligence to
 streamline the music listening experience for users
 everywhere. MoodMix allows us to do just that.
 
-[Latest App release](https://drive.google.com/file/d/1w7pcF6arggDiAqUgP-3DprsXPdlNfQym/view?usp=sharing)
+[Latest App release](https://drive.google.com/file/d/16FLm1Y_tVn-XkBFahqKXUNNMTWdyiNw3/view?usp=sharing)
 
 ## Table of Contents
 
