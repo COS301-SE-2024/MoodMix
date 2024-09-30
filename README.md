@@ -160,7 +160,6 @@ I am a dedicated third-year computer science student with a strong passion for b
 ### [Requirement Specification](https://docs.google.com/document/d/1aHvhs492eaci1P-K_BVc1BMdiMPcE4VlqI1LXhdD3Sg/edit?usp=sharing)
 
 ### [Architecure Specification](https://docs.google.com/document/d/1Hi7V8hVkYe0L3wJGn5eS4Etq8IF3EUGZHm_d-UjCNpI/edit#heading=h.128bbm5i2zl8)
-### [Architecture Diagram](https://github.com/user-attachments/assets/e569e046-2967-4aff-b6ff-ef2367074c0f)
 ### [Technical Installation Guide](https://drive.google.com/file/d/13CNTyzxTiLt4nUi-Wzo8l966d00QwfCm/view?usp=sharing)
 ### [Architecture Diagram](https://github.com/user-attachments/assets/8d564fc1-ca5d-4672-a16d-661032ebfd2d)
 ### [User Manual](https://docs.google.com/document/d/1PkPDF9-MBdbb2HuwG-MHBuKvUYR4KeZKHMFj8wQJOh4/edit?usp=sharing)
