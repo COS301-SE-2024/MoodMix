@@ -165,7 +165,7 @@ class _CameraPageState extends State<CameraPage> {
         isRecording = false; // Stop recording
         captureTimer?.cancel(); // Stop the timer
         print("Recording stopped. Moods: $returnedMoods");
-        if(audioMoodWeight != ''){
+        if (audioMoodWeight != '') {
           returnedMoods.add(audioMoodWeight);
         }
         print("Recording stopped. Moods: $returnedMoods");
@@ -192,18 +192,27 @@ class _CameraPageState extends State<CameraPage> {
         imagePaths.clear(); // Clear previous image paths
       });
 
+      // Counter for the number of pictures taken
+      int pictureCount = 0;
+
       // Start capturing photos at intervals
       captureTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
         try {
+          if (pictureCount >= 4) {
+            timer.cancel(); // Stop the timer once 4 pictures are taken
+            print("Reached the picture limit of 4.");
+            return;
+          }
+
           XFile? pictureFile = await controller?.takePicture();
           if (pictureFile != null) {
             // Send photo to method channel and get the mood
             String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
             setState(() {
-
-              if(mood != "") {
+              if (mood != "") {
                 returnedMoods.add(mood); // Store the mood
                 imagePaths.add(pictureFile.path); // Store the image path
+                pictureCount++; // Increment the picture count
               }
             });
             print("Captured mood: $mood");
