@@ -36,5 +36,5 @@ jobs:
           echo "SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }}" >> ./frontend/assets/.env
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> ./frontend/assets/.env
 
-      - run: flutter build appbundle
+      - run: flutter build apk --release
         working-directory: ./frontend
