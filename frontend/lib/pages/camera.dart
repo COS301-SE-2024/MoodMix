@@ -7,6 +7,7 @@ import '../components/navbar.dart';
 import '../mood_service.dart';
 import '../neural_net/neural_net_method_channel.dart';
 import '../components/audio_service.dart';
+import '../components/faceDetect.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -116,10 +117,13 @@ class _CameraPageState extends State<CameraPage> {
         pictureFile = await controller!.takePicture();
         imagePaths.add(pictureFile!.path); // Add the image path here
         if (pictureFile != null) {
-          await _fetchMood(); // Fetch mood after picture is taken
+          if(detectFace() == true){
+            await _fetchMood();
+          }else{
+            print("Hrm, are you sure there is a face in this photo? Let's try again.");
+          }
         }
       }
-
       setState(() {
         innerCircleSize = 60.0;
       });
@@ -198,15 +202,18 @@ class _CameraPageState extends State<CameraPage> {
           XFile? pictureFile = await controller?.takePicture();
           if (pictureFile != null) {
             // Send photo to method channel and get the mood
-            String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
-            setState(() {
-
-              if(mood != "") {
-                returnedMoods.add(mood); // Store the mood
-                imagePaths.add(pictureFile.path); // Store the image path
-              }
-            });
-            print("Captured mood: $mood");
+            if(detectFace() == true){
+              String? mood = await _neuralNetMethodChannel.get_mood(pictureFile);
+              setState(() {
+                if(mood != "") {
+                  returnedMoods.add(mood); // Store the mood
+                  imagePaths.add(pictureFile.path); // Store the image path
+                }
+              });
+              print("Captured mood: $mood");
+            }else{
+              print("Hrm, are you sure there is a face in this photo? Let's try again.");
+            }
           }
         } catch (e) {
           print("Error during intermittent capture: $e");
@@ -281,6 +288,19 @@ class _CameraPageState extends State<CameraPage> {
         isAudioActive = true;
       });
       _startPulsing();
+    }
+  }
+
+  Future<bool> detectFace() async {
+    FaceDetectionHelper faceDetectionHelper = FaceDetectionHelper();
+    bool isFaceFound = await faceDetectionHelper.isFacePresent(pictureFile);
+
+    if (isFaceFound) {
+      faceDetectionHelper.dispose();
+      return true;
+    } else {
+      faceDetectionHelper.dispose();
+      return false;
     }
   }
 
