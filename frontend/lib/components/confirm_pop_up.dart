@@ -206,7 +206,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
               }
               return Transform(
                 alignment: Alignment.center,
-                transform: Matrix4.rotationY(math.pi), // Flip the image horizontally
+                transform: Matrix4.rotationY(math.pi * 2), // Flip the image horizontally
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(0.0), // No rounding for full-screen image
                   child: Container(
@@ -244,6 +244,13 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                   ? Theme.of(context).colorScheme.secondary // Use secondary color if transcribed text is not null
                   : Colors.white, // Use white if transcribed text is null
               decoration: TextDecoration.none, // Remove underline
+              shadows: [
+                Shadow(
+                  blurRadius: 10.0, // Adjust for more or less blur
+                  color: Colors.black.withOpacity(1), // Subtle black shadow
+                  offset: Offset(0, 2), // Vertical offset to position the shadow
+                ),
+              ],
             ),
             textAlign: TextAlign.center,
           ),
@@ -274,7 +281,7 @@ class _ConfirmationPopUpState extends State<ConfirmationPopUp> {
                             heroTag: 'retake', // Unique tag for retake button
                             backgroundColor: Theme.of(context).colorScheme.primary, // Keep the FAB's background transparent
                             onPressed: () {
-                              Navigator.of(context).pop(); // Closes the pop-up
+                              Navigator.of(context).pop(true); // Closes the pop-up
                             },
                             child: Icon(
                               Icons.refresh,
