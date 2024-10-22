@@ -144,8 +144,8 @@ I am a dedicated third-year computer science student with a strong passion for b
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Ian van Wyk</b></h2>
-      <b style="font-size: 16px;"> Services Engineer, something else </b><br>
-   I am a final year Computer Science student with a deep interest in all things data science and AI. After watching Garry Kasparov vs Deep Blue for the first time, my fascination for computers and AI models started. I was determined to one day be able to implement my own AI models. This is ultimately what led to me studying Computer Science.I am goal-oriented and determined to finish what I start. I try to ensure that the things I do I do to the best of my capabilities and to the highest of quality. My strong work ethic is complemented by robust problem solving skills that I try to apply to all aspects of my life. I am comfortable using the technologies listed below, but I am always eager to expand my repertoire.
+      <b style="font-size: 16px;"> ML Engineer, Services Engineer </b><br>
+   I am a final year Computer Science student with a deep interest in all things data science and AI. After watching Garry Kasparov vs Deep Blue for the first time, my fascination for computers and AI models started. I was determined to one day be able to implement my own AI models. This is ultimately what led to me studying Computer Science. I am goal-oriented and determined to finish what I start. I try to ensure that the things I do, I do to the best of my capabilities and to the highest of quality. My strong work ethic is complemented by robust problem solving skills that I try to apply to all aspects of my life. I am comfortable using Python, TensorFlow, Keras, R, Java and C++. 
     </td>
   </tr>
 </table>
