@@ -86,7 +86,7 @@ everywhere. MoodMix allows us to do just that.
     </td>
     <td style="vertical-align: top; width: auto; border: 0; padding: 10px;">
       <h2><b style="font-size: 18px;">Rhevan Kruger</b></h2>
-      <b style="font-size: 16px;"> Frontend </b><br>
+      <b style="font-size: 16px;"> Frontend, Integration Engineer </b><br>
      I am a passionate student with a keen eye for detail and a great deal of interest in the world of Computer Science and Software Engineering. I take a great amount of satisfaction in the efficiency of a well-oiled development process and environment. I pride myself on being highly motivated and delivering quality work.I have prior experience in web development, volunteering at RURESA (Rural Rehab SA). Through this process I learned a lot about web-development and found myself thoroughly enjoying the work. I am also well versed in other languages and frameworks some of which will be listed below.
       <br><br>
     </td>
