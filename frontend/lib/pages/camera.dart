@@ -35,6 +35,8 @@ class _CameraPageState extends State<CameraPage> {
   String audioMoodWeight = '';
   bool audioReady = false;
   bool disabledButton = false;
+  GlobalKey _buttonKey = GlobalKey(); // Create a GlobalKey for the button
+
 
 
   final List<String> modes = ["Photo", "Video", "Audio"];
@@ -176,8 +178,8 @@ class _CameraPageState extends State<CameraPage> {
           await _takeForcedPicture(); // Take a picture if none exists
         } else {
           int count = 0;
-          while (!audioReady && count < 10000000000) {
-            await Future.delayed(Duration(milliseconds: 100)); // Check every 100ms
+          while (!audioReady && count < 10000) {
+            await Future.delayed(Duration(milliseconds: 10)); // Check every 100ms
             count += 1;
           }
           disabledButton = false;
@@ -240,6 +242,7 @@ class _CameraPageState extends State<CameraPage> {
     ).then((_) {
       setState(() {
         pictureFile = null; // Reset picture file after dialog closes
+        disabledButton = false;
       });
     });
   }
@@ -297,7 +300,7 @@ class _CameraPageState extends State<CameraPage> {
     print("RETURNED MOODS");
     print(returnedMoods.toString());
 
-    if(returnedMoods.length == imagePaths.length) {
+    if (returnedMoods.length == imagePaths.length) {
       returnedMoods.add(audioMoodWeight);
     }
 
@@ -305,7 +308,7 @@ class _CameraPageState extends State<CameraPage> {
     await Future.delayed(Duration(milliseconds: 100));
 
     // Send all the captured images during real-time video as a list
-    Navigator.push(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ConfirmationPopUp(
@@ -317,14 +320,22 @@ class _CameraPageState extends State<CameraPage> {
           isRealTimeVideo: true,
         ),
       ),
-    ).then((_) {
+    );
+
+    if (result == true) {
+      // Set disabledButton to true when navigating back
       setState(() {
-        pictureFile = null;
-        returnedMoods.clear();
-        imagePaths.clear(); // Clear image paths after confirmation
+        disabledButton = false;
       });
+    }
+
+    setState(() {
+      pictureFile = null;
+      returnedMoods.clear();
+      imagePaths.clear(); // Clear image paths after confirmation
     });
   }
+
 
   Future<void> _takeForcedPicture() async {
     // Capture a picture and fetch mood
@@ -333,8 +344,6 @@ class _CameraPageState extends State<CameraPage> {
       if (pictureFile != null) {
         imagePaths.add(pictureFile!.path); // Add the image path here
         await _fetchMood(); // Fetch mood after picture is taken
-        // Proceed to confirmation after taking the forced picture
-        // _navigateToConfirmationPage();
       }
     }
   }
@@ -450,7 +459,8 @@ class _CameraPageState extends State<CameraPage> {
                       shape: BoxShape.circle,
                     ),
                     child: RawMaterialButton(
-                      onPressed: _handleButtonPress,
+                      key: _buttonKey,  // Assign the GlobalKey to this button
+                      onPressed: disabledButton ? null : _handleButtonPress, // Disable if flag is set
                       shape: CircleBorder(),
                       elevation: 2.0,
                       child: null,
